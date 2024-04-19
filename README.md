@@ -16,4 +16,9 @@ This project is for CSEN 174, taken in Spring of 2024.
 =======
 - Hilary Le
 - Matty Herzig
+<<<<<<< HEAD
 >>>>>>> 739b3d83511d908e72dd96f4abcdd5071cae07ba
+=======
+- Srivatsa Puranam
+- Anshuman Sahu
+>>>>>>> 564e4f1820fb848347998e86eace63588571e7b9
