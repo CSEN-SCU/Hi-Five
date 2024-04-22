@@ -33,14 +33,14 @@ const styles = StyleSheet.create({
     },
     loginButton:{
         backgroundColor:"#1ED760",
-        borderRadius: 4,
+        borderRadius: 45,
         alignContent: "center",
         justifyContent: "center",
         flexDirection: "row",
         paddingVertical: 15,
         paddingHorizontal: 15,
         display: "inline-block",
-        marginHorizontal: "20%"
+        marginHorizontal: "10%"
     },
     loginText: {
         fontSize: 20,
