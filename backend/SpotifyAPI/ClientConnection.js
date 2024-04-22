@@ -1,8 +1,15 @@
 //http://localhost:3000/
 
+import "./GetPlaylist";
+import "./AddMusicToPlaylist";
+import "./CreatePlaylist";
+import "./FindSongAndArtists";
+import "./RecentlyPlayedTracks";
+import "./DeleteTracksFromPlaylist";
+import "./SearchPlaylist";
+import { Router } from "express";
+import GetPlaylistAPI from "./GetPlaylist";
 require('dotenv').config()
-
-
 
 const PORT = 3000;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -42,7 +49,7 @@ app.get("/login", (req, res) => {
     const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
     console.log("loginLink: " + loginLink);
     res.redirect(loginLink);
-    console.log("Redirected loginLink")
+    console.log("Redirected login Link")
 });
 
 app.get("/redpage", (req, res) => {
@@ -106,8 +113,26 @@ app.get("/faves", accTknRefreshments, (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hi-Five Backend!')
 })
+
+
+
+function getPlaylist()
+{
+    const router = GetPlaylistAPI(accTknRefreshments, );
+    app.add(router);
+}
+
+//start working adding all api calls
+function addMusicToPlaylist()
+{
+    const router = AddMusicToPlaylistAPI();
+    app.add(router);
+}
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
