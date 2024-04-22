@@ -7,7 +7,7 @@ function RecentlyPlayedTracksAPI(accTknRefreshments, numOfTracks)
     router.get("/RecentlyPlayedTracks", accTknRefreshments, (req, res) => {
         const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
-        spotifyApi.getMyRecentlyPlayedTracks({
+        spotifyAPI.getMyRecentlyPlayedTracks({
             limit : numOfTracks
         }).then(function(data) {
             // Output items
@@ -21,4 +21,4 @@ function RecentlyPlayedTracksAPI(accTknRefreshments, numOfTracks)
     return router;
 }
 
-export default RecentlyPlayedTracksAPI
+module.exports = {RecentlyPlayedTracksAPI};

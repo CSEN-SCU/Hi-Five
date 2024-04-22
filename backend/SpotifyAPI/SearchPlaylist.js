@@ -1,13 +1,13 @@
 const express = require('express');
 const SpotifyWebApi = require("spotify-web-api-node");
 
-function SearchPlaylistAPI(accTknRefreshments, spotifyAPI, playlistName) 
+function SearchPlaylistAPI(accTknRefreshments, playlistName) 
 {
     const router = express.Router();
     router.get("/RecentlyPlayedTracks", accTknRefreshments, (req, res) => {
         const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
-        spotifyApi.searchPlaylists(playlistName)
+        spotifyAPI.searchPlaylists(playlistName)
         .then(function(data) {
             console.log('Found playlists are', data.body);
         }, function(err) {
@@ -18,4 +18,4 @@ function SearchPlaylistAPI(accTknRefreshments, spotifyAPI, playlistName)
     return router;
 }
 
-export default SearchPlaylistAPI
+module.exports = {SearchPlaylistAPI};

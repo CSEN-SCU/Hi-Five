@@ -11,7 +11,7 @@ function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID)
         const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
         
-        spotifyApi.addTracksToPlaylist(playlistID, tracksID)
+        spotifyAPI.addTracksToPlaylist(playlistID, tracksID)
             .then(function(data) {
                 console.log('Added tracks to playlist!');
             }, function(err) {
@@ -22,4 +22,4 @@ function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID)
     return router;
 }
 
-export default AddMusicToPlaylistAPI
+module.exports = {AddMusicToPlaylistAPI};

@@ -1,14 +1,14 @@
 const express = require('express');
 const SpotifyWebApi = require("spotify-web-api-node");
 
-function createPlaylistAPI(accTknRefreshments, spotifyAPI) 
+function CreatePlaylistAPI(accTknRefreshments) 
 {
     const router = express.Router();
     router.get("/CreatePlaylist", accTknRefreshments, (req, res) => {
         const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
         
-        spotifyApi.createPlaylist('Hi-Fived Songs', { 'description': 'Hi-Five\'s custom playlist', 'public': true })
+        spotifyAPI.createPlaylist('Hi-Fived Songs', { 'description': 'Hi-Five\'s custom playlist', 'public': true })
             .then(function(data) {
                 console.log('Created playlist!');
             }, function(err) {
@@ -19,4 +19,4 @@ function createPlaylistAPI(accTknRefreshments, spotifyAPI)
     return router;
 }
 
-export default createPlaylistAPI
+module.exports = {CreatePlaylistAPI};

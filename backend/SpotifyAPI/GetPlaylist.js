@@ -10,7 +10,7 @@ function GetPlaylistAPI(accTknRefreshments, playlistID)
 
         // query Spotify's top tracks endpoint for a user API, with a max track count of count and time range
         // extended over the user's entire account
-        spotifyApi.getPlaylist(playlistID)
+        spotifyAPI.getPlaylist(playlistID)
             .then(function(data) {
                 console.log('Some information about this playlist', data.body);
             }, function(err) {
@@ -20,4 +20,4 @@ function GetPlaylistAPI(accTknRefreshments, playlistID)
     return router;
 }
 
-export default GetPlaylistAPI
+module.exports = {GetPlaylistAPI};

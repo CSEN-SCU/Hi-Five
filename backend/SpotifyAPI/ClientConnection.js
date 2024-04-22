@@ -1,16 +1,16 @@
 //http://localhost:3000/
 
-import "./GetPlaylist";
-import "./AddMusicToPlaylist";
-import "./CreatePlaylist";
-import "./FindSongAndArtists";
-import "./RecentlyPlayedTracks";
-import "./DeleteTracksFromPlaylist";
-import "./SearchPlaylist";
-import { Router } from "express";
-import GetPlaylistAPI from "./GetPlaylist";
+const GetPlaylist = require("./GetPlaylist");
+const AddMusicToPlaylist = require("./AddMusicToPlaylist");
+const CreatePlaylist = require("./CreatePlaylist");
+const FindSongAndArtists = require("./FindSongAndArtists");
+const RecentlyPlayedTracks = require("./RecentlyPlayedTracks");
+const DeleteTracksFromPlaylist = require("./DeleteTracksFromPlaylist");
+const SearchPlaylist = require("./SearchPlaylist");
+
 require('dotenv').config()
 
+// variables
 const PORT = 3000;
 const CLIENT_ID = process.env.CLIENT_ID;
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -26,6 +26,7 @@ const spotifyAuthAPI = new SpotifyWebApi({
 });
 
 const express = require("express");
+// import { Router } from "express";
 const app = express();
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -53,7 +54,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/redpage", (req, res) => {
-    console.log("Exxisting here now");
+    console.log("Existing here now");
   if (req.query.state !== req.cookies["authState"]) {
     // States don't match, send the user away.
     return res.redirect("/");
@@ -97,6 +98,7 @@ const accTknRefreshments = (req, res, next) => {
   }
 };
 
+
 app.get("/faves", accTknRefreshments, (req, res) => {
   const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
@@ -117,22 +119,49 @@ app.get('/', (req, res) => {
 })
 
 
-
-function getPlaylist()
+function getPlaylist(playlistID)
 {
-    const router = GetPlaylistAPI(accTknRefreshments, );
-    app.add(router);
+    const router = GetPlaylist.GetPlaylistAPI(accTknRefreshments, playlistID);
+    app.use(router);
 }
 
-//start working adding all api calls
-function addMusicToPlaylist()
+function addMusicToPlaylist(playlistID, tracksID)
 {
-    const router = AddMusicToPlaylistAPI();
-    app.add(router);
+    const router = AddMusicToPlaylist.AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID);
+    app.use(router);
 }
 
+function createPlaylist()
+{
+    const router = CreatePlaylist.CreatePlaylistAPI(accTknRefreshments) 
+    app.use(router);
+}
 
+function findSongAndArtists(trackName, artistName)
+{
+    const router = FindSongAndArtists.FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
+    app.use(router);
+}
 
+function recentlyPlayedTracks(numOfTracks)
+{
+    const router = RecentlyPlayedTracks.RecentlyPlayedTracksAPI(accTknRefreshments, numOfTracks)
+    app.use(router);
+}
+
+function searchPlaylists(playlistName)
+{
+    const router = SearchPlaylist.SearchPlaylistAPI(accTknRefreshments, playlistName);
+    app.use(router);
+}
+
+function searchPlaylists(playlistId, tracks, options)
+{
+    const router = DeleteTracksFromPlaylist.DeleteTracksFromPlaylistAPI(playlistId, tracks, options, accTknRefreshments) ;
+    app.use(router);
+}
+
+findSongAndArtists("Magnetic", "ILLIT");
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
