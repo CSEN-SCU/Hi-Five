@@ -1,7 +1,9 @@
-import {Alert, ImageBackground, Pressable, StyleSheet, Text, View} from 'react-native';
+// loginScreen.js
+// splash page/login page
+
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
-
 
 const LoginScreen = () => {
 
