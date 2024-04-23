@@ -48,14 +48,14 @@ app.get("/login", (req, res) => {
   res.cookie("authState", stateString);
 
   const scopes = ["user-top-read"];
-    const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
-    console.log("loginLink: " + loginLink);
-    res.redirect(loginLink);
-    console.log("Redirected login Link")
+  const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
+  console.log("loginLink: " + loginLink);
+  res.redirect(loginLink);
+  console.log("Redirected login Link")
 });
 
 app.get("/redpage", (req, res) => {
-    console.log("Existing here now");
+  console.log("Existing here now");
   if (req.query.state !== req.cookies["authState"]) {
     // States don't match, send the user away.
     return res.redirect("/");
@@ -120,46 +120,39 @@ app.get('/', (req, res) => {
 })
 
 
-function getPlaylist(playlistID)
-{
-    const router = GetPlaylist.GetPlaylistAPI(accTknRefreshments, playlistID);
-    app.use(router);
+function getPlaylist(playlistID) {
+  const router = GetPlaylist.GetPlaylistAPI(accTknRefreshments, playlistID);
+  app.use(router);
 }
 
-function addMusicToPlaylist(playlistID, tracksID)
-{
-    const router = AddMusicToPlaylist.AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID);
-    app.use(router);
+function addMusicToPlaylist(playlistID, tracksID) {
+  const router = AddMusicToPlaylist.AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID);
+  app.use(router);
 }
 
-function createPlaylist()
-{
-    const router = CreatePlaylist.CreatePlaylistAPI(accTknRefreshments) 
-    app.use(router);
+function createPlaylist() {
+  const router = CreatePlaylist.CreatePlaylistAPI(accTknRefreshments)
+  app.use(router);
 }
 
-function findSongAndArtists(trackName, artistName)
-{
-    const router = FindSongAndArtists.FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
-    app.use(router);
+function findSongAndArtists(trackName, artistName) {
+  const router = FindSongAndArtists.FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
+  app.use(router);
 }
 
-function recentlyPlayedTracks(numOfTracks)
-{
-    const router = RecentlyPlayedTracks.RecentlyPlayedTracksAPI(accTknRefreshments, numOfTracks)
-    app.use(router);
+function recentlyPlayedTracks(numOfTracks) {
+  const router = RecentlyPlayedTracks.RecentlyPlayedTracksAPI(accTknRefreshments, numOfTracks)
+  app.use(router);
 }
 
-function searchPlaylists(playlistName)
-{
-    const router = SearchPlaylist.SearchPlaylistAPI(accTknRefreshments, playlistName);
-    app.use(router);
+function searchPlaylists(playlistName) {
+  const router = SearchPlaylist.SearchPlaylistAPI(accTknRefreshments, playlistName);
+  app.use(router);
 }
 
-function searchPlaylists(playlistId, tracks, options)
-{
-    const router = DeleteTracksFromPlaylist.DeleteTracksFromPlaylistAPI(playlistId, tracks, options, accTknRefreshments) ;
-    app.use(router);
+function searchPlaylists(playlistId, tracks, options) {
+  const router = DeleteTracksFromPlaylist.DeleteTracksFromPlaylistAPI(playlistId, tracks, options, accTknRefreshments);
+  app.use(router);
 }
 
 findSongAndArtists("Magnetic", "ILLIT");
