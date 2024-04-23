@@ -20,7 +20,7 @@ const LoginScreen = () => {
                 <View style={styles.login}>
                     <Text style={styles.nameTitle}>Hi-Five</Text>
                     <Text style={styles.tagline}>Share the Vibe!</Text>
-                    <Pressable  style={styles.loginButton} onPress={()=>Alert.alert("You pressed the login button")}>
+                    <Pressable style={styles.loginButton} onPress={()=>Alert.alert("You pressed the login button")}>
                         <Icon name='spotify' size={20} style={styles.iconStyle}/>
                         <Text style={styles.loginText}>Login with Spotify</Text>
                     </Pressable>
