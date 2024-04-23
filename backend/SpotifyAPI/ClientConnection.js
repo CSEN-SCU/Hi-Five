@@ -1,14 +1,15 @@
 //http://localhost:3000/
 
-const GetPlaylist = require("./GetPlaylist");
-const AddMusicToPlaylist = require("./AddMusicToPlaylist");
-const CreatePlaylist = require("./CreatePlaylist");
-const FindSongAndArtists = require("./FindSongAndArtists");
-const RecentlyPlayedTracks = require("./RecentlyPlayedTracks");
-const DeleteTracksFromPlaylist = require("./DeleteTracksFromPlaylist");
-const SearchPlaylist = require("./SearchPlaylist");
+import GetPlaylist from "./GetPlaylist";
+import AddMusicToPlaylist from "./AddMusicToPlaylist";
+import CreatePlaylist from "./CreatePlaylist";
+import FindSongAndArtists from "./FindSongAndArtists";
+import RecentlyPlayedTracks from "./RecentlyPlayedTracks";
+import DeleteTracksFromPlaylist from "./DeleteTracksFromPlaylist";
+import SearchPlaylist from "./SearchPlaylist";
 
-require('dotenv').config()
+import dotenv from 'dotenv';
+dotenv.config()
 
 // variables
 const PORT = 3000;
@@ -18,17 +19,17 @@ const RED_URI = process.env.RED_URI;
 // We set RED_URI in process.env but have falsy alternatives set in place, just in case.
 
 // This object is going to be used for authentication alone. We make separate SpotifyWebApis for our actual API calls with access tokens.
-const SpotifyWebApi = require("spotify-web-api-node");
+import SpotifyWebApi from "spotify-web-api-node";
 const spotifyAuthAPI = new SpotifyWebApi({
   clientId: CLIENT_ID,
   clientSecret: SECRET_KEY,
   redirectUri: RED_URI,
 });
 
-const express = require("express");
+import express from "express";
 // import { Router } from "express";
 const app = express();
-const cookieParser = require("cookie-parser");
+import cookieParser from "cookie-parser";
 app.use(cookieParser());
 
 app.get("/login", (req, res) => {

@@ -1,5 +1,5 @@
-const express = require('express');
-const SpotifyWebApi = require("spotify-web-api-node");
+import express from 'express';
+import SpotifyWebApi from "spotify-web-api-node";
 
 function FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName) 
 {
@@ -20,4 +20,4 @@ function FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
     return router;
 }
 
-module.exports = {FindSongAndArtistsAPI};
+export {FindSongAndArtistsAPI};

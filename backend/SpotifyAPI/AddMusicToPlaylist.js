@@ -1,5 +1,5 @@
-const express = require('express');
-const SpotifyWebApi = require("spotify-web-api-node");
+import express from 'express';
+import SpotifyWebApi from "spotify-web-api-node";
 
 function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID)
 {
@@ -22,4 +22,4 @@ function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID)
     return router;
 }
 
-module.exports = {AddMusicToPlaylistAPI};
+export {AddMusicToPlaylistAPI};
