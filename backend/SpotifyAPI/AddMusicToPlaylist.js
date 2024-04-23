@@ -1,8 +1,7 @@
 const express = require('express');
 const SpotifyWebApi = require("spotify-web-api-node");
 
-function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID)
-{
+function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID) {
     const router = express.Router();
     router.get("/AddMusicToPlaylist", accTknRefreshments, (req, res) => {
 
@@ -10,11 +9,11 @@ function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID)
         // extended over the user's entire account
         const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
-        
+
         spotifyAPI.addTracksToPlaylist(playlistID, tracksID)
-            .then(function(data) {
+            .then(function (data) {
                 console.log('Added tracks to playlist!');
-            }, function(err) {
+            }, function (err) {
                 console.log('Something went wrong!', err);
             });
     });
@@ -22,4 +21,4 @@ function AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID)
     return router;
 }
 
-module.exports = {AddMusicToPlaylistAPI};
+module.exports = { AddMusicToPlaylistAPI };
