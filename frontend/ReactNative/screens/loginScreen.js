@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     background: {
-        width: '105%', 
-        height: '105%',
+        width: '115%', 
+        height: '115%',
         marginBottom: 50,
         zIndex: -1
     },
