@@ -1,5 +1,6 @@
 const express = require('express');
 const SpotifyWebApi = require("spotify-web-api-node");
+var songResponse = null;
 
 function FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName) 
 {
@@ -12,6 +13,7 @@ function FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
         spotifyAPI.searchTracks(`track:${trackName} artist:${artistName}`)
         .then(function(data) {
             console.log(`Search tracks by "${trackName}" in the track name and "${artistName}" in the artist name`, data.body);
+            songResponse = data.body.tracks.items;
         }, function(err) {
             console.log('Something went wrong!', err);
         });
@@ -20,4 +22,4 @@ function FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
     return router;
 }
 
-module.exports = {FindSongAndArtistsAPI};
+module.exports = {FindSongAndArtistsAPI, songResponse};

@@ -46,7 +46,7 @@ app.get("/login", (req, res) => {
   const stateString = generateRandomString(16);
   res.cookie("authState", stateString);
 
-  const scopes = ["user-top-read"];
+    const scopes = ["user-top-read"];
     const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
     console.log("loginLink: " + loginLink);
     res.redirect(loginLink);
@@ -100,6 +100,8 @@ const accTknRefreshments = (req, res, next) => {
 
 
 app.get("/faves", accTknRefreshments, (req, res) => {
+    console.log("faves"); // MATTY
+    console.log(req.cookies["accTkn"]);
   const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
   // query Spotify's top tracks endpoint for a user API, with a max track count of count and time range
@@ -107,14 +109,23 @@ app.get("/faves", accTknRefreshments, (req, res) => {
   count = 12;
   spotifyAPI
     .getMyTopTracks({ limit: count, time_range: "long_term" })
-    .then((data) => {
+      .then((data) => {
+      res.setHeader("Content-Type", "application/json");
+        //   console.log(res.getHeaders(), '\n\n\n\n');
+        //   console.log(data.body.items, '\n\n\n\n');
+        //   console.log(JSON.stringify(data.body.items, null, 2));
       return res
         .status(200)
-        .send(`<pre>${JSON.stringify(data.body.items, null, 2)}</pre>`);
+        .send(JSON.stringify(data.body.items, null, 2));
     });
 });
 
 app.get('/', (req, res) => {
+    console.log(1); // MATTY
+    console.log(req.cookies["accTkn"]); // MATTY
+    const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
+    console.log(spotifyAPI); // MATTY
+    console.log(2); // MATTY
   res.send('Hi-Five Backend!')
 })
 
@@ -141,6 +152,7 @@ function findSongAndArtists(trackName, artistName)
 {
     const router = FindSongAndArtists.FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
     app.use(router);
+    //fetch("http://localhost:3000/faves").then(x => x.text()).then(y => console.log(y));
 }
 
 function recentlyPlayedTracks(numOfTracks)
@@ -166,3 +178,15 @@ findSongAndArtists("Magnetic", "ILLIT");
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
 })
+
+var access_token = null;
+const getAccessToken = (req) => {
+    return req.cookies["accTkn"];
+};
+
+app.get("/some-route", (req, res) => {
+    access_token = getAccessToken(req);
+});
+
+
+module.exports = {access_token};
