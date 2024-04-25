@@ -14,8 +14,10 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = '1afd86bd959b46549fad0dc7389b1f1a'; // your clientId
-var client_secret = '123bece5e27a41ca969d909c1aff2722'; // Your secret
+require("dotenv").config();
+
+var client_id = process.env.CLIENT_ID; // your clientId
+var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 
@@ -59,6 +61,9 @@ app.get('/callback', function (req, res) {
     var code = req.query.code || null;
     var state = req.query.state || null;
     var storedState = req.cookies ? req.cookies[stateKey] : null;
+
+    console.log(state); // DEBUG
+    console.log(storedState); // DEBUG
 
     if (state === null || state !== storedState) {
         res.redirect('/#' +
@@ -140,6 +145,10 @@ app.get('/refresh_token', function (req, res) {
             });
         }
     });
+});
+
+app.get('/', function(req, res) {
+    res.send("Hi-Five Backend!");
 });
 
 console.log('Listening on 8888');
