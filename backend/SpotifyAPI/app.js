@@ -42,7 +42,7 @@ app.get('/login', function (req, res) {
     res.cookie(stateKey, state);
 
     // your application requests authorization
-    var scope = 'user-read-private user-read-email';
+    var scope = 'user-top-read';
     res.redirect('https://accounts.spotify.com/authorize?' +
         querystring.stringify({
             response_type: 'code',
@@ -147,9 +147,46 @@ app.get('/refresh_token', function (req, res) {
     });
 });
 
-app.get('/', function(req, res) {
-    res.send("Hi-Five Backend!");
-});
+// app.get('/', function(req, res) {
+//     res.send("Hi-Five Backend!");
+// });
+
+app.get('/toptracks', function(req, res) {
+    var access_token = process.env.DEBUG_ACCESS_TOKEN
+    // var access_token = req.cookies['access_token']; // replace this with however you're storing the access token
+  
+    // if (!access_token) {
+    //   return res.status(401).send('Unauthorized: No access token provided');
+    // }
+  
+    var options = {
+      url: 'https://api.spotify.com/v1/me/top/tracks',
+      headers: { 'Authorization': 'Bearer ' + access_token },
+      json: true
+    };
+  
+    request.get(options, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        res.send(body);
+      } else {
+        res.status(response.statusCode).send(body);
+      }
+    });
+  });
 
 console.log('Listening on 8888');
 app.listen(8888);
+
+access_token = process.env.DEBUG_ACCESS_TOKEN
+
+fetch('http://localhost:8888/toptracks'
+// ,
+// {
+//   headers: {
+//     'Authorization': 'Bearer ' + access_token
+//   }
+// }
+)
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
