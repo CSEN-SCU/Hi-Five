@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, Pressable, Alert} from "react-native";
-import Icon from 'react-native-vector-icons/AntDesign';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Slider from 'react-native-slider';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 
 export default function PostItem({ post }) {
     return (
