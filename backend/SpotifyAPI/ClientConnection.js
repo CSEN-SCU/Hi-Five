@@ -8,7 +8,7 @@ const RecentlyPlayedTracks = require("./RecentlyPlayedTracks");
 const DeleteTracksFromPlaylist = require("./DeleteTracksFromPlaylist");
 const SearchPlaylist = require("./SearchPlaylist");
 
-require('dotenv').config()
+require("dotenv").config();
 
 // variables
 const PORT = 3000;
@@ -46,15 +46,15 @@ app.get("/login", (req, res) => {
   const stateString = generateRandomString(16);
   res.cookie("authState", stateString);
 
-    const scopes = ["user-top-read"];
-    const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
-    console.log("loginLink: " + loginLink);
-    res.redirect(loginLink);
-    console.log("Redirected login Link")
+  const scopes = ["user-top-read"];
+  const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
+  console.log("loginLink: " + loginLink);
+  res.redirect(loginLink);
+  console.log("Redirected login Link");
 });
 
 app.get("/redpage", (req, res) => {
-    console.log("Existing here now");
+  console.log("Existing here now");
   if (req.query.state !== req.cookies["authState"]) {
     // States don't match, send the user away.
     return res.redirect("/");
@@ -80,9 +80,10 @@ app.get("/redpage", (req, res) => {
 });
 
 const accTknRefreshments = (req, res, next) => {
+  console.log(req.cookies, "\n");
   if (req.cookies["accTkn"]) return next();
   else if (req.cookies["refTkn"]) {
-    spotifyAuthAPI.setRefreshToken(refresh_token);
+    spotifyAuthAPI.setRefreshToken(req.cookies["refTkn"]);
     spotifyAuthAPI.refreshAccessToken().then((data) => {
       spotifyAuthAPI.resetRefreshToken();
 
@@ -94,14 +95,14 @@ const accTknRefreshments = (req, res, next) => {
       return next();
     });
   } else {
+    // console.log("MATTTTTYYYY");
     return res.redirect("/login");
   }
 };
 
-
 app.get("/faves", accTknRefreshments, (req, res) => {
-    console.log("faves"); // MATTY
-    console.log(req.cookies["accTkn"]);
+  console.log("faves"); // MATTY
+  console.log(req.cookies["accTkn"]);
   const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
 
   // query Spotify's top tracks endpoint for a user API, with a max track count of count and time range
@@ -109,84 +110,90 @@ app.get("/faves", accTknRefreshments, (req, res) => {
   count = 12;
   spotifyAPI
     .getMyTopTracks({ limit: count, time_range: "long_term" })
-      .then((data) => {
+    .then((data) => {
       res.setHeader("Content-Type", "application/json");
-        //   console.log(res.getHeaders(), '\n\n\n\n');
-        //   console.log(data.body.items, '\n\n\n\n');
-        //   console.log(JSON.stringify(data.body.items, null, 2));
-      return res
-        .status(200)
-        .send(JSON.stringify(data.body.items, null, 2));
+      return res.status(200).send(JSON.stringify(data.body.items, null, 2));
     });
 });
 
-app.get('/', (req, res) => {
-    console.log(1); // MATTY
-    console.log(req.cookies["accTkn"]); // MATTY
-    const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
-    console.log(spotifyAPI); // MATTY
-    console.log(2); // MATTY
-  res.send('Hi-Five Backend!')
-})
+app.get("/", (req, res) => {
+  console.log(1); // MATTY
+  console.log(req.cookies["accTkn"]); // MATTY
+  //   const spotifyAPI = new SpotifyWebApi({ accessToken: req.cookies["accTkn"] });
+  const spotifyAPI = new SpotifyWebApi({ accessToken: access_token });
+  console.log(spotifyAPI); // MATTY
+  console.log(2); // MATTY
+  res.send("Hi-Five Backend!");
+});
 
-
-function getPlaylist(playlistID)
-{
-    const router = GetPlaylist.GetPlaylistAPI(accTknRefreshments, playlistID);
-    app.use(router);
+function getPlaylist(playlistID) {
+  const router = GetPlaylist.GetPlaylistAPI(accTknRefreshments, playlistID);
+  app.use(router);
 }
 
-function addMusicToPlaylist(playlistID, tracksID)
-{
-    const router = AddMusicToPlaylist.AddMusicToPlaylistAPI(accTknRefreshments, playlistID, tracksID);
-    app.use(router);
+function addMusicToPlaylist(playlistID, tracksID) {
+  const router = AddMusicToPlaylist.AddMusicToPlaylistAPI(
+    accTknRefreshments,
+    playlistID,
+    tracksID
+  );
+  app.use(router);
 }
 
-function createPlaylist()
-{
-    const router = CreatePlaylist.CreatePlaylistAPI(accTknRefreshments) 
-    app.use(router);
+function createPlaylist() {
+  const router = CreatePlaylist.CreatePlaylistAPI(accTknRefreshments);
+  app.use(router);
 }
 
-function findSongAndArtists(trackName, artistName)
-{
-    const router = FindSongAndArtists.FindSongAndArtistsAPI(accTknRefreshments, trackName, artistName)
-    app.use(router);
-    //fetch("http://localhost:3000/faves").then(x => x.text()).then(y => console.log(y));
+function findSongAndArtists(trackName, artistName) {
+  const router = FindSongAndArtists.FindSongAndArtistsAPI(
+    accTknRefreshments,
+    trackName,
+    artistName
+  );
+  app.use(router);
+  //fetch("http://localhost:3000/faves").then(x => x.text()).then(y => console.log(y));
 }
 
-function recentlyPlayedTracks(numOfTracks)
-{
-    const router = RecentlyPlayedTracks.RecentlyPlayedTracksAPI(accTknRefreshments, numOfTracks)
-    app.use(router);
+function recentlyPlayedTracks(numOfTracks) {
+  const router = RecentlyPlayedTracks.RecentlyPlayedTracksAPI(
+    accTknRefreshments,
+    numOfTracks
+  );
+  app.use(router);
 }
 
-function searchPlaylists(playlistName)
-{
-    const router = SearchPlaylist.SearchPlaylistAPI(accTknRefreshments, playlistName);
-    app.use(router);
+function searchPlaylists(playlistName) {
+  const router = SearchPlaylist.SearchPlaylistAPI(
+    accTknRefreshments,
+    playlistName
+  );
+  app.use(router);
 }
 
-function searchPlaylists(playlistId, tracks, options)
-{
-    const router = DeleteTracksFromPlaylist.DeleteTracksFromPlaylistAPI(playlistId, tracks, options, accTknRefreshments) ;
-    app.use(router);
+function searchPlaylists(playlistId, tracks, options) {
+  const router = DeleteTracksFromPlaylist.DeleteTracksFromPlaylistAPI(
+    playlistId,
+    tracks,
+    options,
+    accTknRefreshments
+  );
+  app.use(router);
 }
 
 findSongAndArtists("Magnetic", "ILLIT");
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
-})
+  console.log(`Example app listening on port ${PORT}`);
+});
 
 var access_token = null;
 const getAccessToken = (req) => {
-    return req.cookies["accTkn"];
+  return req.cookies["accTkn"];
 };
 
 app.get("/some-route", (req, res) => {
-    access_token = getAccessToken(req);
+  access_token = getAccessToken(req);
 });
 
-
-module.exports = {access_token};
+module.exports = { access_token };

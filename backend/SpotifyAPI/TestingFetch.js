@@ -2,14 +2,15 @@
 
 // const ClientConnection = require("./ClientConnection");
 // // "BQD3X_BPJuJJ4dYBmvGPgtZLgir0nqoNRh-z88XrTOD9G77ukBmzpUcbKA8qVk5Y_3z_r8dmtio6w3jnHDC4eRJmyfhaUiutDpUHtYmvNVZbRW4ZnZ10GRPpVfMZq-xAjPbzHdjhPvFjb9J04KRcqSHLXc_4cRbMgLLEL9xpfzJ1wZXsSI2hqJdamryp"
+api = 
 async function fetchData() {
   try {
-    const accessToken = "BQCGctYYKmF7y1sGzW3UCRZ2Jr1jV3zMyDLBgQALfIcwQqECUT_R0eRe5uCB-UV0PD_hIFVZI7lO2gofC-yMR3CiXaNF0fC24GCKLSrF5sZ_9cuwiAXaOYfGA4jkxmKNgzEmvBmjGClwF6joWJfxPbNI1TfEz_PfxzwwklTra_ZnptRA4Ugf0nvtLEey"; // Replace with your actual access token
-    const response = await fetch('http://localhost:3000/faves', {
+    const accessToken =
+      "BQAS2txZsJTMHWL4fF29OnTJ8G59wI22ADYybo5RUIKwBYCn3TSxtxNUqE_y0g0PrDezYhsS93QtJrhGbZAPcNV3NWou_WTQI5jc1grIEFcU82ekVEkecRLfwZ3fvvIZcvo_yQzzRr5vn_7T2T3qIeu4lyMg-K_LJEk61Wgr30F8H0f8kwKxx8SIGRQv"; // Replace with your actual access token
+    const response = await fetch("http://localhost:3000/faves", {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json' // Optionally set other headers as needed
-      }
+        Authorization: 'Bearer '
+      },
     });
 
     const data = await response.text();
@@ -18,6 +19,27 @@ async function fetchData() {
     console.error(error);
   }
 }
+
+async function findSongs(token, search_query) {
+    let result = await api.request({
+        method: "get",
+        url: "https://api.spotify.com/v1/search",
+        headers: { 'Authorization': 'Bearer ' + token },
+        params: { 'q': search_query, 'type': 'track' }
+    }).catch(async function handleError(err) {
+        console.log(err)
+        let refreshed_token = await refreshToken(username)
+        let result_new = await findSongs(username, refreshed_token, search_query)
+        console.log(result_new)
+        return result_new.data.tracks
+    })
+    return result.data.tracks
+}
+
+accessTok =
+  "BQAS2txZsJTMHWL4fF29OnTJ8G59wI22ADYybo5RUIKwBYCn3TSxtxNUqE_y0g0PrDezYhsS93QtJrhGbZAPcNV3NWou_WTQI5jc1grIEFcU82ekVEkecRLfwZ3fvvIZcvo_yQzzRr5vn_7T2T3qIeu4lyMg-K_LJEk61Wgr30F8H0f8kwKxx8SIGRQv";
+search_query = "Magnetic";
+console.log(findSongs(accessTok, search_query));
 
 fetchData();
 // const fetch = (...args) =>
