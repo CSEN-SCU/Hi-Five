@@ -1,12 +1,12 @@
 // home.js
 // scroll feed & home page
 
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions, Card } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
-const Home = () => {
+const Feed = () => {
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -18,11 +18,11 @@ const Home = () => {
     }
 
     // CHANGE LATER; NEEDS TO DYNAMICALLY CHANGE
-    const posts = [
-        { id: 1, title: 'Post 1', description: 'Description of Post 1' },
-        { id: 2, title: 'Post 2', description: 'Description of Post 2' },
-        { id: 3, title: 'Post 3', description: 'Description of Post 3' },
-    ]
+    // const posts = [
+    //     { username: 'ougrhe', id: 1, song: 'Post 1', song_cover: '' },
+    //     { username: 'ougrhe', id: 1, song: 'Post 1', song_cover: '' },
+    //     { username: 'ougrhe', id: 1, song: 'Post 1', song_cover: '' },
+    // ]
 
     return (
         <View styles={styles.container}>
@@ -34,13 +34,13 @@ const Home = () => {
     )
 }
 
-export default Home;
+export default Feed;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#000',
+        backgroundColor: '#202020',
     },
     music_card: {
 
