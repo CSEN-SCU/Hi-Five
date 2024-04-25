@@ -1,9 +1,9 @@
-import Home from "./screens/home";
+import Feed from "./screens/feed";
 import LoginScreen from "./screens/loginScreen";
 
 export default function App() {
     return (
-        // <LoginScreen />
-        <Home/>
+        //<LoginScreen />
+        <Feed />
     );
 }

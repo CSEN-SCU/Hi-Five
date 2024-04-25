@@ -1,12 +1,13 @@
-// home.js
-// scroll feed & home page
+// feed.js
+// splash page/login page
 
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions, Card } from 'react-native';
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import PostItem from './postItem';
 
-const Feed = () => {
+
+const LoginScreen = () => {
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -17,32 +18,25 @@ const Feed = () => {
         return null;
     }
 
-    // CHANGE LATER; NEEDS TO DYNAMICALLY CHANGE
-    // const posts = [
-    //     { username: 'ougrhe', id: 1, song: 'Post 1', song_cover: '' },
-    //     { username: 'ougrhe', id: 1, song: 'Post 1', song_cover: '' },
-    //     { username: 'ougrhe', id: 1, song: 'Post 1', song_cover: '' },
-    // ]
-
-    return (
-        <View styles={styles.container}>
-            
-            <Card style={styles.music_card}>
-
-            </Card>
+    return (<View style={styles.container}>
+        <View style={styles.feed_container}>
+            <PostItem />
         </View>
-    )
+    </View>)
 }
 
-export default Feed;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#202020',
+        alignItems: 'center'
     },
-    music_card: {
-
+    feed_container: {
+        marginTop: 100
     }
+
+
 });
