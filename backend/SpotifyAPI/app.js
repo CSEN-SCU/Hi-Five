@@ -1,20 +1,12 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/documentation/web-api/tutorials/code-flow
- */
+import express from 'express';
+import request from 'request';
+import crypto from 'crypto';
+import cors from 'cors';
+import querystring from 'querystring';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 
-var express = require('express');
-var request = require('request');
-var crypto = require('crypto');
-var cors = require('cors');
-var querystring = require('querystring');
-var cookieParser = require('cookie-parser');
-
-require("dotenv").config();
+dotenv.config();
 
 var client_id = process.env.CLIENT_ID; // your clientId
 var client_secret = process.env.CLIENT_SECRET; // Your secret

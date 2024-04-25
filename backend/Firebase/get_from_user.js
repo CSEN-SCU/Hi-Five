@@ -1,19 +1,49 @@
-import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyD2Hfu3-j9CMbdvtD61fEqzd0AJ4986AJQ",
+    authDomain: "hi-five-7e975.firebaseapp.com",
+    databaseURL: "https://hi-five-7e975-default-rtdb.firebaseio.com",
+    projectId: "hi-five-7e975",
+    storageBucket: "hi-five-7e975.appspot.com",
+    messagingSenderId: "269177714407",
+    appId: "1:269177714407:web:0705e7f7319110e9411442"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+async function getFromUser(field, spotifyId) {
+    const userRef = doc(db, 'user', spotifyId);
+    try {
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            return userData[field];
+        }
+    } catch (error) {
+        console.error(`error getting field ${field} from user ${user}: `, error);
+    }
+}
 
+async function getAccessToken(spotifyId) {
+    return getFromUser("access_token", spotifyId);
+}
+
+async function getRefreshToken(spotifyId) {
+    return getFromUser("refresh_token", spotifyId);
+}
+
+async function getExpirationTime(spotifyId) {
+    return getFromUser("expiration_time", spotifyId);
+}
 
 // async function addFriendToUser(spotifuId, friendSpotifyId) {
 //     const userRef = doc(db, 'user', spotifyId);
