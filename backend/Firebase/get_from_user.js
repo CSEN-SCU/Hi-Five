@@ -7,13 +7,7 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyD2Hfu3-j9CMbdvtD61fEqzd0AJ4986AJQ",
-    authDomain: "hi-five-7e975.firebaseapp.com",
-    databaseURL: "https://hi-five-7e975-default-rtdb.firebaseio.com",
-    projectId: "hi-five-7e975",
-    storageBucket: "hi-five-7e975.appspot.com",
-    messagingSenderId: "269177714407",
-    appId: "1:269177714407:web:0705e7f7319110e9411442"
+    
 };
 
 // Initialize Firebase
