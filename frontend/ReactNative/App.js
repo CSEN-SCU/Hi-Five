@@ -1,11 +1,11 @@
 import Feed from "./screens/feed";
 import LoginScreen from "./screens/loginScreen";
-import Test_Player from "./screens/test_player";
+import TestPlayer from "./screens/testPlayer";
 
 export default function App() {
     return (
         //<LoginScreen />
-        // <Feed />
-        <Test_Player/>
+        <Feed />
+        // <TestPlayer/>
     );
 }

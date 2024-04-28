@@ -1,41 +1,75 @@
-import { StyleSheet, Text, View, Image, Pressable, Alert} from "react-native";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Slider from 'react-native-slider';
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import React from "react";
+import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity } from "react-native";
+import Slider from "react-native-slider";
+import Moment from "moment";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-export default function PostItem({ post }) {
-    return (
-        <View>
-            <View style={styles.user_info}>
-                <Image
-                    style={styles.profile_pic}  // required Dimensions and styling of Image
-                    source={require('../../../frontend/ReactNative/assets/concert.png')} // enter your avatar image path 
-                />
-                <Text style={styles.username}>bigboyjohn</Text>
-            </View>
-            <View style={styles.card}>
-                <Image
-                    style={styles.song_cover}  // required Dimensions and styling of Image
-                    source={require('../../../frontend/ReactNative/assets/concert.png')} // enter your avatar image path 
-                />
-                <Text style={styles.song_title}>Song Title</Text>
-                <Text style={styles.song_artist}>Song Artist</Text>
+export default class PostItem extends React.Component {
+    state = {
+        trackLength: 300,
+        timeElapsed: "0:00",
+        timeRemaining: "5:00"
+    };
 
-                <View style={styles.interaction_bar}>
-                    <Pressable onPress={() => Alert.alert("You pressed the left button")}>
-                        <Icon name='closecircleo' size={50} style={styles.interaction_button} />
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("You pressed the middle button")}>
-                        <Icon name='closecircleo' size={50} style={styles.interaction_button} />
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("You pressed the right button")}>
-                        <Icon name='closecircleo' size={50} style={styles.interaction_button} />
-                    </Pressable>
+    changeTime = seconds => {
+        this.setState({ timeElapsed: Moment.utc(seconds * 1000).format("m:ss") });
+        this.setState({ timeRemaining: Moment.utc((this.state.trackLength - seconds) * 1000).format("m:ss") });
+    };
+
+    render() {
+        return (
+            <View>
+                <View style={styles.user_info}>
+                    <Image
+                        style={styles.profile_pic}  // required Dimensions and styling of Image
+                        source={require('../../../frontend/ReactNative/assets/concert.png')} // enter your avatar image path 
+                    />
+                    <Text style={styles.username}>johnjohn</Text>
                 </View>
-                
+                <View style={styles.card}>
+                    <Image
+                        style={styles.song_cover}  // required Dimensions and styling of Image
+                        source={require('../../../frontend/ReactNative/assets/heros.png')} // enter your avatar image path 
+                    />
+                    <Text style={styles.song_title}>Superhero</Text>
+                    <Text style={styles.song_artist}>Metro Boomin, Future, Chris Brown</Text>
+
+                    <View style={{ margin: 5 }}>
+                        <Slider
+                            minimumValue={0}
+                            maximumValue={this.state.trackLength}
+                            trackStyle={styles.track}
+                            thumbStyle={styles.thumb}
+                            minimumTrackTintColor='#FFFFFF'
+                            onValueChange={seconds => this.changeTime(seconds)}
+                        ></Slider>
+                        <View style={{ marginTop: -12, flexDirection: "row", justifyContent: "space-between" }}>
+                            <Text style={styles.timeStamp}>{this.state.timeElapsed}</Text>
+                            <Text style={styles.timeStamp}>{this.state.timeRemaining}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 16 }}>
+                        <TouchableOpacity>
+                            <FontAwesome5 name="backward" size={32} color='#FFFFFF'></FontAwesome5>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.playButtonContainer}>
+                            <FontAwesome5
+                                name="play"
+                                size={32}
+                                color='#FFFFFF'
+                                style={[styles.playButton, { marginLeft: 8 }]}
+                            ></FontAwesome5>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <FontAwesome5 name="forward" size={32} color='#FFFFFF'></FontAwesome5>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
             </View>
-        </View>
-    )
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -43,13 +77,13 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: '#323232',
         opacity: 100,
-        paddingVertical: 15,
-        paddingHorizontal: 20,
+        paddingVertical: 25,
+        paddingHorizontal: 35,
         width: 340,
-        height: 440,
-        borderRadius: 15
+        height: 475,
+        borderRadius: 15,
+        marginBottom: 15
     },
-
     user_info: {
         paddingVertical: 10,
         flexDirection: 'row',
@@ -70,29 +104,40 @@ const styles = StyleSheet.create({
     },
 
     song_cover: {
-        width: 300,
-        height: 300,
-        borderRadius: 10
+        width: 275,
+        height: 275,
+        borderRadius: 10,
+        marginBottom: 10,
+        alignSelf: "center"
     },
 
     song_artist: {
-        fontSize: 15,
+        fontSize: 11,
         color: '#FFFFFF'
     },
 
     song_title: {
-        fontSize: 15,
+        fontSize: 18,
         color: '#FFFFFF'
     },
-
-    interaction_bar: {
-        flexDirection: 'row',
+    track: {
+        height: 2,
+        borderRadius: 1,
+        backgroundColor: '#777777'
+    },
+    thumb: {
+        width: 8,
+        height: 8,
+        backgroundColor: "#FFFFFF"
+    },
+    timeStamp: {
+        fontSize: 11,
+        fontWeight: "500",
+        color: "#FFFFFF"
+    },
+    playButtonContainer: {
         alignItems: "center",
         justifyContent: "center",
-    },
-
-    interaction_button: {
-        paddingHorizontal: 25,
-        size: 50
-    },
+        marginHorizontal: 32,
+    }
 });

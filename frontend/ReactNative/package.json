@@ -13,7 +13,7 @@
     "@expo-google-fonts/poppins": "^0.2.3",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/blur": "^4.4.0",
-    "expo": "^49.0.23",
+    "expo": "^50.0.17",
     "expo-blur": "~12.9.2",
     "expo-font": "~11.10.3",
     "expo-status-bar": "~1.11.1",
