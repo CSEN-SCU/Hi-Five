@@ -2,10 +2,9 @@
 // splash page/login page
 
 import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import PostItem from './postItem';
-
+import UserPost from './userPost';
 
 const LoginScreen = () => {
 
@@ -20,6 +19,9 @@ const LoginScreen = () => {
 
     return (<View style={styles.container}>
         <View style={styles.feed_container}>
+            
+            <UserPost />
+
             <ScrollView showsVerticalScrollIndicator={false}>
                 <PostItem />
                 <PostItem />
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     feed_container: {
-        marginTop: 100
-    }
+        paddingTop: 100,
+        zIndex: -10
+    },
 });

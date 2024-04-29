@@ -2,7 +2,8 @@ import React from "react";
 import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import Slider from "react-native-slider";
 import Moment from "moment";
-import { FontAwesome5 } from "@expo/vector-icons";
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 export default class PostItem extends React.Component {
     state = {
@@ -33,7 +34,7 @@ export default class PostItem extends React.Component {
                     />
                     <Text style={styles.song_title}>Superhero</Text>
                     <Text style={styles.song_artist}>Metro Boomin, Future, Chris Brown</Text>
-
+                    
                     <View style={{ margin: 5 }}>
                         <Slider
                             minimumValue={0}
@@ -50,19 +51,14 @@ export default class PostItem extends React.Component {
                     </View>
 
                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 16 }}>
-                        <TouchableOpacity>
-                            <FontAwesome5 name="backward" size={32} color='#FFFFFF'></FontAwesome5>
+                        <TouchableOpacity onPress={() => console.log('Close button pressed')}>
+                            <Icon name='close' size={40} color='#FFFFFF' />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.playButtonContainer}>
-                            <FontAwesome5
-                                name="play"
-                                size={32}
-                                color='#FFFFFF'
-                                style={[styles.playButton, { marginLeft: 8 }]}
-                            ></FontAwesome5>
+                            <Icon name='play' size={50} color='#FFFFFF' />
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <FontAwesome5 name="forward" size={32} color='#FFFFFF'></FontAwesome5>
+                            <Icon name='hand-right' size={30} color='#FFFFFF' />
                         </TouchableOpacity>
                     </View>
                 </View>
