@@ -53,11 +53,11 @@ export default class PostItem extends React.Component {
                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 16 }}>
                         <TouchableOpacity onPress={() => console.log('Close button pressed')}>
                             <Icon name='close' size={40} color='#FFFFFF' />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.playButtonContainer}>
+                        </TouchableOpacity >
+                        <TouchableOpacity onPress={() => console.log('Play button pressed')}>
                             <Icon name='play' size={50} color='#FFFFFF' />
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => console.log('Hi-Five button pressed')}>
                             <Icon name='hand-right' size={30} color='#FFFFFF' />
                         </TouchableOpacity>
                     </View>
