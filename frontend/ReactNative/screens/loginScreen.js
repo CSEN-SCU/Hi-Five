@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         paddingVertical: 15,
         paddingHorizontal: 20,
-        width: '80%',
+        width: '80%'
     },
     loginText: {
         fontSize: 17,
