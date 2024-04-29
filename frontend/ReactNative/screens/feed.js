@@ -19,9 +19,7 @@ const LoginScreen = () => {
 
     return (<View style={styles.container}>
         <View style={styles.feed_container}>
-            
             <UserPost />
-
             <ScrollView showsVerticalScrollIndicator={false}>
                 <PostItem />
                 <PostItem />
