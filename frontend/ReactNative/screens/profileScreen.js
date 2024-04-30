@@ -14,7 +14,7 @@ const ProfileScreen = () => {
                     <Icon name='settings' size={20} style={styles.iconTopStyle}/>
                 </Pressable>
             </View>
-            {/*Profile Icon*/}
+            {/*Profile Info*/}
             <View style={styles.profileInfo}>
                 <Image style={styles.profilePhoto} source={require('../assets/concert.png')}></Image>
                 <Text style={styles.nameText}>Dave Chapelle</Text>
@@ -23,9 +23,19 @@ const ProfileScreen = () => {
                     <Icon name='edit' size={10} style={styles.iconBodyStyle}/>
                     <Text style={styles.editText}>Edit</Text>
                 </Pressable>
+                {/*App Streak*/}
                 <View style={styles.streakContainer}>
-                    <Text style={styles.nameText}>Streak</Text>
+                    <Text style={styles.streakText}>App Streak</Text>
+                    <View style={styles.fireContainer}>
+                        <Text style={styles.streakNumber}> &#128293;14</Text>
+                    </View>
                 </View>
+            </View>
+            <View style={styles.historyContainer}>
+                <Text style={styles.historyTitle}>14 Days Ago</Text>
+                <Text style={styles.historyTitle}>Placeholder</Text>
+                <Text style={styles.historyTitle}>Placeholder</Text>
+                <Text style={styles.historyTitle}>Placeholder</Text>
             </View>
         </SafeAreaView>
     )
@@ -55,7 +65,7 @@ const styles = StyleSheet.create({
     },
     navTitle:{
         color: '#fff',
-        fontSize: '20px'
+        fontSize: 20,
     },
     profilePhoto:{
         marginTop: 64,
@@ -75,6 +85,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         flexDirection: "row",
         marginTop: 5,
+        marginBottom: 20,
     },
     editText:{
         justifyContent: "center",
@@ -89,17 +100,51 @@ const styles = StyleSheet.create({
     },
     nameText: {
         marginTop: 35,
-        fontSize: '25px',
+        fontSize: 35,
         justifyContent: "center",
-        color: '#fff'
+        color: '#cfd'
+    },
+    streakText:{
+        marginTop: 10,
+        fontSize: 35,
+        justifyContent: "center",
+        color: '#cfd'
     },
     usernameText:{
         marginTop: 5,
-        fontSize: '15px',
+        fontSize: 15,
         justifyContent: "center",
         color: '#fff'
     },
-    streakContainer:{
-        color: '#2E2C2C'
-    }
+    streakContainer: {
+        backgroundColor: '#2E2C2C',
+        //flexDirection: "column",
+        paddingHorizontal: 60,
+        borderRadius: 20
+    },
+    streakNumber:{
+        color: "#fff",
+        fontSize: 40,
+        marginLeft: 20,
+        alignItems: 'center',
+        marginBottom: 20,
+        //justifyContent: "center",
+        //textAlign: "center"
+    },
+    fireContainer:{
+        marginTop: 20,
+        flexDirection: "row",
+    },
+    historyContainer:{
+        marginTop: 50,
+        backgroundColor: '#2E2C2C',
+        marginHorizontal: 20,
+        borderRadius: 20
+    },
+    historyTitle:{
+        color: "#fff",
+        paddingLeft: 20,
+        paddingVertical: 10,
+        fontSize: 16,
+    },
 });
