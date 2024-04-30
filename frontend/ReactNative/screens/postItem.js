@@ -1,20 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import Slider from "react-native-slider";
 import Moment from "moment";
 import Icon from 'react-native-vector-icons/Ionicons';
 
-
 export default class PostItem extends React.Component {
     state = {
         trackLength: 300,
         timeElapsed: "0:00",
-        timeRemaining: "5:00"
+        timeRemaining: "5:00",
+        buttonColor: "#FFFFFF"
     };
 
     changeTime = seconds => {
         this.setState({ timeElapsed: Moment.utc(seconds * 1000).format("m:ss") });
         this.setState({ timeRemaining: Moment.utc((this.state.trackLength - seconds) * 1000).format("m:ss") });
+    };
+
+    handleClick = () => {
+        // Toggle between white and red color
+        const newColor = this.state.buttonColor === '#FFFFFF' ? '#B2EED3' : '#FFFFFF';
+        this.setState({ buttonColor: newColor });
+        console.log('Hi-Five button pressed');
     };
 
     render() {
@@ -50,19 +57,18 @@ export default class PostItem extends React.Component {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 16 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 10 }}>
                         <TouchableOpacity onPress={() => console.log('Close button pressed')}>
                             <Icon name='close' size={40} color='#FFFFFF' />
-                        </TouchableOpacity >
-                        <TouchableOpacity onPress={() => console.log('Play button pressed')}>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.playButtonContainer} onPress={() => console.log('Play button pressed')}>
                             <Icon name='play' size={50} color='#FFFFFF' />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => console.log('Hi-Five button pressed')}>
-                            <Icon name='hand-right' size={30} color='#FFFFFF' />
+                        <TouchableOpacity onPress={this.handleClick}>
+                            <Icon name='hand-right' size={30} color={this.state.buttonColor} />
                         </TouchableOpacity>
                     </View>
                 </View>
-
             </View>
         );
     }

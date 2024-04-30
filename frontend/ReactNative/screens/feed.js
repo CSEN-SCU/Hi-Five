@@ -5,8 +5,10 @@ import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions, 
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import PostItem from './postItem';
 import UserPost from './userPost';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-const LoginScreen = () => {
+
+const Feed = () => {
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -18,9 +20,10 @@ const LoginScreen = () => {
     }
 
     return (<View style={styles.container}>
+
         <View style={styles.feed_container}>
-            <UserPost />
             <ScrollView showsVerticalScrollIndicator={false}>
+                <UserPost />
                 <PostItem />
                 <PostItem />
                 <PostItem />
@@ -30,7 +33,7 @@ const LoginScreen = () => {
     </View>)
 }
 
-export default LoginScreen;
+export default Feed;
 
 const styles = StyleSheet.create({
     container: {

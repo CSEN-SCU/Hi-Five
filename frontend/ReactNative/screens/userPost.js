@@ -7,19 +7,20 @@ export default class UserPost extends React.Component {
 
     render() {
         return (
-            <View>
-                <View style={styles.card}>
-                    <Image
-                        style={styles.song_cover}  // required Dimensions and styling of Image
-                        source={require('../../../frontend/ReactNative/assets/heros.png')} // enter your avatar image path 
-                    />
-                    <View style={{flexDirection: 'column'}}>
-                        <Text style={styles.song_title}>Superhero</Text>
-                        <Text style={styles.song_artist}>Metro Boomin, Future, Chris Brown</Text>
+            <TouchableOpacity>
+                <View>
+                    <View style={styles.card}>
+                        <Image
+                            style={styles.song_cover}  // required Dimensions and styling of Image
+                            source={require('../../../frontend/ReactNative/assets/heros.png')} // enter your avatar image path 
+                        />
+                        <View style={{ flexDirection: 'column' }}>
+                            <Text style={styles.song_title}>Superhero</Text>
+                            <Text style={styles.song_artist}>Metro Boomin, Future, Chris Brown</Text>
+                        </View>
                     </View>
                 </View>
-
-            </View>
+            </TouchableOpacity>
         );
     }
 }

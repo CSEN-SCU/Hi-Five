@@ -14,6 +14,7 @@
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/blur": "^4.4.0",
     "@react-native-vector-icons/ionicons": "^7.3.1-alpha.9",
+    "@react-navigation/material-top-tabs": "^6.6.13",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "deprecated-react-native-prop-types": "^5.0.0",
@@ -27,6 +28,7 @@
     "react-native-audio-recorder-player": "^3.6.7",
     "react-native-slider": "^0.11.0",
     "react-native-svg": "^15.2.0",
+    "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.3"
   },
   "devDependencies": {
