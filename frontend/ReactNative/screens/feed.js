@@ -22,6 +22,7 @@ const Feed = () => {
     return (<View style={styles.container}>
 
         <View style={styles.feed_container}>
+            <UserPost />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <UserPost />
                 <PostItem />
