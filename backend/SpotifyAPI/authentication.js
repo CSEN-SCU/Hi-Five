@@ -1,22 +1,14 @@
-import { getAccessToken, getRefreshToken, getExpirationTime } from '../Firebase/get_from_user.js'
-import SpotifyWebApi from "spotify-web-api-node";
+import {
+  getUserAccessToken,
+  getUserRefreshToken,
+  updateUserExpirationTime,
+  updateUserAccessToken,
+} from "../Firebase/users.js";
 import express from "express";
-const spotifyAuthAPI = new SpotifyWebApi({
-    clientId: CLIENT_ID,
-    clientSecret: SECRET_KEY,
-    redirectUri: RED_URI,
-  });
+import { access } from "fs";
 
-// import { Router } from "express";
-const app = express();
-
-function getAccessToken(app)
-{
-  login(app);
-  redirect(app);
-}
-
-function login(app)
+//this contains the login route that the app will be using
+function loginRoute()
 {
   app.get("/login", (req, res) => {
   const generateRandomString = (length) => {
@@ -38,10 +30,11 @@ function login(app)
   console.log("loginLink: " + loginLink);
   res.redirect(loginLink);
   console.log("Redirected login Link")
-});
+  });
 }
 
-function redirect()
+//this is the redirect route that will get the access token
+function redirectRoute()
 {
   app.get("/redpage", (req, res) => {
   console.log("Existing here now");
@@ -55,11 +48,13 @@ function redirect()
   const authenticationCode = req.query.code;
   if (authenticationCode) {
     spotifyAuthAPI.authorizationCodeGrant(authenticationCode).then((data) => {
+      access_token = data.body["access_token"];
+      expiration_time = data.body["expires_in"] * 1000;
+      refresh_token = data.body["refresh_token"];
 
-      res.cookie("accTkn", data.body["access_token"], {
-        maxAge: data.body["expires_in"] * 1000,
-      });
-      res.cookie("refTkn", data.body["refresh_token"]);
+      updateUserAccessToken(access_token);
+      updateUserExpirationTime(expiration_time);
+      updateUserR
 
       // poor man's JSON visualizer.
       // You should stay here or redirect to another page instead of including this bit.
@@ -71,20 +66,16 @@ function redirect()
 });
 }
 
-const accTknRefreshments = (req, res, next) => {
-    if (req.cookies["accTkn"]) return next();
-    else if (req.cookies["refTkn"]) {
-      spotifyAuthAPI.setRefreshToken(refresh_token);
+const refreshAccessToken = (user_id) => {
+    if (getUserAccessToken(user_id)) return next();
+    else if (getUserAccessToken(user_id)) {
+      spotifyAuthAPI.setRefreshToken(getUserRefreshToken(user_id));
       spotifyAuthAPI.refreshAccessToken().then((data) => {
         spotifyAuthAPI.resetRefreshToken();
-  
+
         const newAccTok = data.body["access_token"];
-        res.cookie("accTkn", newAccTok, {
-          maxAge: data.body["expires_in"] * 1000,
-        });
-        return next();
+        updateUserAccessToken(user_id, newAccTok);
+        updateUserExpirationTime(user_id, data.body["expires_in"] * 1000);
       });
-    } else {
-      return res.redirect("/login");
     }
 };
