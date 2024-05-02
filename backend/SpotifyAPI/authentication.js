@@ -78,7 +78,7 @@ function redirectRoute(app)
         if (await checkUser(global_user_id))
         {
           console.log("\n\nXringe baby\n\n");
-          await updateUserExpirationTime(global_user_id, expiration_time);
+          await updateUserExpirationTime(global_user_id, Timestamp.now() + expiration_time);
           await updateUserAccessToken(global_user_id, access_token);
           await updateUserRefreshToken(global_user_id, refresh_token);
         }
@@ -118,7 +118,7 @@ const refreshAccessToken = (user_id) => {
       spotifyAuthAPI.resetRefreshToken();
       access_token = data.body["access_token"];
       updateUserAccessToken(user_id, access_token);
-      updateUserExpirationTime(user_id, data.body["expires_in"] * 1000);
+      updateUserExpirationTime(user_id, Timestamp.now() + data.body["expires_in"] * 1000);
     });
   }
   return access_token;
