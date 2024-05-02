@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore/lite";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ path: '../../.env' });
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,

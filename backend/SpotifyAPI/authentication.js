@@ -1,5 +1,6 @@
 import {
   checkUser,
+  getUser,
   addUser,
   getUserAccessToken,
   getUserRefreshToken,
@@ -72,8 +73,13 @@ function redirectRoute(app)
         global_user_id = await getSpotifyID(access_token);
         var userName = await getUserName(access_token);
 
+        console.log(1111111111);
         console.log(global_user_id);
+        console.log(22222222);
+        // console.log(await getUser(global_user_id));
+        console.log(33333333);
         console.log("Check user: " + await checkUser(global_user_id));
+        console.log(444444444);
 
         if (await checkUser(global_user_id))
         {

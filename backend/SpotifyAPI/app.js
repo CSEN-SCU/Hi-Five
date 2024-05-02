@@ -6,7 +6,7 @@ import querystring from "querystring";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ path: '../../.env' });
 
 var client_id = process.env.CLIENT_ID;
 var client_secret = process.env.CLIENT_SECRET;
