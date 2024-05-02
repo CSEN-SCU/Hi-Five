@@ -3,7 +3,7 @@ import { Timestamp } from "firebase/firestore/lite";
 
 console.log("Here 1:" + await checkUser("test_spotify_id_1"));
 
-await addUser("test_spotify_id_1", {
+await addUser("test_spotify_id_2", {
   access_token: "accessToken",
   app_streak: 5,
   expiration_time: Timestamp.now(),

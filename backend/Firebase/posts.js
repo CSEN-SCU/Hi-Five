@@ -1,24 +1,32 @@
-import { add, get, update } from "./base.js";
+import { add, get, update, check, remove } from "./base.js";
+
+const postsCollection = "posts";
 
 // TODO: If needed, also check post_id values
 // TODO: If needed, type check
 
 // General functions:
 
+async function checkPost(spotifyId) {
+  return await check(postsCollection, spotifyId);
+}
+
 async function addPost(spotifyId, fields) {
-  await add("posts", spotifyId, fields);
+  await add(postsCollection, spotifyId, fields);
 }
 
 async function getPost(spotifyId, field) {
-  return field
-    ? await get("posts", spotifyId, field)
-    : await get("posts", spotifyId);
+  return await get(postsCollection, spotifyId, field);
 }
 
 async function updatePost(spotifyId, fields) {
-  await update("posts", spotifyId, fields);
+  await update(postsCollection, spotifyId, fields);
+}
+
+async function removePost(spotifyId) {
+  await remove(postsCollection, spotifyId);
 }
 
 // TODO: Specific functions:
 
-export { addPost, getPost, updatePost };
+export { checkPost, addPost, getPost, updatePost, removePost };

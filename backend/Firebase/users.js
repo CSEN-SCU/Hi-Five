@@ -1,5 +1,7 @@
-import { add, get, update, check } from "./base.js";
+import { add, get, update, check, remove } from "./base.js";
 import { Timestamp } from "firebase/firestore/lite";
+
+const usersCollection = "users";
 
 // TODO: If needed, also check friends values
 // TODO: If needed, type check
@@ -19,21 +21,23 @@ import { Timestamp } from "firebase/firestore/lite";
 // General functions:
 
 async function checkUser(spotifyId) {
-  return await check("users", spotifyId);
+  return await check(usersCollection, spotifyId);
 }
 
 async function addUser(spotifyId, fields) {
-  await add("users", spotifyId, fields);
+  await add(usersCollection, spotifyId, fields);
 }
 
 async function getUser(spotifyId, field) {
-  return field
-    ? await get("users", spotifyId, field)
-    : await get("users", spotifyId);
+  return await get(usersCollection, spotifyId, field);
 }
 
 async function updateUser(spotifyId, fields) {
-  await update("users", spotifyId, fields);
+  await update(usersCollection, spotifyId, fields);
+}
+
+async function removeUser(spotifyId) {
+  await remove(usersCollection, spotifyId);
 }
 
 // Specific functions:
@@ -79,9 +83,7 @@ async function updateUserAppStreak(spotifyId, appStreak) {
 }
 
 async function updateUserExpirationTime(spotifyId, expirationTime) {
-  await updateUser(spotifyId, {
-    expiration_time: Timestamp.now() + expirationTime,
-  });
+  await updateUser(spotifyId, { expiration_time: expirationTime }); // Timestamp.now() + 
 }
 
 async function updateUserFriends(spotifyId, friends) {
@@ -109,6 +111,7 @@ export {
   addUser,
   getUser,
   updateUser,
+  removeUser,
   getUserAccessToken,
   getUserAppStreak,
   getUserExpirationTime,

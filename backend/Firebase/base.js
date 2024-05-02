@@ -5,14 +5,8 @@ import {
   setDoc,
   getDoc,
   updateDoc,
-  Timestamp,
+  deleteDoc,
 } from "firebase/firestore/lite";
-import {
-  getCountFromServer,
-  query,
-  collection,
-  documentId as document,
-} from "firebase/firestore";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -48,69 +42,26 @@ var valid_fields = new Map([
   ["views", new Set(["post_id"])],
 ]);
 
-//this is meant to check and see whether an document exists in a collection
-async function check(_collection, document) {
-  if (typeof _collection !== "string" || typeof document !== "string") {
-    console.log(typeof _collection);
-    console.log(typeof document);
-    throw new Error("Collection name and ID must be strings");
-  }
-
-  const docRef = doc(db, _collection, document);
-  const snap = await getCountFromServer(
-    query(collection(docRef, _collection), where(documentId(), "==", document))
-  );
-  return Boolean(snap.data().count);
-
-  const coll = collection(getDatabase(), _collection);
-  const snapshot = await getCountFromServer(coll);
-  console.log("count: ", snapshot.data().count);
-  return snapshot.data().count > 0; // TEMP
-
-  // const docRef = doc(db, _collection, document);
-  try {
-    const docSnapshot = await getDoc(docRef);
-    if (docSnapshot.exists()) {
-      console.log("Document exists:", docSnapshot.data());
-      return true; // Document exists
-    } else {
-      console.log("No such document!");
-      return false; // Document does not exist
-    }
-  } catch (error) {
-    console.error("Error checking document:", error);
-    return false; // Return false in case of an error
-  }
-
-  // try {
-  //   var docRef = doc(db, collection, document);
-
-  //   const docu = await getDoc(docRef);
-
-  //   if (docu.exists) {
-  //     console.log("Document data:", docu.data());
-  //     return true;
-  //   } else {
-  //     console.log("No such document!");
-  //     return false;
-  //   }
-  // } catch (error) {
-  //   console.log("Error getting document:", error);
-  //   return false;
-  // }
+async function check(collection, document) {
+  const docSnap = await getDoc(doc(db, collection, document) );
+  return docSnap.exists();
 }
 
 async function add(collection, document, fields) {
-  if (valid_fields.has(collection)) {
-    const fieldsKeys = Object.keys(fields);
-    if (
-      fieldsKeys.length !== valid_fields.get(collection).size ||
-      !fieldsKeys.every((key) => valid_fields.get(collection).has(key))
-    ) {
-      throw new Error(
-        "Fields object must contain exactly and only the valid fields."
-      );
-    }
+  if (!valid_fields.has(collection)) {
+    throw new Error("collection invalid.");
+  }
+  if (await check(collection, document)) {
+    throw new Error("document already exists.");
+  }
+  const fieldsKeys = Object.keys(fields);
+  if (
+    fieldsKeys.length !== valid_fields.get(collection).size ||
+    !fieldsKeys.every((key) => valid_fields.get(collection).has(key))
+  ) {
+    throw new Error(
+      "Fields object must contain exactly and only the valid fields."
+    );
   }
   try {
     await setDoc(doc(db, collection, document), fields);
@@ -122,10 +73,16 @@ async function add(collection, document, fields) {
 
 // `field` is optional
 async function get(collection, document, field) {
-  if (valid_fields.has(collection)) {
-    if (field && !valid_fields.get(collection).has(field)) {
-      throw new Error(`Invalid field: ${field}`);
-    }
+  if (!valid_fields.has(collection)) {
+    throw new Error(
+      "collection invalid."
+    );
+  }
+  if (!await check(collection, document)) {
+    throw new Error("document doesn't exists.");
+  }
+  if (field && !valid_fields.get(collection).has(field)) {
+    throw new Error(`Invalid field: ${field}`);
   }
   const userRef = doc(db, collection, document);
   try {
@@ -143,11 +100,17 @@ async function get(collection, document, field) {
 }
 
 async function update(collection, document, fields) {
-  if (valid_fields.has(collection)) {
-    for (const key of Object.keys(fields)) {
-      if (!valid_fields.get(collection).has(key)) {
-        throw new Error(`Invalid field: ${key}`);
-      }
+  if (!valid_fields.has(collection)) {
+    throw new Error(
+      "collection invalid."
+    );
+  }
+  if (!await check(collection, document)) {
+    throw new Error("document doesn't exists.");
+  }
+  for (const key of Object.keys(fields)) {
+    if (!valid_fields.get(collection).has(key)) {
+      throw new Error(`Invalid field: ${key}`);
     }
   }
   const userRef = doc(db, collection, document);
@@ -159,4 +122,20 @@ async function update(collection, document, fields) {
   }
 }
 
-export { add, get, update, check };
+async function remove(collection, document) {
+  if (!valid_fields.has(collection)) {
+    throw new Error("collection invalid.");
+  }
+  if (!await check(collection, document)) {
+    throw new Error("document doesn't exists.");
+  }
+  const docRef = doc(db, collection, document);
+  try {
+    await deleteDoc(docRef);
+    // console.log("Document deleted");
+  } catch (error) {
+    console.error("Error deleting document: ", error);
+  }
+}
+
+export { add, get, update, check, remove };
