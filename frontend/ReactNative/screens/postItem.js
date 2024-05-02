@@ -48,7 +48,7 @@ const PostItem = () => {
 
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 16 }}>
                     <TouchableOpacity onPress={() => console.log('Close button pressed')}>
-                        <Icon name='close' size={40} color='#FFFFFF' />
+                        <Icon name='close' size={43} color='#FFFFFF' />
                     </TouchableOpacity >
                     <TouchableOpacity style={styles.playButtonContainer} onPress={() => console.log('Play button pressed')}>
                         <Icon name='play' size={50} color='#FFFFFF' />

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import UserPost from './userPost';
 import PostItem from './postItem';
@@ -17,9 +17,12 @@ const Feed = () => {
 
     return (<View style={styles.container}>
         <View style={styles.feed_container}>
-            <Text> oihuoyf </Text>
-            <UserPost />
-            <PostItem />
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <UserPost />
+                <PostItem />
+                <PostItem />
+                <PostItem />
+            </ScrollView>
         </View>
     </View>)
 }
