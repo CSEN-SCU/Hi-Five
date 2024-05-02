@@ -1,6 +1,6 @@
 import {Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-
+import HistoryRow from "./historyRow";
 const ProfileScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
@@ -33,9 +33,8 @@ const ProfileScreen = () => {
             </View>
             <View style={styles.historyContainer}>
                 <Text style={styles.historyTitle}>14 Days Ago</Text>
-                <Text style={styles.historyTitle}>Placeholder</Text>
-                <Text style={styles.historyTitle}>Placeholder</Text>
-                <Text style={styles.historyTitle}>Placeholder</Text>
+                <HistoryRow/>
+                <HistoryRow/>
             </View>
         </SafeAreaView>
     )
@@ -139,12 +138,13 @@ const styles = StyleSheet.create({
         marginTop: 50,
         backgroundColor: '#2E2C2C',
         marginHorizontal: 20,
-        borderRadius: 20
+        borderRadius: 20,
+        paddingBottom: 20,
     },
     historyTitle:{
         color: "#fff",
         paddingLeft: 20,
-        paddingVertical: 10,
-        fontSize: 16,
+        paddingTop: 10,
+        fontSize: 20,
     },
 });
