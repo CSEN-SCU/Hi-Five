@@ -1,4 +1,3 @@
-import React from "react";
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import UserPost from './userPost';
