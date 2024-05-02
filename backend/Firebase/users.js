@@ -82,6 +82,12 @@ async function updateUserAppStreak(spotifyId, appStreak) {
   await updateUser(spotifyId, { app_streak: appStreak });
 }
 
+async function updateUserExpirationUsingNow(spotifyId, expirationTime) {
+  let timestamp =  Timestamp.now();
+  timestamp = new Timestamp(timestamp.seconds + expirationTime, timestamp.nanoseconds);
+  await updateUser(spotifyId, { expiration_time: timestamp });
+}
+
 async function updateUserExpirationTime(spotifyId, expirationTime) {
   await updateUser(spotifyId, { expiration_time: expirationTime }); // Timestamp.now() + 
 }
@@ -114,6 +120,7 @@ export {
   removeUser,
   getUserAccessToken,
   getUserAppStreak,
+  updateUserExpirationUsingNow,
   getUserExpirationTime,
   getUserFriends,
   getUserPlaylistId,
