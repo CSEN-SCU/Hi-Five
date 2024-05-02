@@ -1,8 +1,9 @@
-
 import LoginScreen from "./screens/loginScreen";
-import ProfileScreen from "./screens/profileScreen";
+import Feed from "./screens/feed";
+
 export default function App() {
     return (
-        <ProfileScreen/>
+        //<LoginScreen />
+        <Feed />
     );
 }

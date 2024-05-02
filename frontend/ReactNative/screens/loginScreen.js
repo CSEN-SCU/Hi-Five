@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
 const LoginScreen = () => {
+
+    let [fontsLoaded] = useFonts({
+        Poppins_700Bold,
+        Poppins_400Regular
+    });
+
+    if (!fontsLoaded) {
+        return null;
+    }
 
     return (<View style={styles.container}>
         <ImageBackground
@@ -56,14 +65,14 @@ const styles = StyleSheet.create({
         color: '#cfd',
         fontSize: 70,
         textAlign: 'center',
-        // fontFamily: 'Poppins_700Bold'
+        fontFamily: 'Poppins_700Bold'
     },
     tagline: {
         color: '#fff',
         fontSize: 17,
         textAlign: 'center',
         marginBottom: 200,
-        // fontFamily: 'Poppins_400Regular',
+        fontFamily: 'Poppins_400Regular',
     },
     overlay: {
         position: 'absolute',

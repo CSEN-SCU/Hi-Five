@@ -1,12 +1,10 @@
-// feed.js
-// splash page/login page
-
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
-import PostItem from './postItem';
 import UserPost from './userPost';
+import PostItem from './postItem';
 
-const LoginScreen = () => {
+
+const Feed = () => {
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -19,20 +17,14 @@ const LoginScreen = () => {
 
     return (<View style={styles.container}>
         <View style={styles.feed_container}>
-            
+            <Text> oihuoyf </Text>
             <UserPost />
-
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <PostItem />
-                <PostItem />
-                <PostItem />
-                <PostItem />
-            </ScrollView>
+            <PostItem />
         </View>
     </View>)
 }
 
-export default LoginScreen;
+export default Feed;
 
 const styles = StyleSheet.create({
     container: {
@@ -44,5 +36,5 @@ const styles = StyleSheet.create({
     feed_container: {
         paddingTop: 100,
         zIndex: -10
-    },
+    }
 });
