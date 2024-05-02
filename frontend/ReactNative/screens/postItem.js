@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-
 const PostItem = () => {
 
     let [fontsLoaded] = useFonts({
@@ -65,7 +64,6 @@ const PostItem = () => {
 }
 
 export default PostItem;
-
 
 const styles = StyleSheet.create({
     card: {
