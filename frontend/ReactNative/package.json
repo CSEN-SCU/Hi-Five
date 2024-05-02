@@ -14,8 +14,10 @@
     "expo": "^50.0.15",
     "expo-font": "^11.10.3",
     "expo-status-bar": "~1.11.1",
+    "moment": "^2.30.1",
     "react": "18.2.0",
     "react-native": "0.73.6",
+    "react-native-slider": "^0.11.0",
     "react-native-vector-icons": "^10.0.3"
   },
   "devDependencies": {
