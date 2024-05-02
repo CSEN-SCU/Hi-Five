@@ -1,9 +1,14 @@
 import { addUser, getUserAccessToken, getUser, checkUser } from "./users.js";
 import { Timestamp } from "firebase/firestore/lite";
 
-console.log("Here 1:" + await checkUser("test_spotify_id_1"));
+let num = 0;
+while (await checkUser(`test_spotify_id_${num}`)) num++;
 
-await addUser("test_spotify_id_2", {
+const spotifyId = `test_spotify_id_${num}`;
+
+console.log("Here 1:" + await checkUser(spotifyId));
+
+await addUser(spotifyId, {
   access_token: "accessToken",
   app_streak: 5,
   expiration_time: Timestamp.now(),
@@ -14,9 +19,9 @@ await addUser("test_spotify_id_2", {
   username: "username",
 });
 
-console.log("Here 2:" + await checkUser("test_spotify_id_1"));
+console.log("Here 2:" + await checkUser(spotifyId));
 
-console.log(await getUser("test_spotify_id_1"));
+console.log(await getUser(spotifyId));
 
 
 
