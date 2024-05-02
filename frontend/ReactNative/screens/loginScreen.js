@@ -1,26 +1,35 @@
-// loginScreen.js
-// splash page/login page
-
+import React, { useState } from 'react';
 import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
+
+// will not import??? FIX DIS SHIT
+// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
+// import * as Font from 'expo-font';
 
 const LoginScreen = () => {
+    // const [fontsLoaded, setFontsLoaded] = useState(false);
 
-    let [fontsLoaded] = useFonts({
-        Poppins_700Bold,
-        Poppins_400Regular
-    });
+    // const loadFonts = async () => {
+    //     await Font.loadAsync({
+    //         Poppins_400Regular,
+    //         Poppins_700Bold,
+    //     });
+    //     setFontsLoaded(true);
+    // };
 
-    if (!fontsLoaded) {
-        return null;
-    }
+    // useState(() => {
+    //     loadFonts();
+    // }, []);
+
+    // if (!fontsLoaded) {
+    //     console.log("this is a test")
+    //     return null;
+    // }
 
     return (<View style={styles.container}>
         <ImageBackground
             source={require('../../../frontend/ReactNative/assets/concert.png')}
             style={styles.background}
-            resizeMode="cover"
             imageStyle={{ opacity: 0.5 }}
         >
         </ImageBackground>
@@ -32,7 +41,9 @@ const LoginScreen = () => {
                 <Icon name='spotify' size={25} style={styles.iconStyle} />
             </Pressable>
         </View>
-    </View>)
+
+        </View>
+    )
 }
 
 export default LoginScreen;
@@ -66,14 +77,14 @@ const styles = StyleSheet.create({
         color: '#cfd',
         fontSize: 70,
         textAlign: 'center',
-        fontFamily: 'Poppins_700Bold'
+        // fontFamily: 'Poppins_700Bold'
     },
     tagline: {
         color: '#fff',
         fontSize: 17,
         textAlign: 'center',
         marginBottom: 200,
-        fontFamily: 'Poppins_400Regular',
+        // fontFamily: 'Poppins_400Regular',
     },
     overlay: {
         position: 'absolute',
@@ -85,7 +96,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     background: {
-        width: '115%', 
+        width: '115%',
         height: '115%',
         marginBottom: 50,
         zIndex: -1
