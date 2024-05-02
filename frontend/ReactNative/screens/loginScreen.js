@@ -2,29 +2,8 @@ import React, { useState } from 'react';
 import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-// will not import??? FIX DIS SHIT
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
-// import * as Font from 'expo-font';
 
 const LoginScreen = () => {
-    // const [fontsLoaded, setFontsLoaded] = useState(false);
-
-    // const loadFonts = async () => {
-    //     await Font.loadAsync({
-    //         Poppins_400Regular,
-    //         Poppins_700Bold,
-    //     });
-    //     setFontsLoaded(true);
-    // };
-
-    // useState(() => {
-    //     loadFonts();
-    // }, []);
-
-    // if (!fontsLoaded) {
-    //     console.log("this is a test")
-    //     return null;
-    // }
 
     return (<View style={styles.container}>
         <ImageBackground
