@@ -1,7 +1,9 @@
-import { setUser, getUserAccessToken, getUser } from "./users.js";
+import { addUser, getUserAccessToken, getUser, checkUser } from "./users.js";
 import { Timestamp } from "firebase/firestore/lite";
 
-await setUser("test_spotify_id_1", {
+console.log("Here 1:" + await checkUser("test_spotify_id_1"));
+
+await addUser("test_spotify_id_1", {
   access_token: "accessToken",
   app_streak: 5,
   expiration_time: Timestamp.now(),
@@ -11,6 +13,8 @@ await setUser("test_spotify_id_1", {
   snapshot_playlist_id: "snapshotPlaylistId",
   username: "username",
 });
+
+console.log("Here 2:" + await checkUser("test_spotify_id_1"));
 
 console.log(await getUser("test_spotify_id_1"));
 

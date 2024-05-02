@@ -1,16 +1,19 @@
-import SpotifyWebApi from "spotify-web-api-node";
-
 import express from "express";
-const spotifyAuthAPI = new SpotifyWebApi({
-  clientId: CLIENT_ID,
-  clientSecret: SECRET_KEY,
-  redirectUri: RED_URI,
-});
+import cookieParser from "cookie-parser";
+import { loginRoute, redirectRoute, refreshAccessToken, global_user_id } from "./authentication.js"
 
 
-PORT = 3000;
+const PORT = 3000;
 // import { Router } from "express";
 const app = express();
-app.listen
+app.use(cookieParser());
 
-module.exports = { app, spotifyAuthAPI };
+app.get("/", (req, res) => { res.send("Hi-Five Backend") });
+
+loginRoute(app);
+redirectRoute(app);
+
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
+});
