@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/poppins": "^0.2.3",
+    "@react-native-vector-icons/ionicons": "^7.3.1-alpha.9",
     "expo": "^50.0.15",
     "expo-font": "^11.10.3",
     "expo-status-bar": "~1.11.1",
