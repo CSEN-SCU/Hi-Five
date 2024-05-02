@@ -13,7 +13,6 @@ app.get("/", (req, res) => { res.send("Hi-Five Backend") });
 loginRoute(app);
 redirectRoute(app);
 
-
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
