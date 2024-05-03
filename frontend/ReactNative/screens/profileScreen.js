@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
         paddingVertical: 2,
         color: '#B2EED3'
     },
-
     topBar:{
         marginTop: 10,
         flexDirection: 'row',
