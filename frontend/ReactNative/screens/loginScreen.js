@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         color: "black"
     },
     nameTitle: {
-        color: '#cfd',
+        color: '#B2EED3',
         fontSize: 70,
         textAlign: 'center',
         fontFamily: 'Poppins_700Bold'
