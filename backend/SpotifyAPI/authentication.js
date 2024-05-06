@@ -1,3 +1,5 @@
+console.log("authentication.js");
+
 import {
   checkUser,
   getUser,
@@ -26,6 +28,7 @@ const spotifyAuthAPI = new SpotifyWebApi({
 //this contains the login route that the app will be using
 function loginRoute(app)
 {
+  console.log("loginRoute(app)"); // DEBUG
   app.get("/login", (req, res) => {
   const generateRandomString = (length) => {
     let text = "";
@@ -53,6 +56,7 @@ function loginRoute(app)
 //this is the redirect route that will get the access token
 function redirectRoute(app)
 {
+  console.log("redirectRoute(app)"); // DEBUG
   app.get("/redpage", (req, res) => {
     console.log("Existing here now");
     if (req.query.state !== req.cookies["authState"]) {
@@ -73,17 +77,13 @@ function redirectRoute(app)
         global_user_id = await getSpotifyID(access_token);
         var userName = await getUserName(access_token);
 
-        console.log(1111111111);
         console.log(global_user_id);
-        console.log(22222222);
         // console.log(await getUser(global_user_id));
-        console.log(33333333);
         console.log("Check user: " + await checkUser(global_user_id));
-        console.log(444444444);
 
         if (await checkUser(global_user_id))
         {
-          console.log("\n\nXringe baby\n\n");
+          // console.log("\n\nXringe baby\n\n");
           await updateUserExpirationUsingNow(global_user_id, expiration_time);
           await updateUserAccessToken(global_user_id, access_token);
           await updateUserRefreshToken(global_user_id, refresh_token);
@@ -102,7 +102,7 @@ function redirectRoute(app)
           });
         }
 
-        console.log("\n\nGod might be dead\n\n");
+        // console.log("\n\nGod might be dead\n\n");
 
         // poor man's JSON visualizer.
         // You should stay here or redirect to another page instead of including this bit.
@@ -114,20 +114,20 @@ function redirectRoute(app)
   });
 }
 
-const refreshAccessToken = (user_id) => {
+const refreshAccessToken = async (user_id) => {
+  console.log("refreshAccessToken(user_id)"); // DEBUG
   var access_token = getUserAccessToken(user_id);
   var expiration_time = getUserExpirationTime(user_id);
   if (expiration_time < Timestamp.now()) return access_token;
   else {
     spotifyAuthAPI.setRefreshToken(getUserRefreshToken(user_id));
-    spotifyAuthAPI.refreshAccessToken().then((data) => {
-      spotifyAuthAPI.resetRefreshToken();
-      access_token = data.body["access_token"];
-      updateUserAccessToken(user_id, access_token);
-      updateUserExpirationUsingNow(user_id, data.body["expires_in"] * 1000);
-    });
+    const data = await spotifyAuthAPI.refreshAccessToken();
+    spotifyAuthAPI.resetRefreshToken();
+    access_token = data.body["access_token"];
+    updateUserAccessToken(user_id, access_token);
+    updateUserExpirationUsingNow(user_id, data.body["expires_in"] * 1000);
+    return access_token;
   }
-  return access_token;
 };
 
 export { loginRoute, redirectRoute, refreshAccessToken, global_user_id}

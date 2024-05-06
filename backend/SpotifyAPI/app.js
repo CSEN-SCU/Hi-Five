@@ -1,3 +1,5 @@
+console.log("app.js");
+
 import express from "express";
 import request from "request";
 import crypto from "crypto";
@@ -26,6 +28,7 @@ app
   .use(cookieParser());
 
 app.get("/login", function (req, res) {
+  console.log(`app.get("/login"...`); // DEBUG
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -44,6 +47,7 @@ app.get("/login", function (req, res) {
 });
 
 app.get("/callback", function (req, res) {
+  console.log(`app.get("/callback"...`); // DEBUG
   // your application requests refresh and access tokens
   // after checking the state parameter
 
@@ -116,6 +120,7 @@ app.get("/callback", function (req, res) {
 });
 
 app.get("/refresh_token", function (req, res) {
+  console.log(`app.get("/refresh_token"...`); // DEBUG
   var refresh_token = req.query.refresh_token;
   var authOptions = {
     url: "https://accounts.spotify.com/api/token",

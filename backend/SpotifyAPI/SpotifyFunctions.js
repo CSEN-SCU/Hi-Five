@@ -1,3 +1,5 @@
+console.log("SpotifyFunctions.js");
+
 //Requires these scopes:
 //    playlist-modify-public
 //    playlist-modify-private
@@ -12,6 +14,7 @@ import { getUserAccessToken } from '../Firebase/users.js'
 
 async function getSpotifyID(access_token)
 {
+    console.log("getSpotifyID(access_token)"); // DEBUG
     const url = "https://api.spotify.com/v1/me";
     var spotifyId;
 
@@ -21,7 +24,7 @@ async function getSpotifyID(access_token)
         'Authorization': 'Bearer ' + access_token,
       },
     };
-    console.log("YOLOOOOOOOOO");
+    // console.log("YOLOOOOOOOOO");
 
     await fetch(url, options)
     .then((response) => {
@@ -72,6 +75,7 @@ async function getUserName(access_token) {
 
 //This will create a playlist and ensure that there is a user)id
 async function createPlaylist(user_id) {
+  console.log("createPlaylist(user_id)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
   var unparsed_data = NULL;
   const url = `https://api.spotify.com/v1/users/${user_id}/playlists`;
@@ -98,6 +102,7 @@ async function createPlaylist(user_id) {
 }
 
 async function getPlaylist(user_id, playlist_id) {
+  console.log("getPlaylist(user_id, playlist_id)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
   var unparsed_data = NULL;
   const url = `https://api.spotify.com/v1/playlists/${playlist_id}`;
@@ -120,6 +125,7 @@ async function getPlaylist(user_id, playlist_id) {
 }
 
 async function addMusicToPlaylist(user_id, song_id) {
+  console.log("addMusicToPlaylist(user_id, song_id)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
   var unparsed_data = NULL;
   const url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`;
@@ -146,6 +152,7 @@ async function addMusicToPlaylist(user_id, song_id) {
 }
 
 async function deleteTrackFromPlaylist(user_id, song_id, snapshot) {
+  console.log("deleteTrackFromPlaylist(user_id, song_id, snapshot)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
   var unparsed_data = NULL;
   const url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`;
@@ -178,6 +185,7 @@ async function deleteTrackFromPlaylist(user_id, song_id, snapshot) {
 //
 async function findSongAndArtists(user_id)
 { 
+  console.log("findSongAndArtists(user_id)"); // DEBUG
     const access_token = await getUserAccessToken(user_id);
     var unparsed_data = NULL;
     const type = "track"; // Specify the type of search (e.g., 'track', 'artist', 'album')
@@ -203,6 +211,7 @@ async function findSongAndArtists(user_id)
 
 //scope: user-read-recently-played
 async function recentlyPlayedTracks(user_id) {
+  console.log("recentlyPlayedTracks(user_id)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
   var unparsed_data = NULL;
 
@@ -226,6 +235,7 @@ async function recentlyPlayedTracks(user_id) {
 }
 
 async function getTrack(user_id, track_id) {
+  console.log("getTrack(user_id, track_id)"); // DEBUG
   access_token = await getUserAccessToken(user_id);
   unparsed_data = NULL;
   const url = `https://api.spotify.com/v1/tracks/${track_id}`;

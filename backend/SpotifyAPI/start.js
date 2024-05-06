@@ -1,3 +1,5 @@
+console.log("start.js");
+
 import express from "express";
 import cookieParser from "cookie-parser";
 import { loginRoute, redirectRoute, refreshAccessToken, global_user_id } from "./authentication.js"
@@ -14,5 +16,6 @@ loginRoute(app);
 redirectRoute(app);
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+  console.log("app.listen");
+  console.log(`App listening on port ${PORT}`);
 });
