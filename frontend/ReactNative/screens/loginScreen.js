@@ -1,7 +1,5 @@
-// loginScreen.js
-// splash page/login page
-
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
@@ -20,7 +18,6 @@ const LoginScreen = () => {
         <ImageBackground
             source={require('../../../frontend/ReactNative/assets/concert.png')}
             style={styles.background}
-            resizeMode="cover"
             imageStyle={{ opacity: 0.5 }}
         >
         </ImageBackground>
@@ -32,7 +29,9 @@ const LoginScreen = () => {
                 <Icon name='spotify' size={25} style={styles.iconStyle} />
             </Pressable>
         </View>
-    </View>)
+
+        </View>
+    )
 }
 
 export default LoginScreen;
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
         color: "black"
     },
     nameTitle: {
-        color: '#cfd',
+        color: '#B2EED3',
         fontSize: 70,
         textAlign: 'center',
         fontFamily: 'Poppins_700Bold'
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     background: {
-        width: '115%', 
+        width: '115%',
         height: '115%',
         marginBottom: 50,
         zIndex: -1

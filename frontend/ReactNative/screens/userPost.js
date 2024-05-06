@@ -1,28 +1,36 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity } from "react-native";
-import Slider from "react-native-slider";
-import Moment from "moment";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
-export default class UserPost extends React.Component {
+const UserPost = () => {
 
-    render() {
-        return (
-            <View>
-                <View style={styles.card}>
-                    <Image
-                        style={styles.song_cover}  // required Dimensions and styling of Image
-                        source={require('../../../frontend/ReactNative/assets/heros.png')} // enter your avatar image path 
-                    />
-                    <View style={{flexDirection: 'column'}}>
-                        <Text style={styles.song_title}>Superhero</Text>
-                        <Text style={styles.song_artist}>Metro Boomin, Future, Chris Brown</Text>
-                    </View>
-                </View>
+    let [fontsLoaded] = useFonts({
+        Poppins_700Bold,
+        Poppins_400Regular
+    });
 
-            </View>
-        );
+    if (!fontsLoaded) {
+        return null;
     }
+
+    return (
+
+        // clickable ??
+
+        <View style={styles.card}>
+            <Image
+                style={styles.song_cover}
+                source={require('../../../frontend/ReactNative/assets/heros-cover.png')}
+            />
+            <View style={{ flexDirection: 'column' }}>
+                <Text style={styles.song_title}>Superhero</Text>
+                <Text style={styles.song_artist}>Metro Boomin, Future, Chris Brown</Text>
+            </View>
+        </View>
+    )
 }
+
+export default UserPost;
+
 
 const styles = StyleSheet.create({
     card: {

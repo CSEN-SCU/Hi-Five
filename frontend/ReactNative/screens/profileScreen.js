@@ -1,48 +1,12 @@
 import {Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import React from 'react';
 
-const ImageCount = props => {
-    return (
-        <View style={styles.countImageCont}>
-            <Image style={styles.photo} source={require('../assets/cover.jpg')}/>
-            <Text style={styles.historyCount}>{props.number}</Text>
-        </View>
-
-    );
-}
-const HistoryRowTop = () => {
-    return (
-        <View style={styles.rowContainer}>
-            <ImageCount number = "1"/>
-            <ImageCount number = "2"/>
-            <ImageCount number = "3"/>
-            <ImageCount number = "4"/>
-            <ImageCount number = "5"/>
-            <ImageCount number = "6"/>
-            <ImageCount number = "7"/>
-        </View>
-    );
-};
-const HistoryRowButtom = () => {
-    return (
-        <View style={styles.rowContainer}>
-            <ImageCount number = "8"/>
-            <ImageCount number = "9"/>
-            <ImageCount number = "10"/>
-            <ImageCount number = "11"/>
-            <ImageCount number = "12"/>
-            <ImageCount number = "13"/>
-            <ImageCount number = "14"/>
-        </View>
-    );
-};
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <Pressable onPress={()=>Alert.alert("You pressed the back button")}>
+                <Pressable onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle}/>
                 </Pressable>
                 <Text style={styles.navTitle}>Profile</Text>
@@ -69,8 +33,9 @@ const ProfileScreen = () => {
             </View>
             <View style={styles.historyContainer}>
                 <Text style={styles.historyTitle}>14 Days Ago</Text>
-                <HistoryRowTop/>
-                <HistoryRowButtom/>
+                <Text style={styles.historyTitle}>Placeholder</Text>
+                <Text style={styles.historyTitle}>Placeholder</Text>
+                <Text style={styles.historyTitle}>Placeholder</Text>
             </View>
         </SafeAreaView>
     )
@@ -90,7 +55,6 @@ const styles = StyleSheet.create({
         paddingVertical: 2,
         color: '#B2EED3'
     },
-
     topBar:{
         marginTop: 10,
         flexDirection: 'row',
@@ -133,12 +97,6 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         color: '#fff'
     },
-    countImageCont:{
-        flexWrap:"nowrap",
-        alignItems: 'center',
-        justifyContent: "center",
-        flexDirection: 'column',
-    },
     nameText: {
         marginTop: 35,
         fontSize: 35,
@@ -180,31 +138,12 @@ const styles = StyleSheet.create({
         marginTop: 50,
         backgroundColor: '#2E2C2C',
         marginHorizontal: 20,
-        borderRadius: 20,
-        paddingBottom: 20,
+        borderRadius: 20
     },
     historyTitle:{
         color: "#fff",
         paddingLeft: 20,
-        paddingTop: 10,
-        paddingBottom: 10,
-        fontSize: 20,
-    },
-    rowContainer:{
-        //marginLeft: 20,
-        flexDirection: "row",
-        alignItems: 'center',
-        justifyContent: "center",
-    },
-    photo:{
-        marginTop: 10,
-        marginHorizontal: 5,
-        opacity: 60,
-        width: 40,
-        height: 40,
-        overflow: "hidden",
-    },
-    historyCount:{
-        color: "#fff"
+        paddingVertical: 10,
+        fontSize: 16,
     },
 });
