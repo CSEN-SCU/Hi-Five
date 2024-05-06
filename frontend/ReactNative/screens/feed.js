@@ -5,7 +5,7 @@ import PostItem from './postItem';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const Feed = () => {
+const Feed = ({ navigation }) => {
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -20,7 +20,7 @@ const Feed = () => {
         <View>
             <View style={styles.topBar}>
                 <View style={styles.leftIcon}>
-                    <TouchableOpacity onPress={() => console.log('you clicked the user button')}>
+                    <TouchableOpacity onPress={() => console.log('clicked friend button')} >
                         <FeatherIcon name='users' size={20} style={styles.iconTopStyle} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => console.log('clicked playlist button')}>
@@ -28,7 +28,7 @@ const Feed = () => {
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.navTitle}>Hi-Five</Text>
-                <TouchableOpacity onPress={() => console.log('clicked settings button')}>
+                <TouchableOpacity onPress={() => navigation.push('ProfileScreen')}>
                     <FeatherIcon name='settings' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>
@@ -57,22 +57,24 @@ const styles = StyleSheet.create({
     iconTopStyle: {
         justifyContent: "center",
         paddingVertical: 2,
-        paddingHorizontal: 4,
+        paddingHorizontal: 5,
         color: '#B2EED3'
     },
     topBar: {
         marginTop: 60,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
         marginHorizontal: 30,
-        marginBottom: 10
+        marginBottom: 10,
+
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between'
     },
     navTitle: {
         color: '#B2EED3',
         fontSize: 20,
         fontFamily: 'Poppins_700Bold',
-        paddingRight: 20
+        paddingRight: 20,
     },
     leftIcon: {
         flexDirection: 'row',
