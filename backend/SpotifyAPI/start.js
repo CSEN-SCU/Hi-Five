@@ -1,21 +1,20 @@
 console.log("start.js");
 
-import express from "express";
+import express from "express"; // import { Router } from "express";
 import cookieParser from "cookie-parser";
-import { loginRoute, redirectRoute, refreshAccessToken, global_user_id } from "./authentication.js"
-
+import { loginRoute, redirectRoute } from "./auth.js"
+import { testRoute } from "./test.js" // DEBUG
 
 const PORT = 3000;
-// import { Router } from "express";
 const app = express();
 app.use(cookieParser());
 
-app.get("/", (req, res) => { res.send("Hi-Five Backend") });
+app.get("/", (req, res) => { res.json("Hi-Five Backend") });
 
 loginRoute(app);
 redirectRoute(app);
+testRoute(app); // DEBUG
 
 app.listen(PORT, () => {
-  console.log("app.listen");
-  console.log(`App listening on port ${PORT}`);
+  console.log(`app.listen: App listening on port ${PORT}`);
 });

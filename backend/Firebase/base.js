@@ -43,7 +43,9 @@ var valid_fields = new Map([
 ]);
 
 async function check(collection, document) {
-  const docSnap = await getDoc(doc(db, collection, document) );
+  console.log("check. collection:", collection, "document:", document);
+  const docRef = doc(db, collection, document);
+  const docSnap = await getDoc(docRef);
   return docSnap.exists();
 }
 
@@ -64,7 +66,9 @@ async function add(collection, document, fields) {
     );
   }
   try {
-    await setDoc(doc(db, collection, document), fields);
+    console.log("add. collection:", collection, "document:", document, "fields:", fields);
+    const userRef = doc(db, collection, document)
+    await setDoc(userRef, fields);
     // console.log("Document written");
   } catch (error) {
     console.error("Error adding document: ", error);
@@ -73,17 +77,21 @@ async function add(collection, document, fields) {
 
 // `field` is optional
 async function get(collection, document, field) {
+  console.log(0);
   if (!valid_fields.has(collection)) {
     throw new Error(
       "collection invalid."
     );
   }
   if (!await check(collection, document)) {
-    throw new Error("document doesn't exists.");
+    throw new Error(`document doesn't exists: collection: ${collection}, document: ${document}`);
   }
   if (field && !valid_fields.get(collection).has(field)) {
     throw new Error(`Invalid field: ${field}`);
   }
+  console.log(1111);
+  console.log("get. collection:", collection, "document:", document, "field:", field);
+  console.log(2222);
   const userRef = doc(db, collection, document);
   try {
     const userDoc = await getDoc(userRef);
@@ -113,6 +121,7 @@ async function update(collection, document, fields) {
       throw new Error(`Invalid field: ${key}`);
     }
   }
+  console.log("update. collection:", collection, "document:", document, "fields:", fields);
   const userRef = doc(db, collection, document);
   try {
     await updateDoc(userRef, fields);
@@ -129,6 +138,7 @@ async function remove(collection, document) {
   if (!await check(collection, document)) {
     throw new Error("document doesn't exists.");
   }
+  console.log("remove. collection:", collection, "document:", document, "fields:", fields);
   const docRef = doc(db, collection, document);
   try {
     await deleteDoc(docRef);

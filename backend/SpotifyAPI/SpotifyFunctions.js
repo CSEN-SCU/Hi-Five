@@ -5,90 +5,37 @@ console.log("SpotifyFunctions.js");
 //    playlist-modify-private
 //    user-read-recently-played
 //    user-library-read
-//    user-library-write
+//    user-library-modify
 
-import { getUserAccessToken } from '../Firebase/users.js' 
+import { getUser, getUserAccessToken, updateUserPlaylistId, getUserPlaylistId } from '../Firebase/users.js' 
+import { refreshAccessToken } from './auth.js';
 
 //this method is to get the spotify_id by utilizing the access token. This is done in the authorization phase in
 //order to get the key(spotify_id) in order to store the access token
 
-async function getSpotifyID(access_token)
-{
-    console.log("getSpotifyID(access_token)"); // DEBUG
-    const url = "https://api.spotify.com/v1/me";
-    var spotifyId;
-
-    const options = {
-      method: "GET",
-      headers: {
-        'Authorization': 'Bearer ' + access_token,
-      },
-    };
-    // console.log("YOLOOOOOOOOO");
-
-    await fetch(url, options)
-    .then((response) => {
-        if (!response.ok) {
-        throw new Error("Failed to get user profile");
-        }
-        return response.json();
-    })
-    .then((data) => {
-        console.log(data);
-        spotifyId = data.id;
-        console.log("Spotify ID:", spotifyId);
-        // Do something with the Spotify ID
-    })
-    .catch((error) => console.error("Error getting user profile:", error));
-    console.log(typeof spotifyId);
-    
-    return spotifyId;
-}
-
-async function getUserName(access_token) {
-  const url = "https://api.spotify.com/v1/me";
-  var spotifyName;
-
-  const options = {
-    method: "GET",
-    headers: {
-      Authorization: 'Bearer ' + access_token,
-    },
-  };
-
-  await fetch(url, options)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to get user profile");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      spotifyName = data.display_name;
-      console.log("Spotify ID:", spotifyName);
-      // Do something with the Spotify ID
-    })
-    .catch((error) => console.error("Error getting user name:", error));
-
-  return spotifyName;
-}
-
 //This will create a playlist and ensure that there is a user)id
 async function createPlaylist(user_id) {
+  refreshAccessToken(user_id);
   console.log("createPlaylist(user_id)"); // DEBUG
+  // if (getPlaylist(user_id) !== null) {
+  //   console.log("User already has a playlist");
+  //   return null;
+  // }
   const access_token = await getUserAccessToken(user_id);
-  var unparsed_data = NULL;
+  var unparsed_data = null;
   const url = `https://api.spotify.com/v1/users/${user_id}/playlists`;
 
   const options = {
+    method: 'POST',
     headers: {
       "Authorization": `Bearer ${access_token}`,
+      'Content-Type': 'application/json'
     },
-    data: {
+    body: JSON.stringify({
       "name": "Hi-Five Playlist",
       "description": "A playlist that Hi-Five has made",
       "public": false,
-    },
+    }),
   };
 
   await fetch(url, options)
@@ -98,13 +45,21 @@ async function createPlaylist(user_id) {
       console.log(data);
     });
 
-    return unparsed_data;
+    if (unparsed_data.id === null) {
+      console.log("Error in createPlaylist");
+      return null;
+    }
+
+    updateUserPlaylistId(user_id, unparsed_data.id);
+    return unparsed_data.id;
 }
 
-async function getPlaylist(user_id, playlist_id) {
+async function getPlaylist(user_id/*, playlist_id*/) {
+  refreshAccessToken(user_id);
   console.log("getPlaylist(user_id, playlist_id)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
-  var unparsed_data = NULL;
+  let playlist_id = getUserPlaylistId(user_id);
+  var unparsed_data = null;
   const url = `https://api.spotify.com/v1/playlists/${playlist_id}`;
 
     const options = {
@@ -121,13 +76,19 @@ async function getPlaylist(user_id, playlist_id) {
       console.log(data);
     });
 
+    if (unparsed_data.error) {
+      console.log("Error in getPlaylist");
+      return null;
+    }
+
     return unparsed_data;
 }
 
 async function addMusicToPlaylist(user_id, song_id) {
+  refreshAccessToken(user_id);
   console.log("addMusicToPlaylist(user_id, song_id)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
-  var unparsed_data = NULL;
+  var unparsed_data = null;
   const url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`;
 
   const options = {
@@ -152,9 +113,10 @@ async function addMusicToPlaylist(user_id, song_id) {
 }
 
 async function deleteTrackFromPlaylist(user_id, song_id, snapshot) {
+  refreshAccessToken(user_id);
   console.log("deleteTrackFromPlaylist(user_id, song_id, snapshot)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
-  var unparsed_data = NULL;
+  var unparsed_data = null;
   const url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`;
 
   const options = {
@@ -185,9 +147,10 @@ async function deleteTrackFromPlaylist(user_id, song_id, snapshot) {
 //
 async function findSongAndArtists(user_id)
 { 
+  refreshAccessToken(user_id);
   console.log("findSongAndArtists(user_id)"); // DEBUG
     const access_token = await getUserAccessToken(user_id);
-    var unparsed_data = NULL;
+    var unparsed_data = null;
     const type = "track"; // Specify the type of search (e.g., 'track', 'artist', 'album')
 
     const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchTerm)}&type=${type}`;
@@ -211,9 +174,10 @@ async function findSongAndArtists(user_id)
 
 //scope: user-read-recently-played
 async function recentlyPlayedTracks(user_id) {
+  refreshAccessToken(user_id);
   console.log("recentlyPlayedTracks(user_id)"); // DEBUG
   const access_token = await getUserAccessToken(user_id);
-  var unparsed_data = NULL;
+  var unparsed_data = null;
 
   const url = `https://api.spotify.com/v1/me/player/recently-played`;
 
@@ -235,9 +199,10 @@ async function recentlyPlayedTracks(user_id) {
 }
 
 async function getTrack(user_id, track_id) {
+  refreshAccessToken(user_id);
   console.log("getTrack(user_id, track_id)"); // DEBUG
   access_token = await getUserAccessToken(user_id);
-  unparsed_data = NULL;
+  unparsed_data = null;
   const url = `https://api.spotify.com/v1/tracks/${track_id}`;
 
   const options = {
@@ -258,14 +223,13 @@ async function getTrack(user_id, track_id) {
 }
 
 export {
-  getSpotifyID,
+  // getSpotifyID,
   createPlaylist,
   getPlaylist,
   addMusicToPlaylist,
   deleteTrackFromPlaylist,
   findSongAndArtists,
   recentlyPlayedTracks,
-  getTrack,
-  getUserName
+  getTrack
 };
 
