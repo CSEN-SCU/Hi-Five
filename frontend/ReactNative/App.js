@@ -1,6 +1,7 @@
 import LoginScreen from "./screens/loginScreen";
 import Feed from "./screens/feed";
 import ProfileScreen from "./screens/profileScreen";
+import SongSelector from "./screens/songSelector"
 
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -27,6 +28,7 @@ function App() {
                     <>
                         <Stack.Screen name="Feed" component={Feed} />
                         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+                        <Stack.Screen name="SongSelector" component={SongSelector} />
                     </>
                 ) : (
                     <Stack.Screen name="LoginScreen">
@@ -34,7 +36,7 @@ function App() {
                     </Stack.Screen>
                 )}
             </Stack.Navigator>
-        </NavigationContainer>
+        </NavigationContainer>        
     );
 }
 

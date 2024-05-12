@@ -1,14 +1,16 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, State } from "react-native";
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class PostItem extends React.Component {
+
     state = {
-        buttonColor: '#FFFFFF'
+        buttonColor: '#FFFFFF',
+        isPlaying: false
     }
 
-    handleClick = () => {
+    handClick = () => {
         // Toggle between white and red color
         const newColor = this.state.buttonColor === '#FFFFFF' ? '#B2EED3' : '#FFFFFF';
         this.setState({ buttonColor: newColor });
@@ -20,39 +22,57 @@ export default class PostItem extends React.Component {
             console.log('Hi-Five button pressed (teal)');
         }
     };
+    
+    togglePlayPause = () => {
+        // Toggle between play and pause for the play button
+        this.setState(prevState => ({ isPlaying: !prevState.isPlaying }));
+
+        // Log the play button state
+        if (!this.state.isPlaying) {
+            console.log('Play button pressed');
+        } else {
+            console.log('Pause button pressed');
+        }
+    };
 
     render() {
+        const { profilePic, username, songCover, songTitle, songArtist } = this.props;
+
         return (
             <View>
                 <View style={styles.user_info}>
                     <Image
-                        style={styles.profile_pic}  // required Dimensions and styling of Image
-                        source={require('../../../frontend/ReactNative/assets/concert.png')} // enter your avatar image path 
+                        style={styles.profile_pic}
+                        source={profilePic}
                     />
-                    <Text style={styles.username}>johnjohn</Text>
+                    <Text style={styles.username}>{username}</Text>
                 </View>
                 <View style={styles.card}>
                     <Image
-                        style={styles.song_cover}  // required Dimensions and styling of Image
-                        source={require('../../../frontend/ReactNative/assets/heros-cover.png')} // enter your avatar image path 
+                        style={styles.song_cover}
+                        source={songCover}
                     />
-                    <Text style={styles.song_title}>Superhero</Text>
-                    <Text style={styles.song_artist}>Metro Boomin, Future, Chris Brown</Text>
-
+                    <Text style={styles.song_title}>{songTitle}</Text>
+                    <Text style={styles.song_artist}>{songArtist}</Text>
 
                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 30 }}>
-                        <TouchableOpacity onPress={() => console.log('Close button pressed')}>
+                        <TouchableOpacity
+                            onPress={() => console.log('close button pressed')}>
                             <Icon name='close' size={40} color='#FFFFFF' />
-                        </TouchableOpacity >
-                        <TouchableOpacity style={styles.playButtonContainer}>
-                            <Icon name='play' size={50} color='#FFFFFF' />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.handleClick}>
+                        <TouchableOpacity
+                            style={styles.playButtonContainer}
+                            onPress={this.togglePlayPause}
+                            >
+                            <Icon name={this.state.isPlaying ? 'pause' : 'play'} size={50} color='#FFFFFF' />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={this.handClick}
+                            activeOpacity={1}>
                             <Icon name='hand-right' size={30} color={this.state.buttonColor} />
                         </TouchableOpacity>
                     </View>
                 </View>
-
             </View>
         );
     }

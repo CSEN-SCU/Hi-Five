@@ -56,11 +56,11 @@ const styles = StyleSheet.create({
         color: '#B2EED3'
     },
     topBar:{
-        marginTop: 10,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        marginHorizontal: 30
+        marginHorizontal: 22,
+        marginTop: 5
     },
     navTitle:{
         color: '#fff',
