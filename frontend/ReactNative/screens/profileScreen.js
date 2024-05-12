@@ -37,12 +37,12 @@ const HistoryRowButtom = () => {
         </View>
     );
 };
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <Pressable onPress={()=>Alert.alert("You pressed the back button")}>
+                <Pressable onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle}/>
                 </Pressable>
                 <Text style={styles.navTitle}>Profile</Text>
