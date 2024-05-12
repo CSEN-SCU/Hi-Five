@@ -92,11 +92,11 @@ const styles = StyleSheet.create({
     },
 
     topBar:{
-        marginTop: 10,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        marginHorizontal: 30
+        marginHorizontal: 22,
+        marginTop: 5
     },
     navTitle:{
         color: '#fff',

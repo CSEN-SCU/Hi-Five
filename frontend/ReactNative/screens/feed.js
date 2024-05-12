@@ -16,6 +16,44 @@ const Feed = ({ navigation }) => {
         return null;
     }
 
+    const posts = [
+        {
+            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            username: 'johnjohn',
+            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songTitle: 'Superhero',
+            songArtist: 'Metro Boomin, Future, Chris Brown'
+        },
+        {
+            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            username: 'johnjohn',
+            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songTitle: 'Superhero',
+            songArtist: 'Metro Boomin, Future, Chris Brown'
+        },
+        {
+            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            username: 'johnjohn',
+            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songTitle: 'Superhero',
+            songArtist: 'Metro Boomin, Future, Chris Brown'
+        },
+        {
+            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            username: 'johnjohn',
+            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songTitle: 'Superhero',
+            songArtist: 'Metro Boomin, Future, Chris Brown'
+        },
+        {
+            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            username: 'johnjohn',
+            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songTitle: 'Superhero',
+            songArtist: 'Metro Boomin, Future, Chris Brown'
+        },
+    ];
+
     return (<View style={styles.container}>
         <View>
             <View style={styles.topBar}>
@@ -32,11 +70,20 @@ const Feed = ({ navigation }) => {
                     <FeatherIcon name='settings' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <UserPost />
-                <PostItem />
-                <PostItem />
-                <PostItem />
+            <ScrollView showsVerticalScrollIndicator={false}>  
+                <TouchableOpacity onPress={onPress = () => navigation.push('SongSelector')}>
+                    <UserPost />
+                </TouchableOpacity>
+                {posts.map((post, index) => (
+                    <PostItem
+                        key={index}
+                        profilePic={post.profilePic}
+                        username={post.username}
+                        songCover={post.songCover}
+                        songTitle={post.songTitle}
+                        songArtist={post.songArtist}
+                    />
+                ))}
             </ScrollView>
         </View>
     </View>)
@@ -51,9 +98,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#202020',
         alignItems: 'center',
     },
-    feed_container: {
-
-    },
     iconTopStyle: {
         justifyContent: "center",
         paddingVertical: 2,
@@ -62,9 +106,7 @@ const styles = StyleSheet.create({
     },
     topBar: {
         marginTop: 60,
-        marginHorizontal: 30,
         marginBottom: 10,
-
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'wrap',
