@@ -6,32 +6,54 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default class PostItem extends React.Component {
 
     state = {
-        buttonColor: '#FFFFFF',
-        isPlaying: false
+        hiFiveButtonColor: '#FFFFFF',
+        isPlaying: false,
+        cancelButtonColor: '#FFFFFF'
     }
 
-    handClick = () => {
-        // Toggle between white and red color
-        const newColor = this.state.buttonColor === '#FFFFFF' ? '#B2EED3' : '#FFFFFF';
-        this.setState({ buttonColor: newColor });
 
-        if (newColor == '#FFFFFF') {
-            console.log('Hi-Five button pressed (white)');
-        }
-        else {
-            console.log('Hi-Five button pressed (teal)');
-        }
-    };
     
     togglePlayPause = () => {
-        // Toggle between play and pause for the play button
         this.setState(prevState => ({ isPlaying: !prevState.isPlaying }));
 
-        // Log the play button state
         if (!this.state.isPlaying) {
-            console.log('Play button pressed');
+            console.log('play button pressed');
         } else {
-            console.log('Pause button pressed');
+            console.log('pause button pressed');
+        }
+    };
+
+    toggleCancel = () => {
+        const { hiFiveButtonColor } = this.state;
+
+        if (hiFiveButtonColor === '#B2EED3') {
+            this.setState({ cancelButtonColor: '#FF5733', hiFiveButtonColor: '#FFFFFF' });
+        } else {
+            const newColor = this.state.cancelButtonColor === '#FFFFFF' ? '#FF5733' : '#FFFFFF';
+            this.setState({ cancelButtonColor: newColor });
+        }
+
+        if (this.state.cancelButtonColor === '#FFFFFF') {
+            console.log('Close button color changed to white');
+        } else {
+            console.log('Close button color changed to red');
+        }
+    };
+
+
+    handClick = () => {
+        const newColor = this.state.hiFiveButtonColor === '#FFFFFF' ? '#B2EED3' : '#FFFFFF';
+        this.setState({ hiFiveButtonColor: newColor });
+
+        if (this.state.cancelButtonColor === '#FF5733') {
+            this.setState({ cancelButtonColor: '#FFFFFF' });
+            console.log('Close button color changed to white');
+        }
+
+        if (newColor === '#FFFFFF') {
+            console.log('Hi-Five button pressed (white)');
+        } else {
+            console.log('Hi-Five button pressed (teal)');
         }
     };
 
@@ -57,8 +79,8 @@ export default class PostItem extends React.Component {
 
                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 30 }}>
                         <TouchableOpacity
-                            onPress={() => console.log('close button pressed')}>
-                            <Icon name='close' size={40} color='#FFFFFF' />
+                            onPress={this.toggleCancel}>
+                            <Icon name='close' size={40} color={this.state.cancelButtonColor} />
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.playButtonContainer}
@@ -68,8 +90,8 @@ export default class PostItem extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={this.handClick}
-                            activeOpacity={1}>
-                            <Icon name='hand-right' size={30} color={this.state.buttonColor} />
+                            >
+                            <Icon name='hand-right' size={30} color={this.state.hiFiveButtonColor} />
                         </TouchableOpacity>
                     </View>
                 </View>
