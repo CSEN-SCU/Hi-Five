@@ -24,6 +24,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Putting valid_fields in base.js to have e.g. if (!valid_fields.has(collection)) throw new Error("collection invalid.");
 var valid_fields = new Map([
   ["posts", new Set(["poster_id"])],
   [
