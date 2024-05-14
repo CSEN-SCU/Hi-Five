@@ -14,17 +14,15 @@ const FriendsList = ({ navigation }) => { // Defining functional component named
     }
 
     return (
-        <View style={styles.container}> {/* Root view container */}
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                {/* Back button */}
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <FeatherIcon name='arrow-left' size={20} style={styles.backIcon} />
                 </TouchableOpacity>
                 {/* Title */}
                 <Text style={styles.title}>Friends</Text>
                 {/* Placeholder for space */}
-                <View style={{ width: 20 }}></View>
             </View>
             {/* Add Friends button */}
             <TouchableOpacity style={styles.addButton}>
@@ -91,6 +89,12 @@ const styles = StyleSheet.create({ // Creating styles object using StyleSheet.cr
         flexDirection: 'row', // Arranging items horizontally
         alignItems: 'center', // Aligning items vertically
         marginBottom: 10, // Applying bottom margin
+        width: 335, 
+        height: 50, 
+        position: 'absolute', 
+        top: 159, 
+        left: 20, 
+
     },
     friendIcon: { // Styles for friend icon
         color: '#B2EED3', // Setting icon color

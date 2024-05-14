@@ -6,12 +6,13 @@ import SongSelector from "./screens/songSelector"
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import FriendsList from "./screens/FriendsList";
 
 const Stack = createNativeStackNavigator();
 
 function App() {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogin = () => {
         setIsLoggedIn(true);
@@ -31,9 +32,7 @@ function App() {
                         <Stack.Screen name="SongSelector" component={SongSelector} />
                     </>
                 ) : (
-                    <Stack.Screen name="LoginScreen">
-                        {props => <LoginScreen {...props} onLogin={handleLogin} />}
-                    </Stack.Screen>
+                    <Stack.Screen name="FriendsList" component={FriendsList} />
                 )}
             </Stack.Navigator>
         </NavigationContainer>        
