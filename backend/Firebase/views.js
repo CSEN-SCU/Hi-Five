@@ -15,6 +15,10 @@ async function addView(spotifyId, fields) {
   await add(viewsCollection, spotifyId, fields);
 }
 
+async function getViews() {
+  return await get(viewsCollection);
+}
+
 async function getView(spotifyId, field) {
   return await get(viewsCollection, spotifyId, field);
 }
@@ -23,10 +27,10 @@ async function updateView(spotifyId, fields) {
   await update(viewsCollection, spotifyId, fields);
 }
 
-async function removeView(spotifyId) {
-  await remove(viewsCollection, spotifyId);
+async function removeView(spotifyId, field) {
+  await remove(viewsCollection, spotifyId, field);
 }
 
-// TODO: Specific functions:
+// TODO: Specialized functions
 
-export { checkView, addView, getView, updateView, removeView };
+export { checkView, addView, getViews, getView, updateView, removeView };

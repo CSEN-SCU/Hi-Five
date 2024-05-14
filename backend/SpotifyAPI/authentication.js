@@ -1,5 +1,4 @@
 console.log("authentication.js");
-
 import {
   checkUser,
   getUser,
@@ -17,7 +16,7 @@ import {
 import { getSpotifyID, getUserName } from "./SpotifyFunctions.js";
 import SpotifyWebApi from "spotify-web-api-node";
 
-let global_user_id = "none currently";
+let global_user_id = "";
 
 const spotifyAuthAPI = new SpotifyWebApi({
   clientId: process.env.CLIENT_ID,
@@ -25,31 +24,31 @@ const spotifyAuthAPI = new SpotifyWebApi({
   redirectUri: process.env.REDIRECT_URI,
 });
 
+const generateRandomString = (length) => {
+  let text = "";
+  let possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
+
 //this contains the login route that the app will be using
 function loginRoute(app)
 {
   console.log("loginRoute(app)"); // DEBUG
   app.get("/login", (req, res) => {
-  const generateRandomString = (length) => {
-    let text = "";
-    let possible =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const stateString = generateRandomString(16);
+      res.cookie("authState", stateString);
+      console.log(req.cookies["authState"]);
 
-    for (let i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  };
-
-  const stateString = generateRandomString(16);
-    res.cookie("authState", stateString);
-    console.log(req.cookies["authState"]);
-
-  const scopes = ["user-top-read"];
-  const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
-  console.log("loginLink: " + loginLink);
-  res.redirect(loginLink);
-  console.log("Redirected login Link")
+    const scopes = ["user-top-read", "user-read-private", "playlist-modify-public", "playlist-modify-private", "user-read-recently-played", "user-library-read", "user-library-modify"];
+    const loginLink = spotifyAuthAPI.createAuthorizeURL(scopes, stateString);
+    console.log("loginLink: " + loginLink);
+    res.redirect(loginLink);
+    console.log("Redirected login Link")
   });
 }
 
@@ -75,6 +74,7 @@ function redirectRoute(app)
         var refresh_token = data.body["refresh_token"];
 
         global_user_id = await getSpotifyID(access_token);
+        console.log("DEBUG: ", global_user_id);
         var userName = await getUserName(access_token);
 
         console.log(global_user_id);
@@ -116,18 +116,27 @@ function redirectRoute(app)
 
 const refreshAccessToken = async (user_id) => {
   console.log("refreshAccessToken(user_id)"); // DEBUG
-  var access_token = getUserAccessToken(user_id);
-  var expiration_time = getUserExpirationTime(user_id);
+  var access_token = await getUserAccessToken(user_id);
+  var expiration_time = await getUserExpirationTime(user_id);
   if (expiration_time < Timestamp.now()) return access_token;
   else {
-    spotifyAuthAPI.setRefreshToken(getUserRefreshToken(user_id));
+    spotifyAuthAPI.setRefreshToken(await getUserRefreshToken(user_id));
     const data = await spotifyAuthAPI.refreshAccessToken();
     spotifyAuthAPI.resetRefreshToken();
     access_token = data.body["access_token"];
-    updateUserAccessToken(user_id, access_token);
-    updateUserExpirationUsingNow(user_id, data.body["expires_in"] * 1000);
+    await updateUserAccessToken(user_id, access_token);
+    await updateUserExpirationUsingNow(user_id, data.body["expires_in"] * 1000);
     return access_token;
   }
 };
 
-export { loginRoute, redirectRoute, refreshAccessToken, global_user_id}
+function spotifyIDRoute(app)
+{
+  console.log("spotifyIDRoute(app)"); // DEBUG
+  app.get("/id", (req, res) => {
+    return res
+          .status(200)
+          .send({ global_user_id });
+  });
+}
+export { loginRoute, redirectRoute, spotifyIDRoute, refreshAccessToken, generateRandomString, global_user_id}

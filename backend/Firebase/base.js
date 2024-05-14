@@ -2,10 +2,14 @@ import { initializeApp } from "firebase/app";
 import {
   getFirestore,
   doc,
+  collection,
+  query,
   setDoc,
   getDoc,
+  getDocs,
   updateDoc,
   deleteDoc,
+  deleteField
 } from "firebase/firestore/lite";
 import dotenv from "dotenv";
 
@@ -26,7 +30,7 @@ const db = getFirestore(app);
 
 // Putting valid_fields in base.js to have e.g. if (!valid_fields.has(collection)) throw new Error("collection invalid.");
 var valid_fields = new Map([
-  ["posts", new Set(["poster_id"])],
+  ["posts", new Set([])],
   [
     "users",
     new Set([
@@ -40,26 +44,31 @@ var valid_fields = new Map([
       "username",
     ]),
   ],
-  ["views", new Set(["post_id"])],
+  ["views", new Set([])],
 ]);
 
 async function check(collection, document) {
+  // if (collection === undefined) throw new Error("Collection is undefined.");
+  // if (document === undefined) throw new Error("Document is undefined.");
   const docSnap = await getDoc(doc(db, collection, document) );
   return docSnap.exists();
 }
 
 async function add(collection, document, fields) {
-  if (!valid_fields.has(collection)) {
-    throw new Error("collection invalid.");
-  }
+  // if (collection === undefined) throw new Error("Collection is undefined.");
+  // if (document === undefined) throw new Error("Document is undefined.");
+  // if (fields === undefined) throw new Error("Fields are undefined.");
+  // if (!valid_fields.has(collection)) {
+  //   throw new Error("collection invalid.");
+  // }
   if (await check(collection, document)) {
     throw new Error("document already exists.");
   }
   const fieldsKeys = Object.keys(fields);
-  if (
+  /*if (
     fieldsKeys.length !== valid_fields.get(collection).size ||
     !fieldsKeys.every((key) => valid_fields.get(collection).has(key))
-  ) {
+  )*/ {
     throw new Error(
       "Fields object must contain exactly and only the valid fields."
     );
@@ -73,47 +82,69 @@ async function add(collection, document, fields) {
 }
 
 // `field` is optional
-async function get(collection, document, field) {
-  if (!valid_fields.has(collection)) {
-    throw new Error(
-      "collection invalid."
-    );
-  }
-  if (!await check(collection, document)) {
+async function get(collectionName, document, field) {
+  // console.log("DEBUG: ", collectionName, document, field); // DEBUG
+  // if (collectionName === undefined) throw new Error("Collection is undefined.");
+  // if (document === undefined) throw new Error("Document is undefined.");
+  // if (field === undefined) throw new Error("Field is undefined.");
+  // if (!valid_fields.has(collectionName)) {
+  //   throw new Error(
+  //     "collection invalid."
+  //   );
+  // }
+  if (document && !await check(collectionName, document)) {
     throw new Error("document doesn't exists.");
   }
-  if (field && !valid_fields.get(collection).has(field)) {
-    throw new Error(`Invalid field: ${field}`);
-  }
-  const userRef = doc(db, collection, document);
-  try {
-    const userDoc = await getDoc(userRef);
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      // console.log("Document data:", field ? userData[field] : userData);
-      return field ? userData[field] : userData;
-    } else {
-      // console.log("No such document!");
+  // if (field && !valid_fields.get(collectionName).has(field)) {
+  //   throw new Error(`Invalid field: ${field}`);
+  // }
+  if (document) {
+    const userRef = doc(db, collectionName, document);
+    try {
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        // console.log("Document data:", field ? userData[field] : userData);
+        return field ? userData[field] : userData;
+      } else {
+        // console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
     }
-  } catch (error) {
-    console.error("Error getting document:", error);
+  } else {
+    const collectionRef = collection(db, collectionName);
+    try {
+      let q = query(collectionRef)
+      const querySnapshot = await getDocs(q)
+      const documents = {};
+      querySnapshot.docs.forEach(doc => {
+        documents[doc.id] = doc.data();
+      });
+      return documents;
+    } catch (error) {
+      console.error("Error getting documents:", error);
+    }
   }
 }
 
 async function update(collection, document, fields) {
-  if (!valid_fields.has(collection)) {
-    throw new Error(
-      "collection invalid."
-    );
-  }
+  // if (collection === undefined) throw new Error("Collection is undefined.");
+  // if (document === undefined) throw new Error("Document is undefined.");
+  // if (fields === undefined) throw new Error("Fields are undefined.");
+  // if (!valid_fields.has(collection)) {
+  //   throw new Error(
+  //     "collection invalid."
+  //   );
+  // }
   if (!await check(collection, document)) {
     throw new Error("document doesn't exists.");
   }
-  for (const key of Object.keys(fields)) {
-    if (!valid_fields.get(collection).has(key)) {
-      throw new Error(`Invalid field: ${key}`);
-    }
-  }
+  // for (const key of Object.keys(fields)) {
+  //   if (!valid_fields.get(collection).has(key)) {
+  //     throw new Error(`Invalid field: ${key}`);
+  //   }
+  // }
   const userRef = doc(db, collection, document);
   try {
     await updateDoc(userRef, fields);
@@ -123,17 +154,27 @@ async function update(collection, document, fields) {
   }
 }
 
-async function remove(collection, document) {
-  if (!valid_fields.has(collection)) {
-    throw new Error("collection invalid.");
-  }
+async function remove(collection, document, field) {
+  // if (collection === undefined) throw new Error("Collection is undefined.");
+  // if (document === undefined) throw new Error("Document is undefined.");
+  // if (field === undefined) throw new Error("Field is undefined.");
+  // if (!valid_fields.has(collection)) {
+  //   throw new Error("collection invalid.");
+  // }
   if (!await check(collection, document)) {
     throw new Error("document doesn't exists.");
   }
   const docRef = doc(db, collection, document);
   try {
-    await deleteDoc(docRef);
-    // console.log("Document deleted");
+    if (field) {
+      // If a field is provided, remove only the field
+      // console.log("DEBUG: attempting to delete");
+      await updateDoc(docRef, { [field]: deleteField() });
+    } else {
+      // If no field is provided, remove the entire document
+      await deleteDoc(docRef);
+    }
+    // console.log("Document or field deleted");
   } catch (error) {
     console.error("Error deleting document: ", error);
   }

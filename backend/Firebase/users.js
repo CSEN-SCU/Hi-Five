@@ -28,6 +28,10 @@ async function addUser(spotifyId, fields) {
   await add(usersCollection, spotifyId, fields);
 }
 
+async function getUsers() {
+  return await get(usersCollection);
+}
+
 async function getUser(spotifyId, field) {
   return await get(usersCollection, spotifyId, field);
 }
@@ -36,8 +40,8 @@ async function updateUser(spotifyId, fields) {
   await update(usersCollection, spotifyId, fields);
 }
 
-async function removeUser(spotifyId) {
-  await remove(usersCollection, spotifyId);
+async function removeUser(spotifyId, field) {
+  await remove(usersCollection, spotifyId, field);
 }
 
 // Specific functions:
@@ -82,12 +86,6 @@ async function updateUserAppStreak(spotifyId, appStreak) {
   await updateUser(spotifyId, { app_streak: appStreak });
 }
 
-async function updateUserExpirationUsingNow(spotifyId, expirationTime) {
-  let timestamp =  Timestamp.now();
-  timestamp = new Timestamp(timestamp.seconds + expirationTime, timestamp.nanoseconds);
-  await updateUser(spotifyId, { expiration_time: timestamp });
-}
-
 async function updateUserExpirationTime(spotifyId, expirationTime) {
   await updateUser(spotifyId, { expiration_time: expirationTime }); // Timestamp.now() + 
 }
@@ -112,15 +110,23 @@ async function updateUserUsername(spotifyId, username) {
   await updateUser(spotifyId, { username: username });
 }
 
+// TODO: Specialized functions
+
+async function updateUserExpirationUsingNow(spotifyId, expirationTime) {
+  let timestamp =  Timestamp.now();
+  timestamp = new Timestamp(timestamp.seconds + expirationTime, timestamp.nanoseconds);
+  await updateUser(spotifyId, { expiration_time: timestamp });
+}
+
 export {
   checkUser,
   addUser,
+  getUsers,
   getUser,
   updateUser,
   removeUser,
   getUserAccessToken,
   getUserAppStreak,
-  updateUserExpirationUsingNow,
   getUserExpirationTime,
   getUserFriends,
   getUserPlaylistId,
@@ -136,4 +142,5 @@ export {
   updateUserSnapshotPlaylistId,
   updateUserUsername,
   Timestamp,
+  updateUserExpirationUsingNow
 };
