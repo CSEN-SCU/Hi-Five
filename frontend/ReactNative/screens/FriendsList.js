@@ -70,11 +70,15 @@ const styles = StyleSheet.create({ // Creating styles object using StyleSheet.cr
     },
     addButton: { // Styles for add friends button
         backgroundColor: '#1ED760', // Setting background color
+        width: 171,
+        height: 50,
         paddingHorizontal: 20, // Applying horizontal padding
         paddingVertical: 10, // Applying vertical padding
         borderRadius: 5, // Applying border radius
         marginHorizontal: 20, // Applying horizontal margin
         marginTop: 20, // Applying top margin
+        top: 93, // Set top to 93px
+        left: 20, // Set left to 20px
         alignItems: 'center', // Aligning items horizontally
     },
     addButtonText: { // Styles for add friends button text
@@ -93,7 +97,7 @@ const styles = StyleSheet.create({ // Creating styles object using StyleSheet.cr
         height: 50, 
         position: 'absolute', 
         top: 159, 
-        left: 20, 
+        left: 20,
 
     },
     friendIcon: { // Styles for friend icon
