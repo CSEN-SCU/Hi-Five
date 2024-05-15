@@ -44,7 +44,7 @@ export default class PostItem extends React.Component {
 
         if (this.state.cancelButtonColor === '#FF5733') {
             this.setState({ cancelButtonColor: '#FFFFFF' });
-            console.log('Close button color changed to white');
+            console.log('close button color changed to white');
         }
 
         if (newColor === '#FFFFFF') {
