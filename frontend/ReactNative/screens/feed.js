@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import UserPost from './userPost';
@@ -12,6 +12,8 @@ const Feed = ({ navigation }) => {
         Poppins_700Bold,
         Poppins_400Regular
     });
+
+    const scrollViewRef = useRef(null);
 
     if (!fontsLoaded) {
         return null;
@@ -62,7 +64,7 @@ const Feed = ({ navigation }) => {
                     <TouchableOpacity onPress={() => console.log('clicked friend button')} >
                         <FeatherIcon name='users' size={20} style={styles.iconTopStyle} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => console.log('clicked playlist button')}>
+                    <TouchableOpacity onPress={() => navigation.push('Playlist')}>
                         <MatIcon name='playlist-music' size={20} style={styles.iconTopStyle} />
                     </TouchableOpacity>
                 </View>
@@ -71,7 +73,9 @@ const Feed = ({ navigation }) => {
                     <FeatherIcon name='settings' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>  
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                ref={scrollViewRef}>  
                 <TouchableOpacity onPress={onPress = () => navigation.push('SongSelector')}>
                     <UserPost />
                 </TouchableOpacity>
@@ -83,6 +87,7 @@ const Feed = ({ navigation }) => {
                         songCover={post.songCover}
                         songTitle={post.songTitle}
                         songArtist={post.songArtist}
+                        scrollViewRef={scrollViewRef}
                     />
                 ))}
             </ScrollView>
