@@ -33,6 +33,7 @@ const SongSelector = ({ navigation }) => {
                 </Pressable>
             </View>
 
+            
             <Text style={styles.screenTitle}>Share your song</Text>
             <SearchBar />
             
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 300,
         marginHorizontal: 20,
-        height: 630,
+        height: 650,
         borderRadius: 15,
         paddingHorizontal: 15,
         overflow: 'hidden'
