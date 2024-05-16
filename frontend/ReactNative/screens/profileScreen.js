@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         flexDirection: "row",
         marginTop: 5,
-        marginBottom: 20,
+        marginBottom: 15,
     },
     editText:{
         justifyContent: "center",
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     nameText: {
-        marginTop: 35,
+        marginTop: 15,
         fontSize: 35,
         justifyContent: "center",
         color: '#cfd'
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     historyContainer:{
-        marginTop: 50,
+        marginTop: 25,
         backgroundColor: '#2E2C2C',
         marginHorizontal: 20,
         borderRadius: 20,

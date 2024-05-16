@@ -1,10 +1,12 @@
-import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
-import SongCard from './songCard';
-import SearchBar from './searchBar';
+// playlist page
 
-const SongSelector = ({ navigation }) => {
-    
+import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+import PlaylistSongCard from './playlistSongCard';
+
+const Playlist = ({ navigation }) => {
+
     const songs = [
         { songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
         { songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
@@ -23,25 +25,28 @@ const SongSelector = ({ navigation }) => {
         { songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
         { songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
     ];
-    
+
     return (
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <Pressable onPress={onPress = () => navigation.goBack()}>
+                <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
-                </Pressable>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPress = () => console.log("spotify button pressed")}>
+                    <Icon2 name='spotify' size={25} style={styles.iconTopStyle} />
+                </TouchableOpacity>
             </View>
 
-            <Text style={styles.screenTitle}>Share your song</Text>
-            <SearchBar />
-            
+
+            <Text style={styles.screenTitle}>Current Playlist</Text>
+
             {/* list of recently played songs */}
             <View style={styles.songContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={{marginTop: 7.5}}></View>
+                    <View style={{ marginTop: 7.5 }}></View>
                     {songs.map((song, index) => (
-                        <SongCard
+                        <PlaylistSongCard
                             key={index}
                             songCover={song.songCover}
                             songTitle={song.songTitle}
@@ -55,7 +60,7 @@ const SongSelector = ({ navigation }) => {
     )
 }
 
-export default SongSelector;
+export default Playlist;
 
 const styles = StyleSheet.create({
     container: {
@@ -65,7 +70,6 @@ const styles = StyleSheet.create({
     },
     iconTopStyle: {
         justifyContent: "center",
-        paddingRight: 10,
         paddingVertical: 2,
         color: '#B2EED3'
     },
@@ -74,7 +78,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        marginHorizontal: 30
+        marginHorizontal: 25
     },
     screenTitle: {
         color: '#fff',
@@ -84,10 +88,10 @@ const styles = StyleSheet.create({
     },
     songContainer: {
         backgroundColor: '#323232',
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 300,
         marginHorizontal: 20,
-        height: 630,
+        height: 675,
         borderRadius: 15,
         paddingHorizontal: 15,
         overflow: 'hidden'
