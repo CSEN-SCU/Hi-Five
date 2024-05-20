@@ -2,11 +2,11 @@ import LoginScreen from "./screens/loginScreen";
 import Feed from "./screens/feed";
 import ProfileScreen from "./screens/profileScreen";
 import SongSelector from "./screens/songSelector"
+import FriendsList from "./screens/FriendsList";
 
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import FriendsList from "./screens/FriendsList";
 
 // DEBUG
 // import { startListener } from '../../backend/backend.js'
@@ -34,6 +34,7 @@ function App() {
                         <Stack.Screen name="Feed" component={Feed} />
                         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                         <Stack.Screen name="SongSelector" component={SongSelector} />
+                        <Stack.Screen name="FriendsList" component={FriendsList} />
                     </>
                 ) : (
                     <Stack.Screen name="LoginScreen" component={LoginScreen} />

@@ -17,6 +17,14 @@ const Feed = ({ navigation }) => {
         return null;
     }
 
+    const userPostInfo = [
+        {
+            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songTitle: 'Superhero',
+            songArtist: 'Metro Boomin, Future, Chris Brown',
+        }
+    ];
+
     const posts = [
         {
             profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
@@ -73,7 +81,11 @@ const Feed = ({ navigation }) => {
             </View>
             <ScrollView showsVerticalScrollIndicator={false}>  
                 <TouchableOpacity onPress={onPress = () => navigation.push('SongSelector')}>
-                    <UserPost />
+                    <UserPost
+                        songCover={userPostInfo.songCover}
+                        songTitle={userPostInfo.songTitle}
+                        songArtist={userPostInfo.songArtist}
+                    />
                 </TouchableOpacity>
                 {posts.map((post, index) => (
                     <PostItem
