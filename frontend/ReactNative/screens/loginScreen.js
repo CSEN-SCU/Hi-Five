@@ -1,19 +1,35 @@
-import {Alert, ImageBackground, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, { useState } from 'react';
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
 const LoginScreen = () => {
+
+    let [fontsLoaded] = useFonts({
+        Poppins_700Bold,
+        Poppins_400Regular
+    });
+
+    if (!fontsLoaded) {
+        return null;
+    }
+
     return (<View style={styles.container}>
-            <ImageBackground source={require('../../../frontend/ReactNative/assets/concert.png')} resizeMode="cover"
-                             imageStyle={{opacity: 0.5}}>
-                <View style={styles.login}>
-                    <Text style={styles.nameTitle}>Hi-Five</Text>
-                    <Text style={styles.tagline}>Share the Vibe!</Text>
-                    <Pressable  style={styles.loginButton} onPress={()=>Alert.alert("You pressed the login button")}>
-                        <Icon name='spotify' size={20} style={styles.iconStyle}/>
-                        <Text style={styles.loginText}>Sign In With Spotify</Text>
-                    </Pressable>
-                </View>
-            </ImageBackground>
+        <ImageBackground
+            source={require('../../../frontend/ReactNative/assets/concert.png')}
+            style={styles.background}
+            imageStyle={{ opacity: 0.5 }}
+        >
+        </ImageBackground>
+        <View style={styles.overlay}>
+            <Text style={styles.nameTitle}>Hi-Five</Text>
+            <Text style={styles.tagline}>Share the Vibe!</Text>
+            <Pressable style={[styles.loginButton, styles.shadowProp]} onPress={() => Alert.alert("You pressed the login button")}>
+                <Text style={styles.loginText}>Login with Spotify</Text>
+                <Icon name='spotify' size={25} style={styles.iconStyle} />
+            </Pressable>
+        </View>
+
         </View>
     )
 }
@@ -26,44 +42,57 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: '#000',
     },
-    iconStyle:{
-        justifyContent: "center",
-        paddingRight: 10,
-        paddingVertical: 2,
-    },
-    loginButton:{
-        backgroundColor:"#1ED760",
-        borderRadius: 4,
-        alignContent: "center",
+    loginButton: {
+        backgroundColor: "#1ED760",
+        borderRadius: 45,
+        alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
         paddingVertical: 15,
-        paddingHorizontal: 15,
-        display: "inline-block",
-        marginHorizontal: "20%"
+        paddingHorizontal: 20,
+        width: '80%'
     },
     loginText: {
-        fontSize: 20,
+        fontSize: 17,
         color: "#000",
-        textAlign: 'center',
         fontWeight: 'bold',
-
+        marginRight: 10
+    },
+    iconStyle: {
+        color: "black"
     },
     nameTitle: {
-        color: '#cfd',
-        fontSize: 75,
+        color: '#B2EED3',
+        fontSize: 70,
         textAlign: 'center',
-        fontWeight: 'bold'
+        fontFamily: 'Poppins_700Bold'
     },
     tagline: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 17,
         textAlign: 'center',
         marginBottom: 200,
+        fontFamily: 'Poppins_400Regular',
     },
-    login: {
-        height: '100%',
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
         justifyContent: 'center',
-        alignContent: 'center',
+        alignItems: 'center',
     },
+    background: {
+        width: '115%',
+        height: '115%',
+        marginBottom: 50,
+        zIndex: -1
+    },
+    shadowProp: {
+        shadowColor: '#1A1C1F',
+        shadowOffset: { width: -2, height: -4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+    }
 });

@@ -9,10 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/poppins": "^0.2.3",
+    "@react-native-vector-icons/ionicons": "^7.3.1-alpha.9",
+    "@react-navigation/material-top-tabs": "^6.6.13",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/native-stack": "^6.9.26",
     "expo": "^50.0.15",
+    "expo-font": "^11.10.3",
     "expo-status-bar": "~1.11.1",
+    "moment": "^2.30.1",
     "react": "18.2.0",
     "react-native": "0.73.6",
+    "react-native-paper": "^5.12.3",
+    "react-native-slider": "^0.11.0",
+    "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.3"
   },
   "devDependencies": {
