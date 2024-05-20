@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 
 function App() {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     const handleLogin = () => {
         setIsLoggedIn(true);
@@ -33,7 +33,7 @@ function App() {
                         <Stack.Screen name="FriendsList" component={FriendsList} />
                     </>
                 ) : (
-                        <Stack.Screen name="LoginScreen" component={FriendsList} />
+                        <Stack.Screen name="LoginScreen" component={LoginScreen} />
                 )}
             </Stack.Navigator>
         </NavigationContainer>        

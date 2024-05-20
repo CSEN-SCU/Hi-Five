@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const UserPost = ({ songCover, songTitle, songArtist }) => {
 
-    const [posted] = useState(true);
+    const [posted, setPosted] = useState(false);
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -89,5 +91,15 @@ const styles = StyleSheet.create({
     song_title: {
         fontSize: 15,
         color: '#FFFFFF'
+    },
+
+    music_icon_container: {
+        backgroundColor: '#000000',
+        borderRadius: 10,
+        height: 50,
+        width: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10
     }
 });
