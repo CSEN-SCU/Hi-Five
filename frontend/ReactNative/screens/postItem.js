@@ -9,8 +9,6 @@ export default class PostItem extends React.Component {
         isPlaying: false,
         cancelButtonColor: '#FFFFFF'
     }
-
-
     
     togglePlayPause = () => {
         this.setState(prevState => ({ isPlaying: !prevState.isPlaying }));
