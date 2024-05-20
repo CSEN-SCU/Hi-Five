@@ -1,9 +1,6 @@
-import { useState } from 'react';
-import { Image, StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 const PlaylistSongCard = ({ songCover, songTitle, songArtist }) => {
-    const [modalVisible, setModalVisible] = useState(false);
 
     return (
         <View style={styles.container}>

@@ -70,7 +70,7 @@ const Feed = ({ navigation }) => {
                     <TouchableOpacity onPress={() => console.log('clicked friend button')} >
                         <FeatherIcon name='users' size={20} style={styles.iconTopStyle} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => console.log('clicked playlist button')}>
+                    <TouchableOpacity onPress={() => navigation.push('Playlist')}>
                         <MatIcon name='playlist-music' size={20} style={styles.iconTopStyle} />
                     </TouchableOpacity>
                 </View>
