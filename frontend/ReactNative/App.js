@@ -8,11 +8,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FriendsList from "./screens/FriendsList";
 
+// DEBUG
+// import { startListener } from '../../backend/backend.js'
+// startListener();
+
 const Stack = createNativeStackNavigator();
 
 function App() {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     const handleLogin = () => {
         setIsLoggedIn(true);
@@ -32,7 +36,7 @@ function App() {
                         <Stack.Screen name="SongSelector" component={SongSelector} />
                     </>
                 ) : (
-                    <Stack.Screen name="FriendsList" component={FriendsList} />
+                    <Stack.Screen name="LoginScreen" component={LoginScreen} />
                 )}
             </Stack.Navigator>
         </NavigationContainer>        

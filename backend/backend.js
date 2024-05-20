@@ -6,6 +6,8 @@ console.log("backend.js")
 
 // import { /* TODO */ } from 'SpotifyAPI/TODO.js';
 
+import { startListener } from 'SpotifyAPI/start.js';
+
 // Non-instance-specific Spotify API
 
 import {
@@ -79,6 +81,7 @@ import {
 
 
 export {
+    startListener,
     getGlobalID,
     getSpotifyID,
     createPlaylist,
