@@ -1,6 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, State } from "react-native";
-import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class PostItem extends React.Component {
