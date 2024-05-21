@@ -1,4 +1,4 @@
-import {Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import React from 'react';
 
@@ -42,23 +42,23 @@ const ProfileScreen = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <Pressable onPress={onPress = () => navigation.goBack()}>
+                <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle}/>
-                </Pressable>
+                </TouchableOpacity>
                 <Text style={styles.navTitle}>Profile</Text>
-                <Pressable onPress={()=>Alert.alert("You pressed the settings/edit button")}>
+                <TouchableOpacity onPress={()=>Alert.alert("You pressed the settings/edit button")}>
                     <Icon name='settings' size={20} style={styles.iconTopStyle}/>
-                </Pressable>
+                </TouchableOpacity>
             </View>
             {/*Profile Info*/}
             <View style={styles.profileInfo}>
                 <Image style={styles.profilePhoto} source={require('../assets/concert.png')}></Image>
                 <Text style={styles.nameText}>Dave Chapelle</Text>
                 <Text style={styles.usernameText}>dave_chapelle</Text>
-                <Pressable style={styles.editButton} onPress={()=>Alert.alert("You pressed the settings/edit button")}>
+                <TouchableOpacity style={styles.editButton} onPress={()=>Alert.alert("You pressed the settings/edit button")}>
                     <Icon name='edit' size={10} style={styles.iconBodyStyle}/>
                     <Text style={styles.editText}>Edit</Text>
-                </Pressable>
+                </TouchableOpacity>
                 {/*App Streak*/}
                 <View style={styles.streakContainer}>
                     <Text style={styles.streakText}>App Streak</Text>

@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#FFFFFF'
     },
-
     music_icon_container: {
         backgroundColor: '#000000',
         borderRadius: 10,

@@ -1,22 +1,9 @@
-// friend list page
+// addFriend list page
 import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 
-const AddFriendsButton = () => {
-    return (
-        <TouchableOpacity onPress={onPress = () => console.log('add friends button clicked')}>
-            <View style={styles.addFriendCard}>
-                <View style={styles.add_icon_container}>
-                    <Icon name="plus" size={32.5} color="#B2EED3" />
-                </View>
-                <Text style={styles.addText}>Add Friends</Text>
-            </View>
-        </TouchableOpacity>
-    )
-}
-
-const FriendsList = ({ navigation }) => {
+const addFriends = ({ navigation }) => {
 
     const friends = [
         { profilePic: require('../../../frontend/ReactNative/assets/heros-cover.png'), username: 'dave_chapelle' },
@@ -52,16 +39,16 @@ const FriendsList = ({ navigation }) => {
                 <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
-                <Text style={styles.navTitle}>Friends</Text>
+                <Text style={styles.navTitle}>Add Friends</Text>
                 <TouchableOpacity onPress={() => console.log("edit friends button clicked")}>
                     <Text style={styles.editText}>Edit</Text>
                 </TouchableOpacity>
             </View>
 
-            <AddFriendsButton />
             {/* list of friends */}
             <View style={styles.friendContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={{ marginTop: 7.5 }}></View>
                     {friends.map((friend, index) => (
                         <FriendCard
                             key={index}
@@ -76,7 +63,7 @@ const FriendsList = ({ navigation }) => {
     )
 }
 
-export default FriendsList;
+export default addFriends;
 
 const styles = StyleSheet.create({
     container: {
@@ -95,8 +82,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginHorizontal: 30,
-        marginTop: 5,
-        marginBottom: 20
+        marginTop: 5
     },
     navTitle: {
         color: '#fff',
@@ -110,22 +96,5 @@ const styles = StyleSheet.create({
     editText: {
         color: '#fff',
         fontSize: 15
-    },
-    addFriendCard: {
-        marginHorizontal: 25,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    addText: {
-        color: '#fff',
-        fontSize: 15
-    },
-    add_icon_container: {
-        backgroundColor: '#121212',
-        height: 40,
-        width: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 10
     }
 });
