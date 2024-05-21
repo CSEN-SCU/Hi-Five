@@ -3,7 +3,7 @@ import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, S
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 
-const addFriends = ({ navigation }) => {
+const AddFriends = ({ navigation }) => {
 
     const friends = [
         { profilePic: require('../../../frontend/ReactNative/assets/heros-cover.png'), username: 'dave_chapelle' },
@@ -63,7 +63,7 @@ const addFriends = ({ navigation }) => {
     )
 }
 
-export default addFriends;
+export default AddFriends;
 
 const styles = StyleSheet.create({
     container: {

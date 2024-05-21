@@ -1,3 +1,5 @@
+// user's post (the top card in feed)
+
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, State } from "react-native";
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
