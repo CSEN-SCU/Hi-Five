@@ -1,8 +1,18 @@
 import { add, get, update, check, remove } from "./base.js";
 import { Timestamp } from "firebase/firestore/lite";
-import { generateRandomString } from "../SpotifyAPI/authentication.js"
 
 const postsCollection = "posts";
+
+const generateRandomString = (length) => {
+  let text = "";
+  let possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
 
 // TODO: If needed, also check post_id values
 // TODO: If needed, type check
