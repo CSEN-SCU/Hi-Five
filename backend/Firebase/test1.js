@@ -48,5 +48,3 @@ await removeUser(spotifyId1);
 await removeUser(spotifyId2);
 
 // console.log("Here 3:" + await checkUser(spotifyId1));
-
-  

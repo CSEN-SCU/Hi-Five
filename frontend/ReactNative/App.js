@@ -10,6 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // DEBUG
+import AuthorizationButton from './backendTest2.js';
 // import { startListener } from '../../backend/backend.js'
 // startListener();
 
@@ -28,21 +29,22 @@ function App() {
     };
 
     return (
-        <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {isLoggedIn ? (
-                    <>
-                        <Stack.Screen name="Feed" component={Feed} />
-                        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-                        <Stack.Screen name="SongSelector" component={SongSelector} />
-                        <Stack.Screen name="FriendsList" component={FriendsList} />
-                        <Stack.Screen name="Playlist" component={Playlist} />
-                    </>
-                ) : (
-                        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-                )}
-            </Stack.Navigator>
-        </NavigationContainer>        
+        <AuthorizationButton></AuthorizationButton>
+        // <NavigationContainer>
+        //     <Stack.Navigator screenOptions={{ headerShown: false }}>
+        //         {isLoggedIn ? (
+        //             <>
+        //                 <Stack.Screen name="Feed" component={Feed} />
+        //                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        //                 <Stack.Screen name="SongSelector" component={SongSelector} />
+        //                 <Stack.Screen name="FriendsList" component={FriendsList} />
+        //                 <Stack.Screen name="Playlist" component={Playlist} />
+        //             </>
+        //         ) : (
+        //                 <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        //         )}
+        //     </Stack.Navigator>
+        // </NavigationContainer>        
     );
 }
 

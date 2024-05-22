@@ -15,6 +15,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: '../../.env' });
 
+// TODO: convert to React Native dotenv
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,
@@ -65,14 +66,14 @@ async function add(collection, document, fields) {
     throw new Error("document already exists.");
   }
   const fieldsKeys = Object.keys(fields);
-  /*if (
-    fieldsKeys.length !== valid_fields.get(collection).size ||
-    !fieldsKeys.every((key) => valid_fields.get(collection).has(key))
-  )*/ {
-    throw new Error(
-      "Fields object must contain exactly and only the valid fields."
-    );
-  }
+  // if (
+  //   fieldsKeys.length !== valid_fields.get(collection).size ||
+  //   !fieldsKeys.every((key) => valid_fields.get(collection).has(key))
+  // ) {
+  //   throw new Error(
+  //     "Fields object must contain exactly and only the valid fields."
+  //   );
+  // }
   try {
     await setDoc(doc(db, collection, document), fields);
     // console.log("Document written");

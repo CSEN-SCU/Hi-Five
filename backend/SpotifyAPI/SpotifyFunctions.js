@@ -13,27 +13,27 @@ import { refreshAccessToken } from './authentication.js';
 //this method is to get the spotify_id by utilizing the access token. This is done in the authorization phase in
 //order to get the key(spotify_id) in order to store the access token
 
-async function getGlobalID()
-{
-  var spotifyId;
+// async function getGlobalID()
+// {
+//   var spotifyId;
 
-  await fetch('http://localhost:3000/id')
-  .then((response) => {
-        if (!response.ok) {
-        throw new Error("Failed to get user profile");
-        }
-        return response.json();
-    })
-    .then((data) => {
-        console.log(data);
-        spotifyId = data.global_user_id;
-        console.log("Spotify ID:", spotifyId);
-        // Do something with the Spotify ID
-    })
-    .catch((error) => console.error("Error getting user profile:", error));
-  console.log(typeof spotifyId);
-  return spotifyId;
-}
+//   await fetch('http://localhost:3000/id')
+//   .then((response) => {
+//         if (!response.ok) {
+//         throw new Error("Failed to get user profile");
+//         }
+//         return response.json();
+//     })
+//     .then((data) => {
+//         console.log(data);
+//         spotifyId = data.global_user_id;
+//         console.log("Spotify ID:", spotifyId);
+//         // Do something with the Spotify ID
+//     })
+//     .catch((error) => console.error("Error getting user profile:", error));
+//   console.log(typeof spotifyId);
+//   return spotifyId;
+// }
 
 async function getSpotifyID(access_token)
 {
@@ -329,7 +329,7 @@ async function getTrack(user_id, track_id) {
 }
 
 export {
-  getGlobalID,
+  // getGlobalID,
   getSpotifyID,
   createPlaylist,
   getPlaylist,

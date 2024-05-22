@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@babel/runtime": "^7.24.5",
     "dotenv": "^16.4.5",
     "firebase": "^10.11.1"
   },
