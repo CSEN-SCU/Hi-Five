@@ -3,16 +3,14 @@ import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, S
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 
-const AddFriendsButton = () => {
+const AddFriendsButton = ({ navigation }) => {
     return (
-        <TouchableOpacity onPress={onPress = () => console.log('add friends button clicked')}>
-            <View style={styles.addFriendCard}>
-                <View style={styles.add_icon_container}>
-                    <Icon name="plus" size={32.5} color="#B2EED3" />
-                </View>
-                <Text style={styles.addText}>Add Friends</Text>
+        <View style={styles.addFriendCard}>
+            <View style={styles.add_icon_container}>
+                <Icon name="plus" size={32.5} color="#B2EED3" />
             </View>
-        </TouchableOpacity>
+            <Text style={styles.addText}>Find Others</Text>
+        </View>
     )
 }
 
@@ -52,13 +50,15 @@ const FriendsList = ({ navigation }) => {
                 <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
-                <Text style={styles.navTitle}>Friends</Text>
+                <Text style={styles.navTitle}>Following</Text>
                 <TouchableOpacity onPress={() => console.log("edit friends button clicked")}>
                     <Text style={styles.editText}>Edit</Text>
                 </TouchableOpacity>
             </View>
 
-            <AddFriendsButton />
+            <TouchableOpacity onPress={() => navigation.push('AddFriends')}>
+                <AddFriendsButton />
+            </TouchableOpacity>
             {/* list of friends */}
             <View style={styles.friendContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>

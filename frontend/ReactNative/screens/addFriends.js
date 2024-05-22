@@ -1,7 +1,27 @@
 // addFriend list page
+import * as React from 'react';
 import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
+
+
+const SearchBar = () => {
+    const [searchQuery, setSearchQuery] = React.useState('');
+
+    return (
+        <View style={styles.searchBarContainer}>
+            <Searchbar
+                placeholder="Search for others"
+                onChangeText={setSearchQuery}
+                value={searchQuery}
+                inputStyle={styles.searchInput}
+                style={styles.searchbar}
+            />
+        </View>
+
+    );
+};
 
 const AddFriends = ({ navigation }) => {
 
@@ -39,13 +59,13 @@ const AddFriends = ({ navigation }) => {
                 <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
-                <Text style={styles.navTitle}>Add Friends</Text>
-                <TouchableOpacity onPress={() => console.log("edit friends button clicked")}>
-                    <Text style={styles.editText}>Edit</Text>
-                </TouchableOpacity>
+                <Text style={styles.navTitle}>Find Others</Text>
+                <Text style={styles.editText}>   </Text>
             </View>
 
             {/* list of friends */}
+            <SearchBar/>
+
             <View style={styles.friendContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ marginTop: 7.5 }}></View>
@@ -82,19 +102,32 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginHorizontal: 30,
-        marginTop: 5
+        marginBottom: 15
     },
     navTitle: {
         color: '#fff',
         fontSize: 20,
     },
     friendContainer: {
-        marginTop: 10,
+        marginTop: 5,
         marginHorizontal: 10,
         overflow: 'hidden'
     },
     editText: {
         color: '#fff',
         fontSize: 15
+    },
+    searchBarContainer: {
+        marginHorizontal: 20,
+    },
+
+    searchInput: {
+        fontSize: 16,
+        alignSelf: 'center'
+    },
+
+    searchbar: {
+        height: 38,
+        alignItems: 'center'
     }
 });
