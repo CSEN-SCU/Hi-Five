@@ -9,6 +9,16 @@ const postsCollection = "posts";
 
 // General functions:
 
+/**
+ * Function Name: checkPost
+ * Description: This function gets the track based on the track ID.
+ *
+ * @param {string} spotifyId - spotify ID
+ * @returns {boolean} return true if the post exists; else, it will return false
+ *
+ * Example:
+ * checkPost(spotifyId);
+ */
 async function checkPost(spotifyId) {
   return await check(postsCollection, spotifyId);
 }

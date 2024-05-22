@@ -75,9 +75,6 @@ import {
   // Specialized functions: TODO
 } from './Firebase/views.js'
 
-
-
-
 export {
     getGlobalID,
     getSpotifyID,
