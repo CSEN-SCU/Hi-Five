@@ -11,20 +11,30 @@ import {
   deleteDoc,
   deleteField
 } from "firebase/firestore/lite";
-import dotenv from "dotenv";
 
-dotenv.config({ path: '../../.env' });
+import { config as dotenvConfig } from 'dotenv';
+import { API_KEY, AUTH_DOMAIN, DATABASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from '@env';
 
-// TODO: convert to React Native dotenv
-const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  databaseURL: process.env.DATABASE_URL,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID,
-};
+let apiKey, authDomain, databaseUrl, projectId, storageBucket, messagingSenderId, appId;
+
+if (process.env.NODE_ENV === 'React Native') { // React Native environment
+  apiKey = API_KEY;
+  authDomain = AUTH_DOMAIN;
+  databaseUrl = DATABASE_URL;
+  projectId = PROJECT_ID;
+  storageBucket = STORAGE_BUCKET;
+  messagingSenderId = MESSAGING_SENDER_ID;
+  appId = APP_ID;
+} else { // Node.js environment
+  dotenvConfig();
+  apiKey = process.env.API_KEY;
+  authDomain = process.env.AUTH_DOMAIN;
+  databaseUrl = process.env.DATABASE_URL;
+  projectId = process.env.PROJECT_ID;
+  storageBucket = process.env.STORAGE_BUCKET;
+  messagingSenderId = process.env.MESSAGING_SENDER_ID;
+  appId = process.env.APP_ID;
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
