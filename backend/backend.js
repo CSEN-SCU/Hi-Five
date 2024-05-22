@@ -1,31 +1,22 @@
-// (This is acting as a separate instance in ../frontend/ReactNative)
-
 console.log("backend.js")
 
-// Instance-specific Spotify API
-
-// import { /* TODO */ } from 'SpotifyAPI/TODO.js';
-
-import { startListener } from './SpotifyAPI/start.js';
-
-// Non-instance-specific Spotify API
+// Spotify API
 
 import {
     // General functions:
-  // getGlobalID,
-  getSpotifyID,
-  createPlaylist,
-  getPlaylist,
-  addMusicToPlaylist,
-  deleteTrackFromPlaylist,
-  findSongAndArtists,
-  recentlyPlayedTracks,
-  getTrack,
-  getUserName
-  // Specialized functions:
-} from './SpotifyAPI/SpotifyFunctions.js';
+    getUserProfile,
+    getSpotifyUserId,
+    getUserDisplayName,
+    createPlaylist,
+    getPlaylist,
+    addTrackToPlaylist,
+    removeTrackFromPlaylist,
+    searchForTracks,
+    getRecentlyPlayedTracks,
+    getTrack
+} from './SpotifyAPI/functions.js';
 
-// Non-instance-specific Firebase
+// Firebase
 
 // TODO: specialized functions eg addFriend 
 
@@ -43,13 +34,14 @@ import {
   // General functions:
   checkUser,
   addUser,
+  getUsers,
   getUser,
   updateUser,
   removeUser,
   getUserAccessToken,
   getUserAppStreak,
   getUserExpirationTime,
-  getUserFriends,
+  getUserFollowing,
   getUserPlaylistId,
   getUserRefreshToken,
   getUserSnapshotPlaylistId,
@@ -57,7 +49,7 @@ import {
   updateUserAccessToken,
   updateUserAppStreak,
   updateUserExpirationTime,
-  updateUserFriends,
+  updateUserFollowing,
   updateUserPlaylistId,
   updateUserRefreshToken,
   updateUserSnapshotPlaylistId,
@@ -79,52 +71,54 @@ import {
 
 
 
-
 export {
-    startListener,
-    // getGlobalID,
-    getSpotifyID,
-    createPlaylist,
-    getPlaylist,
-    addMusicToPlaylist,
-    deleteTrackFromPlaylist,
-    findSongAndArtists,
-    recentlyPlayedTracks,
-    getTrack,
-    getUserName,
-    checkPost,
-    addPost,
-    getPost,
-    updatePost,
-    removePost,
-    checkUser,
-    addUser,
-    getUser,
-    updateUser,
-    removeUser,
-    getUserAccessToken,
-    getUserAppStreak,
-    getUserExpirationTime,
-    getUserFriends,
-    getUserPlaylistId,
-    getUserRefreshToken,
-    getUserSnapshotPlaylistId,
-    getUserUsername,
-    updateUserAccessToken,
-    updateUserAppStreak,
-    updateUserExpirationTime,
-    updateUserFriends,
-    updateUserPlaylistId,
-    updateUserRefreshToken,
-    updateUserSnapshotPlaylistId,
-    updateUserUsername,
-    Timestamp,
-    updateUserExpirationUsingNow,
-    checkView,
-    addView,
-    getView,
-    updateView,
-    removeView
+  getUserProfile,
+  getSpotifyUserId,
+  getUserDisplayName,
+  createPlaylist,
+  getPlaylist,
+  addTrackToPlaylist,
+  removeTrackFromPlaylist,
+  searchForTracks,
+  getRecentlyPlayedTracks,
+  getTrack,
+
+  checkPost,
+  addPost,
+  getPost,
+  updatePost,
+  removePost,
+
+  checkUser,
+  addUser,
+  getUsers,
+  getUser,
+  updateUser,
+  removeUser,
+  getUserAccessToken,
+  getUserAppStreak,
+  getUserExpirationTime,
+  getUserFollowing,
+  getUserPlaylistId,
+  getUserRefreshToken,
+  getUserSnapshotPlaylistId,
+  getUserUsername,
+  updateUserAccessToken,
+  updateUserAppStreak,
+  updateUserExpirationTime,
+  updateUserFollowing,
+  updateUserPlaylistId,
+  updateUserRefreshToken,
+  updateUserSnapshotPlaylistId,
+  updateUserUsername,
+  Timestamp,
+  updateUserExpirationUsingNow,
+
+  checkView,
+  addView,
+  getView,
+  updateView,
+  removeView,
 }
 
 

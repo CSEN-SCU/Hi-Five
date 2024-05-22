@@ -3,7 +3,7 @@ import { Timestamp } from "firebase/firestore/lite";
 
 const usersCollection = "users";
 
-// TODO: If needed, also check friends values
+// TODO: If needed, also check following values
 // TODO: If needed, type check
 
 // Template fields:
@@ -11,7 +11,7 @@ const usersCollection = "users";
 //   access_token: accessToken,
 //   app_streak: appStreak,
 //   expiration_time: expirationTime,
-//   friends: friends,
+//   following: followings,
 //   playlist_id: playlistId,
 //   refresh_token: refreshToken,
 //   snapshot_playlist_id: snapshotPlaylistId,
@@ -58,8 +58,8 @@ async function getUserExpirationTime(spotifyId) {
   return await getUser(spotifyId, "expiration_time");
 }
 
-async function getUserFriends(spotifyId) {
-  return await getUser(spotifyId, "friends");
+async function getUserFollowing(spotifyId) {
+  return await getUser(spotifyId, "following");
 }
 
 async function getUserPlaylistId(spotifyId) {
@@ -90,8 +90,8 @@ async function updateUserExpirationTime(spotifyId, expirationTime) {
   await updateUser(spotifyId, { expiration_time: expirationTime }); // Timestamp.now() + 
 }
 
-async function updateUserFriends(spotifyId, friends) {
-  await updateUser(spotifyId, { friends: friends });
+async function updateUserFollowing(spotifyId, following) {
+  await updateUser(spotifyId, { following: following });
 }
 
 async function updateUserPlaylistId(spotifyId, playlistId) {
@@ -128,7 +128,7 @@ export {
   getUserAccessToken,
   getUserAppStreak,
   getUserExpirationTime,
-  getUserFriends,
+  getUserFollowing,
   getUserPlaylistId,
   getUserRefreshToken,
   getUserSnapshotPlaylistId,
@@ -136,7 +136,7 @@ export {
   updateUserAccessToken,
   updateUserAppStreak,
   updateUserExpirationTime,
-  updateUserFriends,
+  updateUserFollowing,
   updateUserPlaylistId,
   updateUserRefreshToken,
   updateUserSnapshotPlaylistId,
