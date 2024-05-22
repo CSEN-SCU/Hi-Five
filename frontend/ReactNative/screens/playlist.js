@@ -33,14 +33,12 @@ const Playlist = ({ navigation }) => {
                 <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
+                <Text style={styles.navTitle}>Current Playlist</Text>
+                {/* redirect to spotify playlist */}
                 <TouchableOpacity onPress={onPress = () => console.log("spotify button pressed")}>
                     <Icon2 name='spotify' size={25} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>
-
-
-            <Text style={styles.screenTitle}>Current Playlist</Text>
-
             {/* list of recently played songs */}
             <View style={styles.songContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -80,11 +78,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginHorizontal: 25
     },
-    screenTitle: {
+    navTitle: {
         color: '#fff',
-        alignSelf: 'center',
-        fontSize: 25,
-        paddingBottom: 10
+        fontSize: 20,
     },
     songContainer: {
         backgroundColor: '#323232',
