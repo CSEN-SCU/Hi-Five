@@ -3,50 +3,46 @@ import { addUser, getUserAccessToken, getUser, checkUser, removeUser, updateUser
 import { Timestamp } from "firebase/firestore/lite";
 
 // let num = 0;
-// while (await checkUser(`test_spotify_id_${num}`)) num++;
+// while (await checkUser(`test_user_id_${num}`)) num++;
 
-// const spotifyId = `test_spotify_id_${num}`;
+// const spotifyId = `test_user_id_${num}`;
 
-const spotifyId1 = "test_spotify_id_1";
-const spotifyId2 = "test_spotify_id_2";
+const userId1 = "test_user_id_2";
+const userId2 = "test_user_id_3";
 
-// console.log("Here 1:" + await checkUser(spotifyId1));
+if (await checkUser(userId1))
+    await removeUser(userId1);
+if (await checkUser(userId2))
+  await removeUser(userId2);
 
-if (await checkUser(spotifyId1))
-    await removeUser(spotifyId1);
-if (await checkUser(spotifyId2))
-  await removeUser(spotifyId2);
-
-await addUser(spotifyId1, {
+await addUser(userId1, {
   access_token: "accessToken",
   app_streak: 5,
   expiration_time: Timestamp.now(),
-  friends: ["friend_0", "friend_1"],
+  following: ["friend_0", "friend_1"],
   playlist_id: "playlistId",
   refresh_token: "refreshToken",
   snapshot_playlist_id: "snapshotPlaylistId",
   username: "username",
 });
 
-await addUser(spotifyId2, {
+await addUser(userId2, {
   access_token: "accessToken",
   app_streak: 5,
   expiration_time: Timestamp.now(),
-  friends: ["friend_0", "friend_1"],
+  following: ["friend_0", "friend_1"],
   playlist_id: "playlistId",
   refresh_token: "refreshToken",
   snapshot_playlist_id: "snapshotPlaylistId",
   username: "username",
 });
 
-// console.log("Here 2:" + await checkUser(spotifyId1));
+// console.log("Here 2:" + await checkUser(userId1));
 
-console.log(`${spotifyId1} =>`, await getUser(spotifyId1));
-console.log(`${spotifyId2} =>`, await getUser(spotifyId2));
+console.log(`${userId1} =>`, await getUser(userId1));
+console.log(`${userId2} =>`, await getUser(userId2));
 
-await removeUser(spotifyId1);
-await removeUser(spotifyId2);
+await removeUser(userId1);
+await removeUser(userId2);
 
-// console.log("Here 3:" + await checkUser(spotifyId1));
-
-  
+// console.log("Here 3:" + await checkUser(userId1));

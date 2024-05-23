@@ -1,3 +1,5 @@
+// old
+
 import { getUsers } from "./users.js";
 import { getPosts, getPost, getPostIdCount, removeOldestPostId, checkPost, addPostId } from "./posts.js";
 

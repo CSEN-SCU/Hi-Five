@@ -11,18 +11,38 @@ import {
   deleteDoc,
   deleteField
 } from "firebase/firestore/lite";
-import dotenv from "dotenv";
 
+let apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId;
+
+// Node.js environment
+import dotenv from "dotenv";
 dotenv.config({ path: '../../.env' });
+apiKey            = process.env.API_KEY;
+authDomain        = process.env.AUTH_DOMAIN;
+databaseURL       = process.env.DATABASE_URL;
+projectId         = process.env.PROJECT_ID;
+storageBucket     = process.env.STORAGE_BUCKET;
+messagingSenderId = process.env.MESSAGING_SENDER_ID;
+appId             = process.env.APP_ID;
+
+// React Native environment
+// import { API_KEY, AUTH_DOMAIN, DATABASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from '@env';
+// apiKey            = API_KEY;
+// authDomain        = AUTH_DOMAIN;
+// databaseURL       = DATABASE_URL;
+// projectId         = PROJECT_ID;
+// storageBucket     = STORAGE_BUCKET;
+// messagingSenderId = MESSAGING_SENDER_ID;
+// appId             = APP_ID;
 
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  databaseURL: process.env.DATABASE_URL,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID,
+  apiKey:            apiKey,
+  authDomain:        authDomain,
+  databaseURL:       databaseURL,
+  projectId:         projectId,
+  storageBucket:     storageBucket,
+  messagingSenderId: messagingSenderId,
+  appId:             appId,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -37,7 +57,7 @@ var valid_fields = new Map([
       "access_token",
       "app_streak",
       "expiration_time",
-      "friends",
+      "following",
       "playlist_id",
       "refresh_token",
       "snapshot_playlist_id",
@@ -65,14 +85,14 @@ async function add(collection, document, fields) {
     throw new Error("document already exists.");
   }
   const fieldsKeys = Object.keys(fields);
-  /*if (
-    fieldsKeys.length !== valid_fields.get(collection).size ||
-    !fieldsKeys.every((key) => valid_fields.get(collection).has(key))
-  )*/ {
-    throw new Error(
-      "Fields object must contain exactly and only the valid fields."
-    );
-  }
+  // if (
+  //   fieldsKeys.length !== valid_fields.get(collection).size ||
+  //   !fieldsKeys.every((key) => valid_fields.get(collection).has(key))
+  // ) {
+  //   throw new Error(
+  //     "Fields object must contain exactly and only the valid fields."
+  //   );
+  // }
   try {
     await setDoc(doc(db, collection, document), fields);
     // console.log("Document written");
