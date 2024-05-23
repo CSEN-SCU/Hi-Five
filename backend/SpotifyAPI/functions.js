@@ -13,15 +13,15 @@ import SpotifyWebApi from "spotify-web-api-node";
 let clientId, clientSecret, redirectUri;
 
 // Node.js environment
-clientId     = process.env.CLIENT_ID;
-clientSecret = process.env.CLIENT_SECRET;
-redirectUri  = process.env.REDIRECT_URI;
+// clientId     = process.env.CLIENT_ID;
+// clientSecret = process.env.CLIENT_SECRET;
+// redirectUri  = process.env.REDIRECT_URI;
 
 // React Native environment
-// import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '@env';
-// clientId     = CLIENT_ID;
-// clientSecret = CLIENT_SECRET;
-// redirectUri  = REDIRECT_URI;
+import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '@env';
+clientId     = CLIENT_ID;
+clientSecret = CLIENT_SECRET;
+redirectUri  = REDIRECT_URI;
 
 const spotifyAuthAPI = new SpotifyWebApi({
   clientId:     clientId,
@@ -31,14 +31,13 @@ const spotifyAuthAPI = new SpotifyWebApi({
 
 async function refreshAccessToken(userId) {
   console.log("refreshAccessToken(userId)"); // DEBUG
-  var accessToken = await getUserAccessToken(userId);
   var expiration_time = await getUserExpirationTime(userId);
-  if (expiration_time < Timestamp.now()) return accessToken;
+  if (expiration_time && (expiration_time < Timestamp.now())) return await getUserAccessToken(userId);
   else {
-    spotifyAuthAPI.setRefreshToken(await getUserRefreshToken(userId));
+    spotifyAuthAPI.setRefreshToken(await getUserRefreshToken(userId)); // TODO: what if user doesn't have a refresh token?
     const data = await spotifyAuthAPI.refreshAccessToken();
     spotifyAuthAPI.resetRefreshToken();
-    accessToken = data.body["access_token"];
+    let accessToken = data.body["access_token"];
     await updateUserAccessToken(userId, accessToken);
     await updateUserExpirationUsingNow(userId, data.body["expires_in"] * 1000);
     return accessToken;
@@ -70,8 +69,35 @@ async function refreshAccessToken(userId) {
 //   return spotifyId;
 // }
 
+async function getSpotifyUserIdUsingAccessToken(accessToken) {
+  console.log("getSpotifyUserIdUsingAccessToken(accessToken)"); // DEBUG
+  const url = "https://api.spotify.com/v1/me";
+  let userProfile;
+  const options = {
+    method: "GET",
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+    },
+  };
+  await fetch(url, options)
+  .then((response) => {
+      if (!response.ok) {
+        console.log(response)
+        throw new Error("Failed to get user profile");
+      }
+      return response.json();
+  })
+  .then((data) => {
+      console.log(data);
+      userProfile = data;
+  })
+  .catch((error) => console.error("Error getting user profile:", error));
+  console.log(userProfile);
+  userProfile = data;
+}
+
 async function getUserProfile(userId) {
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
   console.log("getUserProfile(userId)"); // DEBUG
   const url = "https://api.spotify.com/v1/me";
   let userProfile;
@@ -98,10 +124,6 @@ async function getUserProfile(userId) {
   userProfile = data;
 }
 
-async function getSpotifyUserId(userId) {
-    return (await getUserProfile(userId)).id;
-}
-
 async function getUserDisplayName(userId) {
   return (await getUserProfile(userId)).display_name;
 }
@@ -115,7 +137,7 @@ async function createPlaylist(userId) {
     throw new Error("User already has valid playlist.");
   }
 
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
   const url = `https://api.spotify.com/v1/users/${userId}/playlists`;
 
   const options = {
@@ -145,7 +167,7 @@ async function createPlaylist(userId) {
 }
 
 async function isValidPlaylist(userId, playlistId) {
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
   const headers = {
       'Authorization': `Bearer ${accessToken}`
   };
@@ -175,7 +197,7 @@ async function isValidPlaylist(userId, playlistId) {
 
 async function getPlaylist(userId, playlistId) {
   console.log("getPlaylist(userId, playlistId)"); // DEBUG
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
   var isValid = await isValidPlaylist(userId, playlistId);
   if (!isValid)
   {
@@ -205,7 +227,7 @@ async function getPlaylist(userId, playlistId) {
 async function addTrackToPlaylist(userId, trackUri, playlistId) {
   console.log("addTrackToPlaylist(userId, trackUri, playlistId)"); // DEBUG
   console.log(userId, trackUri, playlistId);
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
 
   const options = {
@@ -234,7 +256,7 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
 async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPlaylistId) {
   console.log("removeTrackFromPlaylist(userId, playlistId, trackUri, snapshotPlaylistId)"); // DEBUG
   console.log(userId, trackUri, snapshotPlaylistId);
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
 
   const options = {
@@ -263,7 +285,7 @@ async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPla
 async function searchForTracks(userId, trackQuery)
 { 
   console.log("searchForTracks(userId, trackQuery)"); // DEBUG
-    const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
     const type = "track"; // Specify the type of search (e.g., 'track', 'artist', 'album')
 
     const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(trackQuery)}&type=${type}`;
@@ -289,7 +311,7 @@ async function searchForTracks(userId, trackQuery)
 //scope: user-read-recently-played
 async function getRecentlyPlayedTracks(userId) {
   console.log("getRecentlyPlayedTracks(userId)"); // DEBUG
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
 
   const url = `https://api.spotify.com/v1/me/player/recently-played`;
 
@@ -313,7 +335,7 @@ async function getRecentlyPlayedTracks(userId) {
 
 async function getTrack(userId, trackUri) {
   console.log("getTrack(userId, trackUri)"); // DEBUG
-  const accessToken = await refreshAccessToken(userId);
+  let accessToken = await refreshAccessToken(userId);
   const url = `https://api.spotify.com/v1/tracks/${trackUri}`;
 
   const options = {
@@ -335,7 +357,7 @@ async function getTrack(userId, trackUri) {
 
 export {
   getUserProfile,
-  getSpotifyUserId,
+  getSpotifyUserIdUsingAccessToken,
   getUserDisplayName,
   createPlaylist,
   getPlaylist,

@@ -15,25 +15,25 @@ import {
 let apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId;
 
 // Node.js environment
-import dotenv from "dotenv";
-dotenv.config({ path: '../../.env' });
-apiKey            = process.env.API_KEY;
-authDomain        = process.env.AUTH_DOMAIN;
-databaseURL       = process.env.DATABASE_URL;
-projectId         = process.env.PROJECT_ID;
-storageBucket     = process.env.STORAGE_BUCKET;
-messagingSenderId = process.env.MESSAGING_SENDER_ID;
-appId             = process.env.APP_ID;
+// import dotenv from "dotenv";
+// dotenv.config({ path: '../../.env' });
+// apiKey            = process.env.API_KEY;
+// authDomain        = process.env.AUTH_DOMAIN;
+// databaseURL       = process.env.DATABASE_URL;
+// projectId         = process.env.PROJECT_ID;
+// storageBucket     = process.env.STORAGE_BUCKET;
+// messagingSenderId = process.env.MESSAGING_SENDER_ID;
+// appId             = process.env.APP_ID;
 
 // React Native environment
-// import { API_KEY, AUTH_DOMAIN, DATABASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from '@env';
-// apiKey            = API_KEY;
-// authDomain        = AUTH_DOMAIN;
-// databaseURL       = DATABASE_URL;
-// projectId         = PROJECT_ID;
-// storageBucket     = STORAGE_BUCKET;
-// messagingSenderId = MESSAGING_SENDER_ID;
-// appId             = APP_ID;
+import { API_KEY, AUTH_DOMAIN, DATABASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from '@env';
+apiKey            = API_KEY;
+authDomain        = AUTH_DOMAIN;
+databaseURL       = DATABASE_URL;
+projectId         = PROJECT_ID;
+storageBucket     = STORAGE_BUCKET;
+messagingSenderId = MESSAGING_SENDER_ID;
+appId             = APP_ID;
 
 const firebaseConfig = {
   apiKey:            apiKey,
@@ -113,7 +113,7 @@ async function get(collectionName, document, field) {
   //   );
   // }
   if (document && !await check(collectionName, document)) {
-    throw new Error("document doesn't exists.");
+    throw new Error("document doesn't exist.");
   }
   // if (field && !valid_fields.get(collectionName).has(field)) {
   //   throw new Error(`Invalid field: ${field}`);
@@ -158,7 +158,7 @@ async function update(collection, document, fields) {
   //   );
   // }
   if (!await check(collection, document)) {
-    throw new Error("document doesn't exists.");
+    throw new Error("document doesn't exist.");
   }
   // for (const key of Object.keys(fields)) {
   //   if (!valid_fields.get(collection).has(key)) {
@@ -182,7 +182,7 @@ async function remove(collection, document, field) {
   //   throw new Error("collection invalid.");
   // }
   if (!await check(collection, document)) {
-    throw new Error("document doesn't exists.");
+    throw new Error("document doesn't exist.");
   }
   const docRef = doc(db, collection, document);
   try {

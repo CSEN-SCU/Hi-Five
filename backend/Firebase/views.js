@@ -7,28 +7,28 @@ const viewsCollection = "views";
 
 // General functions:
 
-async function checkView(spotifyId) {
-  return await check(viewsCollection, spotifyId);
+async function checkView(userId) {
+  return await check(viewsCollection, userId);
 }
 
-async function addView(spotifyId, fields) {
-  await add(viewsCollection, spotifyId, fields);
+async function addView(userId, fields) {
+  await add(viewsCollection, userId, fields);
 }
 
 async function getViews() {
   return await get(viewsCollection);
 }
 
-async function getView(spotifyId, field) {
-  return await get(viewsCollection, spotifyId, field);
+async function getView(userId, field) {
+  return await get(viewsCollection, userId, field);
 }
 
-async function updateView(spotifyId, fields) {
-  await update(viewsCollection, spotifyId, fields);
+async function updateView(userId, fields) {
+  await update(viewsCollection, userId, fields);
 }
 
-async function removeView(spotifyId, field) {
-  await remove(viewsCollection, spotifyId, field);
+async function removeView(userId, field) {
+  await remove(viewsCollection, userId, field);
 }
 
 // TODO: Specialized functions

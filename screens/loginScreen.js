@@ -16,7 +16,7 @@ const LoginScreen = () => {
 
     return (<View style={styles.container}>
         <ImageBackground
-            source={require('../../../frontend/ReactNative/assets/concert.png')}
+            source={require('../assets/concert.png')}
             style={styles.background}
             imageStyle={{ opacity: 0.5 }}
         >

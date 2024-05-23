@@ -1,3 +1,4 @@
+import { createPlaylist, getSpotifyUserId, getUserDisplayName } from "../SpotifyAPI/functions.js";
 import { add, get, update, check, remove } from "./base.js";
 import { Timestamp } from "firebase/firestore/lite";
 
@@ -20,102 +21,116 @@ const usersCollection = "users";
 
 // General functions:
 
-async function checkUser(spotifyId) {
-  return await check(usersCollection, spotifyId);
+async function checkUser(userId) {
+  return await check(usersCollection, userId);
 }
 
-async function addUser(spotifyId, fields) {
-  await add(usersCollection, spotifyId, fields);
+async function addUser(userId, fields) {
+  await add(usersCollection, userId, fields);
 }
 
 async function getUsers() {
   return await get(usersCollection);
 }
 
-async function getUser(spotifyId, field) {
-  return await get(usersCollection, spotifyId, field);
+async function getUser(userId, field) {
+  return await get(usersCollection, userId, field);
 }
 
-async function updateUser(spotifyId, fields) {
-  await update(usersCollection, spotifyId, fields);
+async function updateUser(userId, fields) {
+  await update(usersCollection, userId, fields);
 }
 
-async function removeUser(spotifyId, field) {
-  await remove(usersCollection, spotifyId, field);
+async function removeUser(userId, field) {
+  await remove(usersCollection, userId, field);
 }
 
 // Specific functions:
 
-async function getUserAccessToken(spotifyId) {
-  return await getUser(spotifyId, "access_token");
+async function getUserAccessToken(userId) {
+  return await getUser(userId, "access_token");
 }
 
-async function getUserAppStreak(spotifyId) {
-  return await getUser(spotifyId, "app_streak");
+async function getUserAppStreak(userId) {
+  return await getUser(userId, "app_streak");
 }
 
-async function getUserExpirationTime(spotifyId) {
-  return await getUser(spotifyId, "expiration_time");
+async function getUserExpirationTime(userId) {
+  return await getUser(userId, "expiration_time");
 }
 
-async function getUserFollowing(spotifyId) {
-  return await getUser(spotifyId, "following");
+async function getUserFollowing(userId) {
+  return await getUser(userId, "following");
 }
 
-async function getUserPlaylistId(spotifyId) {
-  return await getUser(spotifyId, "playlist_id");
+async function getUserPlaylistId(userId) {
+  return await getUser(userId, "playlist_id");
 }
 
-async function getUserRefreshToken(spotifyId) {
-  return await getUser(spotifyId, "refresh_token");
+async function getUserRefreshToken(userId) {
+  return await getUser(userId, "refresh_token");
 }
 
-async function getUserSnapshotPlaylistId(spotifyId) {
-  return await getUser(spotifyId, "snapshot_playlist_id");
+async function getUserSnapshotPlaylistId(userId) {
+  return await getUser(userId, "snapshot_playlist_id");
 }
 
-async function getUserUsername(spotifyId) {
-  return await getUser(spotifyId, "username");
+async function getUserUsername(userId) {
+  return await getUser(userId, "username");
 }
 
-async function updateUserAccessToken(spotifyId, accessToken) {
-  await updateUser(spotifyId, { access_token: accessToken });
+async function updateUserAccessToken(userId, accessToken) {
+  await updateUser(userId, { access_token: accessToken });
 }
 
-async function updateUserAppStreak(spotifyId, appStreak) {
-  await updateUser(spotifyId, { app_streak: appStreak });
+async function updateUserAppStreak(userId, appStreak) {
+  await updateUser(userId, { app_streak: appStreak });
 }
 
-async function updateUserExpirationTime(spotifyId, expirationTime) {
-  await updateUser(spotifyId, { expiration_time: expirationTime }); // Timestamp.now() + 
+async function updateUserExpirationTime(userId, expirationTime) {
+  await updateUser(userId, { expiration_time: expirationTime }); // Timestamp.now() + 
 }
 
-async function updateUserFollowing(spotifyId, following) {
-  await updateUser(spotifyId, { following: following });
+async function updateUserFollowing(userId, following) {
+  await updateUser(userId, { following: following });
 }
 
-async function updateUserPlaylistId(spotifyId, playlistId) {
-  await updateUser(spotifyId, { playlist_id: playlistId });
+async function updateUserPlaylistId(userId, playlistId) {
+  await updateUser(userId, { playlist_id: playlistId });
 }
 
-async function updateUserRefreshToken(spotifyId, refreshToken) {
-  await updateUser(spotifyId, { refresh_token: refreshToken });
+async function updateUserRefreshToken(userId, refreshToken) {
+  await updateUser(userId, { refresh_token: refreshToken });
 }
 
-async function updateUserSnapshotPlaylistId(spotifyId, snapshotPlaylistId) {
-  await updateUser(spotifyId, { snapshot_playlist_id: snapshotPlaylistId });
+async function updateUserSnapshotPlaylistId(userId, snapshotPlaylistId) {
+  await updateUser(userId, { snapshot_playlist_id: snapshotPlaylistId });
 }
 
-async function updateUserUsername(spotifyId, username) {
-  await updateUser(spotifyId, { username: username });
+async function updateUserUsername(userId, username) {
+  await updateUser(userId, { username: username });
 }
 
 // TODO: Specialized functions
 
-async function updateUserExpirationUsingNow(spotifyId, expirationTime) {
+async function addUserUsingAccessTokenAndDefaults(userId, accessToken) {
+  await addUser(userId, {
+    access_token: accessToken,
+    app_streak: 0,
+    expiration_time: undefined,
+    following: [],
+    playlist_id: undefined,
+    refresh_token: undefined,
+    snapshot_playlist_id: undefined,
+    username: await getUserDisplayName(userId)
+  });
+  await refreshAccessToken(accessToken);
+}
+
+async function updateUserExpirationUsingNow(userId, expirationTime) {
   let timestamp =  Timestamp.now();
   timestamp = new Timestamp(timestamp.seconds + expirationTime, timestamp.nanoseconds);
-  await updateUser(spotifyId, { expiration_time: timestamp });
+  await updateUser(userId, { expiration_time: timestamp });
 }
 
 export {
@@ -142,5 +157,6 @@ export {
   updateUserSnapshotPlaylistId,
   updateUserUsername,
   Timestamp,
+  addUserUsingAccessTokenAndDefaults,
   updateUserExpirationUsingNow
 };

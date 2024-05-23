@@ -19,37 +19,37 @@ const Feed = ({ navigation }) => {
 
     const posts = [
         {
-            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            profilePic: require('../assets/concert.png'),
             username: 'johnjohn',
-            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songCover: require('../assets/heros-cover.png'),
             songTitle: 'Superhero',
             songArtist: 'Metro Boomin, Future, Chris Brown'
         },
         {
-            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            profilePic: require('../assets/concert.png'),
             username: 'johnjohn',
-            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songCover: require('../assets/heros-cover.png'),
             songTitle: 'Superhero',
             songArtist: 'Metro Boomin, Future, Chris Brown'
         },
         {
-            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            profilePic: require('../assets/concert.png'),
             username: 'johnjohn',
-            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songCover: require('../assets/heros-cover.png'),
             songTitle: 'Superhero',
             songArtist: 'Metro Boomin, Future, Chris Brown'
         },
         {
-            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            profilePic: require('../assets/concert.png'),
             username: 'johnjohn',
-            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songCover: require('../assets/heros-cover.png'),
             songTitle: 'Superhero',
             songArtist: 'Metro Boomin, Future, Chris Brown'
         },
         {
-            profilePic: require('../../../frontend/ReactNative/assets/concert.png'),
+            profilePic: require('../assets/concert.png'),
             username: 'johnjohn',
-            songCover: require('../../../frontend/ReactNative/assets/heros-cover.png'),
+            songCover: require('../assets/heros-cover.png'),
             songTitle: 'Superhero',
             songArtist: 'Metro Boomin, Future, Chris Brown'
         },

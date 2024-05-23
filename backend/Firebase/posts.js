@@ -19,65 +19,65 @@ const generateRandomString = (length) => {
 
 // General functions:
 
-async function checkPost(spotifyId) {
-  return await check(postsCollection, spotifyId);
+async function checkPost(userId) {
+  return await check(postsCollection, userId);
 }
 
-async function addPost(spotifyId, fields) {
-  await add(postsCollection, spotifyId, fields);
+async function addPost(userId, fields) {
+  await add(postsCollection, userId, fields);
 }
 
 async function getPosts() {
   return await get(postsCollection);
 }
 
-async function getPost(spotifyId, field) {
-  return await get(postsCollection, spotifyId, field);
+async function getPost(userId, field) {
+  return await get(postsCollection, userId, field);
 }
 
-async function updatePost(spotifyId, fields) {
-  await update(postsCollection, spotifyId, fields);
+async function updatePost(userId, fields) {
+  await update(postsCollection, userId, fields);
 }
 
-async function removePost(spotifyId, field) {
-  await remove(postsCollection, spotifyId, field);
+async function removePost(userId, field) {
+  await remove(postsCollection, userId, field);
 }
 
 // TODO: Specialized functions
 
-async function addPostId(spotifyId, trackId) {
-  while ((await getPostIdCount(spotifyId)) >= 14) {
-    await removeOldestPostId(spotifyId);
+async function addPostId(userId, trackId) {
+  while ((await getPostIdCount(userId)) >= 14) {
+    await removeOldestPostId(userId);
   }
-  const postIdKeys = Object.keys(await getPost(spotifyId));
+  const postIdKeys = Object.keys(await getPost(userId));
   let newPostId;
   do {
     newPostId = generateRandomString(6);
   } while (postIdKeys.includes(newPostId));
-  await updatePost(spotifyId, { [newPostId]: { date: Timestamp.now(), track_id: trackId } });
+  await updatePost(userId, { [newPostId]: { date: Timestamp.now(), track_id: trackId } });
 }
 
-async function getPostIdCount(spotifyId) {
-  return Object.keys(await getPost(spotifyId)).length;
+async function getPostIdCount(userId) {
+  return Object.keys(await getPost(userId)).length;
 }
 
-async function removeOldestPostId(spotifyId) {
-  if (!(await checkPost(spotifyId))) {
+async function removeOldestPostId(userId) {
+  if (!(await checkPost(userId))) {
     return;
   }
-  const postIds = await getPost(spotifyId);
+  const postIds = await getPost(userId);
   const postIdKeys = Object.keys(postIds);
   if (postIdKeys.length == 0) {
     return;
   }
-  await removePost(spotifyId, postIdKeys[0]);
+  await removePost(userId, postIdKeys[0]);
   // let oldestPostIdKey = postIdKeys[0];
   // for (const postIdKey of postIdKeys) {
   //   if (postIds[postIdKey].date.seconds < postIds[oldestPostIdKey].date.seconds) {
   //     oldestPostIdKey = postIdKey;
   //   }
   // }
-  // removePost(spotifyId, oldestPostIdKey);
+  // removePost(userId, oldestPostIdKey);
 }
 
 export { checkPost, addPost, getPosts, getPost, updatePost, removePost, addPostId, getPostIdCount, removeOldestPostId };

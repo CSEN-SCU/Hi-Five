@@ -21,7 +21,7 @@ const UserPost = () => {
             {posted ? (
                 <Image
                     style={styles.song_cover}
-                    source={require('../../../frontend/ReactNative/assets/heros-cover.png')}
+                    source={require('../assets/heros-cover.png')}
                 />
             ) : (
                 <View style={styles.music_icon_container}>

@@ -9,10 +9,7 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// DEBUG
-import AuthorizationButton from './backendTest2.js';
-// import { startListener } from '../../backend/backend.js'
-// startListener();
+import AuthorizationButton from './integration_test.js'; // DEBUG
 
 const Stack = createNativeStackNavigator();
 
