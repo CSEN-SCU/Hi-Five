@@ -4,12 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as AuthSession from 'expo-auth-session';
 import { useAuthorizationCodeGrant } from './backend/SpotifyAPI/functions.js';
 
-import { CLIENT_ID } from '@env'
+import { CLIENT_ID, REDIRECT_URI } from '@env'
+
+const scopes = ["user-top-read", "user-read-private", "playlist-modify-public", "playlist-modify-private", "user-read-recently-played", "user-library-read", "user-library-modify"];
 
 const config = {
-  clientId: CLIENT_ID,
-  redirectUri: AuthSession.makeRedirectUri({ scheme: 'hi-five' }), // "hi-five://auth"
-  scopes: ["user-top-read", "user-read-private", "playlist-modify-public", "playlist-modify-private", "user-read-recently-played", "user-library-read", "user-library-modify"],
+  clientId:    CLIENT_ID,
+  redirectUri: REDIRECT_URI, // AuthSession.makeRedirectUri({ scheme: 'hi-five' })
+  scopes:      scopes,
 };
 
 const discovery = {

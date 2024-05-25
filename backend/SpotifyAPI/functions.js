@@ -8,10 +8,88 @@ console.log("functions.js");
 //    user-library-write
 
 import { getUserAccessToken, updateUserPlaylistId, updateUserSnapshotPlaylistId, getUserExpirationTime, updateUserExpirationUsingNow, getUserRefreshToken, updateUserAccessToken, Timestamp, getUserPlaylistId } from '../Firebase/users.js' 
-import SpotifyWebApi from "spotify-web-api-node";
+// import SpotifyWebApi from "spotify-web-api-node";
 import { addUserUsingAuthorizationCodeGrant } from "../Firebase/users.js"
 
-let clientId, clientSecret, redirectUri;
+
+
+
+
+
+
+
+
+
+
+import base64 from 'react-native-base64';
+import { URLSearchParams } from 'react-native-url-polyfill';
+
+async function refreshAccessToken(userId) {
+  console.log("refreshAccessToken(userId)"); // DEBUG
+  var expiration_time = await getUserExpirationTime(userId);
+  if (expiration_time && (expiration_time < Timestamp.now())) return await getUserAccessToken(userId);
+  else {
+    const refreshToken = await getUserRefreshToken(userId); // TODO: what if user doesn't have a refresh token?
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + base64.encode('your_client_id' + ':' + 'your_client_secret')
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken
+      })
+    });
+    const data = await response.json();
+    let accessToken = data.access_token;
+    await updateUserAccessToken(userId, accessToken);
+    await updateUserExpirationUsingNow(userId, data.expires_in * 1000);
+    return accessToken;
+  }
+};
+
+async function useAuthorizationCodeGrant(code) {
+  const response = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + base64.encode('your_client_id' + ':' + 'your_client_secret')
+    },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: 'your_redirect_uri'
+    })
+  });
+  const data = await response.json();
+  await addUserUsingAuthorizationCodeGrant(data);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// let clientId, clientSecret, redirectUri;
 
 // Node.js environment
 // clientId     = process.env.CLIENT_ID;
@@ -19,40 +97,59 @@ let clientId, clientSecret, redirectUri;
 // redirectUri  = process.env.REDIRECT_URI;
 
 // React Native environment
-import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '@env';
-clientId     = CLIENT_ID;
-clientSecret = CLIENT_SECRET;
-redirectUri  = REDIRECT_URI;
+// import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '@env';
+// clientId     = CLIENT_ID;
+// clientSecret = CLIENT_SECRET;
+// redirectUri  = REDIRECT_URI;
 
-const spotifyAuthAPI = new SpotifyWebApi({
-  clientId:     clientId,
-  clientSecret: clientSecret,
-  redirectUri:  redirectUri,
-});
+// const spotifyAuthAPI = new SpotifyWebApi({
+//   clientId:     clientId,
+//   clientSecret: clientSecret,
+//   redirectUri:  redirectUri,
+// });
 
-console.log(SpotifyWebApi)
-console.log(spotifyAuthAPI)
+// console.log(SpotifyWebApi)
+// console.log(spotifyAuthAPI)
+// spotifyAuthAPI.setRefreshToken(""); // await getUserRefreshToken(user_id)
+// await spotifyAuthAPI.refreshAccessToken();
+// spotifyAuthAPI.resetRefreshToken();
+// console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(spotifyAuthAPI)));
 
-async function refreshAccessToken(userId) {
-  console.log("refreshAccessToken(userId)"); // DEBUG
-  var expiration_time = await getUserExpirationTime(userId);
-  if (expiration_time && (expiration_time < Timestamp.now())) return await getUserAccessToken(userId);
-  else {
-    spotifyAuthAPI.setRefreshToken(await getUserRefreshToken(userId)); // TODO: what if user doesn't have a refresh token?
-    const data = await spotifyAuthAPI.refreshAccessToken();
-    spotifyAuthAPI.resetRefreshToken();
-    let accessToken = data.body["access_token"];
-    await updateUserAccessToken(userId, accessToken);
-    await updateUserExpirationUsingNow(userId, data.body["expires_in"] * 1000);
-    return accessToken;
+
+
+// async function refreshAccessToken(userId) {
+//   console.log("refreshAccessToken(userId)"); // DEBUG
+//   var expiration_time = await getUserExpirationTime(userId);
+//   if (expiration_time && (expiration_time < Timestamp.now())) return await getUserAccessToken(userId);
+//   else {
+//     spotifyAuthAPI.setRefreshToken(await getUserRefreshToken(userId)); // TODO: what if user doesn't have a refresh token?
+//     const data = await spotifyAuthAPI.refreshAccessToken();
+//     spotifyAuthAPI.resetRefreshToken();
+//     let accessToken = data.body["access_token"];
+//     await updateUserAccessToken(userId, accessToken);
+//     await updateUserExpirationUsingNow(userId, data.body["expires_in"] * 1000);
+//     return accessToken;
+//   }
+// };
+
+// async function getAuthorizationLink() {
+//   spotifyAuthAPI.createAuthorizeURL(scopes, generateRandomString(16));
+// }
+
+// async function useAuthorizationCodeGrant(code) {
+//   await spotifyAuthAPI.authorizationCodeGrant(code).then(async (data) => {
+//     await addUserUsingAuthorizationCodeGrant(data);
+//   });
+// }
+
+const generateRandomString = (length) => {
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let text = "";
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
+  return text;
 };
-
-async function useAuthorizationCodeGrant(code) {
-  await spotifyAuthAPI.authorizationCodeGrant(code).then(async (data) => {
-    await addUserUsingAuthorizationCodeGrant(data);
-  });
-}
 
 //this method is to get the spotify_id by utilizing the access token. This is done in the authorization phase in
 //order to get the key(spotify_id) in order to store the access token
@@ -367,6 +464,7 @@ async function getTrack(userId, trackUri) {
 
 export {
   useAuthorizationCodeGrant,
+  generateRandomString,
   getUserProfile,
   getSpotifyUserIdUsingAccessToken,
   getUserDisplayName,

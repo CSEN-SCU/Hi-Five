@@ -3,6 +3,8 @@
     "@babel/runtime": "^7.24.5",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "react-native-base64": "^0.2.1",
+    "react-native-url-polyfill": "^2.0.0",
     "request": "^2.88.2",
     "spotify-web-api-node": "^5.0.2"
   },
