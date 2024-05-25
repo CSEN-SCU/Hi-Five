@@ -11,6 +11,8 @@ import { getUserAccessToken, updateUserPlaylistId, updateUserSnapshotPlaylistId,
 import SpotifyWebApi from "spotify-web-api-node";
 import { addUserUsingAuthorizationCodeGrant } from "../Firebase/users.js"
 
+const scopes = ["user-top-read", "user-read-private", "playlist-modify-public", "playlist-modify-private", "user-read-recently-played", "user-library-read", "user-library-modify"];
+
 let clientId, clientSecret, redirectUri;
 
 // Node.js environment
@@ -30,8 +32,20 @@ const spotifyAuthAPI = new SpotifyWebApi({
   redirectUri:  redirectUri,
 });
 
+const generateRandomString = (length) => {
+  let text = "";
+  let possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
+
 console.log(SpotifyWebApi)
 console.log(spotifyAuthAPI)
+// console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(spotifyAuthAPI)));
 
 async function refreshAccessToken(userId) {
   console.log("refreshAccessToken(userId)"); // DEBUG
@@ -52,6 +66,10 @@ async function useAuthorizationCodeGrant(code) {
   await spotifyAuthAPI.authorizationCodeGrant(code).then(async (data) => {
     await addUserUsingAuthorizationCodeGrant(data);
   });
+}
+
+async function getAuthorizeURL() {
+  return spotifyAuthAPI.createAuthorizeURL(scopes, generateRandomString(16));
 }
 
 //this method is to get the spotify_id by utilizing the access token. This is done in the authorization phase in
@@ -366,7 +384,9 @@ async function getTrack(userId, trackUri) {
 }
 
 export {
+  generateRandomString,
   useAuthorizationCodeGrant,
+  getAuthorizeURL,
   getUserProfile,
   getSpotifyUserIdUsingAccessToken,
   getUserDisplayName,
