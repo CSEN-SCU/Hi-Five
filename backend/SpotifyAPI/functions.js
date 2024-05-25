@@ -9,6 +9,7 @@ console.log("functions.js");
 
 import { getUserAccessToken, updateUserPlaylistId, updateUserSnapshotPlaylistId, getUserExpirationTime, updateUserExpirationUsingNow, getUserRefreshToken, updateUserAccessToken, Timestamp, getUserPlaylistId } from '../Firebase/users.js' 
 import SpotifyWebApi from "spotify-web-api-node";
+import { addUserUsingAuthorizationCodeGrant } from "../Firebase/users.js"
 
 let clientId, clientSecret, redirectUri;
 
@@ -29,6 +30,9 @@ const spotifyAuthAPI = new SpotifyWebApi({
   redirectUri:  redirectUri,
 });
 
+console.log(SpotifyWebApi)
+console.log(spotifyAuthAPI)
+
 async function refreshAccessToken(userId) {
   console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
@@ -43,6 +47,12 @@ async function refreshAccessToken(userId) {
     return accessToken;
   }
 };
+
+async function useAuthorizationCodeGrant(code) {
+  await spotifyAuthAPI.authorizationCodeGrant(code).then(async (data) => {
+    await addUserUsingAuthorizationCodeGrant(data);
+  });
+}
 
 //this method is to get the spotify_id by utilizing the access token. This is done in the authorization phase in
 //order to get the key(spotify_id) in order to store the access token
@@ -356,6 +366,7 @@ async function getTrack(userId, trackUri) {
 }
 
 export {
+  useAuthorizationCodeGrant,
   getUserProfile,
   getSpotifyUserIdUsingAccessToken,
   getUserDisplayName,

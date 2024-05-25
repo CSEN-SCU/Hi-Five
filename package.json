@@ -29,7 +29,8 @@
     "react-native-paper": "^5.12.3",
     "react-native-slider": "^0.11.0",
     "react-native-tab-view": "^3.5.2",
-    "react-native-vector-icons": "^10.0.3"
+    "react-native-vector-icons": "^10.0.3",
+    "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

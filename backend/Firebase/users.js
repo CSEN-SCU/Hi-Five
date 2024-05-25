@@ -113,24 +113,23 @@ async function updateUserUsername(userId, username) {
 
 // TODO: Specialized functions
 
-async function addUserUsingAccessTokenAndDefaults(userId, accessToken) {
+async function addUserUsingAuthorizationCodeGrant(userId, data) {
+  let now =  Timestamp.now();
   await addUser(userId, {
-    access_token: accessToken,
-    app_streak: 0,
-    expiration_time: undefined,
-    following: [],
-    playlist_id: undefined,
-    refresh_token: undefined,
-    snapshot_playlist_id: undefined,
-    username: await getUserDisplayName(userId)
+    access_token: data.body["access_token"],
+    app_streak: 5,
+    expiration_time: new Timestamp(now.seconds + data.body["expires_in"] * 1000, now.nanoseconds),
+    friends: [],
+    playlist_id: "",
+    refresh_token: data.body["refresh_token"],
+    snapshot_playlist_id: "",
+    username: userName,
   });
-  await refreshAccessToken(accessToken);
 }
 
 async function updateUserExpirationUsingNow(userId, expirationTime) {
-  let timestamp =  Timestamp.now();
-  timestamp = new Timestamp(timestamp.seconds + expirationTime, timestamp.nanoseconds);
-  await updateUser(userId, { expiration_time: timestamp });
+  let now =  Timestamp.now();
+  await updateUser(userId, { expiration_time: new Timestamp(now.seconds + expirationTime, now.nanoseconds) });
 }
 
 export {
@@ -157,6 +156,6 @@ export {
   updateUserSnapshotPlaylistId,
   updateUserUsername,
   Timestamp,
-  addUserUsingAccessTokenAndDefaults,
+  addUserUsingAuthorizationCodeGrant,
   updateUserExpirationUsingNow
 };
