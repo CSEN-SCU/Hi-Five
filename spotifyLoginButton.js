@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Modal, View, Button, Platform, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useAuthorizationCode, getAuthorizationUrl, generateRandomString } from './backend/SpotifyAPI/auth.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { REDIRECT_URI } from '@env'
 
 const SpotifyLoginButton = () => {
@@ -23,7 +24,9 @@ const SpotifyLoginButton = () => {
   const handleNavigationChange = async (event) => {
     // console.log("handleNavigationChange event", event);
     if (!event.url.startsWith(REDIRECT_URI)) return true;
-    useAuthorizationCode((new URL(event.url)).searchParams.get('code'), codeVerifier); // await if needed
+    useAuthorizationCode((new URL(event.url)).searchParams.get('code'), codeVerifier).then(response => {
+      AsyncStorage.setItem('global_access_token', response);
+    });
     setModalVisible(false);
     return false;
   };
