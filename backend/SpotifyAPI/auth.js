@@ -94,7 +94,7 @@ async function useAuthorizationCode(code, codeVerifier) {
     let username = await getUserDisplayNameUsingAccessToken(accessToken)
     await addUserUsingAuthorizationCode(userId, username, data);
   }
-  return accessToken;
+  return userId;
 }
 
 async function getSpotifyUserIdUsingAccessToken(accessToken) {

@@ -25,7 +25,7 @@ const SpotifyLoginButton = () => {
     // console.log("handleNavigationChange event", event);
     if (!event.url.startsWith(REDIRECT_URI)) return true;
     useAuthorizationCode((new URL(event.url)).searchParams.get('code'), codeVerifier).then(response => {
-      AsyncStorage.setItem('global_access_token', response);
+      AsyncStorage.setItem('global_user_id', response);
     });
     setModalVisible(false);
     return false;
