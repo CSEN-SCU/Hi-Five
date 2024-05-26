@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import SpotifyLoginButton from './integration_test.js'; // DEBUG
+import SpotifyLoginButton from './spotifyLoginButton.js'; // DEBUG
 
 const Stack = createNativeStackNavigator();
 

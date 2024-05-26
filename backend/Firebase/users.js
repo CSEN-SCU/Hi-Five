@@ -1,4 +1,3 @@
-import { createPlaylist, getSpotifyUserIdUsingAccessToken, getUserDisplayNameUsingAccessToken } from "../SpotifyAPI/functions.js";
 import { add, get, update, check, remove } from "./base.js";
 import { Timestamp } from "firebase/firestore/lite";
 
@@ -113,22 +112,12 @@ async function updateUserUsername(userId, username) {
 
 // TODO: Specialized functions
 
-async function addUserUsingAuthorizationCodeGrant(userId, data) {
-  console.log("data", data)
+async function addUserUsingAuthorizationCode(userId, username, data) {
+  console.log("addUserUsingAuthorizationCode data", data)
   let now =  Timestamp.now();
   let accessToken = data["access_token"];
   let expiresIn = data["expires_in"] * 1000;
   let refreshToken = data["refresh_token"];
-  // console.log(userId, {
-  //   access_token: accessToken,
-  //   app_streak: 5,
-  //   expiration_time: new Timestamp(now.seconds + expiresIn, now.nanoseconds),
-  //   friends: [],
-  //   playlist_id: "",
-  //   refresh_token: refreshToken,
-  //   snapshot_playlist_id: "",
-  //   username: await getUserDisplayName(userId),
-  // });
   await addUser(userId, {
     access_token: accessToken,
     app_streak: 5,
@@ -137,7 +126,7 @@ async function addUserUsingAuthorizationCodeGrant(userId, data) {
     playlist_id: "",
     refresh_token: refreshToken,
     snapshot_playlist_id: "",
-    username: await getUserDisplayNameUsingAccessToken(accessToken),
+    username: username,
   });
 }
 
@@ -170,6 +159,6 @@ export {
   updateUserSnapshotPlaylistId,
   updateUserUsername,
   Timestamp,
-  addUserUsingAuthorizationCodeGrant,
+  addUserUsingAuthorizationCode,
   updateUserExpirationUsingNow
 };
