@@ -75,15 +75,16 @@ async function check(collection, document) {
 }
 
 async function add(collection, document, fields) {
+  console.log("adding", collection, document, fields)
   // if (collection === undefined) throw new Error("Collection is undefined.");
   // if (document === undefined) throw new Error("Document is undefined.");
   // if (fields === undefined) throw new Error("Fields are undefined.");
   // if (!valid_fields.has(collection)) {
   //   throw new Error("collection invalid.");
   // }
-  if (await check(collection, document)) {
-    throw new Error("document already exists.");
-  }
+  // if (await check(collection, document)) {
+  //   throw new Error("document already exists.");
+  // }
   const fieldsKeys = Object.keys(fields);
   // if (
   //   fieldsKeys.length !== valid_fields.get(collection).size ||

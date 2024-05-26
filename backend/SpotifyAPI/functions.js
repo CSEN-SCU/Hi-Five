@@ -1,50 +1,41 @@
 console.log("functions.js");
 
-//Requires these scopes:
-//    playlist-modify-public
-//    playlist-modify-private
-//    user-read-recently-played
-//    user-library-read
-//    user-library-write
-
-import { getUserAccessToken, updateUserPlaylistId, updateUserSnapshotPlaylistId, getUserExpirationTime, updateUserExpirationUsingNow, getUserRefreshToken, updateUserAccessToken, Timestamp, getUserPlaylistId } from '../Firebase/users.js' 
-// import SpotifyWebApi from "spotify-web-api-node";
-import { addUserUsingAuthorizationCodeGrant } from "../Firebase/users.js"
-
-
-
-
-
-
-
-
-
-
-
+import { checkUser, getUserAccessToken, updateUserPlaylistId, updateUserSnapshotPlaylistId, getUserExpirationTime, updateUserExpirationUsingNow, getUserRefreshToken, updateUserAccessToken, Timestamp, getUserPlaylistId, updateUserRefreshToken, addUserUsingAuthorizationCodeGrant } from '../Firebase/users.js' 
 import base64 from 'react-native-base64';
-import { URLSearchParams } from 'react-native-url-polyfill';
+import qs from 'qs';
+
+import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '@env'
+
+import { _codeVerifier } from '../../integration_test.js';
 
 async function refreshAccessToken(userId) {
   console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
   if (expiration_time && (expiration_time < Timestamp.now())) return await getUserAccessToken(userId);
   else {
-    const refreshToken = await getUserRefreshToken(userId); // TODO: what if user doesn't have a refresh token?
+    let refreshToken = await getUserRefreshToken(userId);
+    console.log("refreshToken", refreshToken);
+    console.log("CLIENT_ID", CLIENT_ID);
     const response = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + base64.encode('your_client_id' + ':' + 'your_client_secret')
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: new URLSearchParams({
+      body: qs.stringify({
         grant_type: 'refresh_token',
-        refresh_token: refreshToken
+        refresh_token: refreshToken,
+        client_id: CLIENT_ID
       })
     });
     const data = await response.json();
     let accessToken = data.access_token;
-    await updateUserAccessToken(userId, accessToken);
-    await updateUserExpirationUsingNow(userId, data.expires_in * 1000);
+    refreshToken = data.refresh_token;
+    console.log("refreshAccessToken data", data);
+    await Promise.all([
+      updateUserAccessToken(userId, accessToken),
+      updateUserRefreshToken(userId, refreshToken),
+      updateUserExpirationUsingNow(userId, data.expires_in * 1000)
+    ]);
     return accessToken;
   }
 };
@@ -54,93 +45,27 @@ async function useAuthorizationCodeGrant(code) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + base64.encode('your_client_id' + ':' + 'your_client_secret')
     },
-    body: new URLSearchParams({
+    body: qs.stringify({
       grant_type: 'authorization_code',
       code: code,
-      redirect_uri: 'your_redirect_uri'
+      redirect_uri: REDIRECT_URI,
+      client_id: CLIENT_ID,
+      code_verifier: _codeVerifier
     })
   });
   const data = await response.json();
-  await addUserUsingAuthorizationCodeGrant(data);
+  let accessToken = data["access_token"];
+  let userId = await getSpotifyUserIdUsingAccessToken(accessToken);
+  console.log("useAuthorizationCodeGrant data", data);
+  if (await checkUser(userId)) {
+    await updateUserAccessToken(userId, accessToken);
+    await updateUserExpirationUsingNow(userId, data["expires_in"] * 1000);
+    await updateUserRefreshToken(userId, data["refresh_token"]);
+  } else {
+    await addUserUsingAuthorizationCodeGrant(userId, data);
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// let clientId, clientSecret, redirectUri;
-
-// Node.js environment
-// clientId     = process.env.CLIENT_ID;
-// clientSecret = process.env.CLIENT_SECRET;
-// redirectUri  = process.env.REDIRECT_URI;
-
-// React Native environment
-// import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '@env';
-// clientId     = CLIENT_ID;
-// clientSecret = CLIENT_SECRET;
-// redirectUri  = REDIRECT_URI;
-
-// const spotifyAuthAPI = new SpotifyWebApi({
-//   clientId:     clientId,
-//   clientSecret: clientSecret,
-//   redirectUri:  redirectUri,
-// });
-
-// console.log(SpotifyWebApi)
-// console.log(spotifyAuthAPI)
-// spotifyAuthAPI.setRefreshToken(""); // await getUserRefreshToken(user_id)
-// await spotifyAuthAPI.refreshAccessToken();
-// spotifyAuthAPI.resetRefreshToken();
-// console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(spotifyAuthAPI)));
-
-
-
-// async function refreshAccessToken(userId) {
-//   console.log("refreshAccessToken(userId)"); // DEBUG
-//   var expiration_time = await getUserExpirationTime(userId);
-//   if (expiration_time && (expiration_time < Timestamp.now())) return await getUserAccessToken(userId);
-//   else {
-//     spotifyAuthAPI.setRefreshToken(await getUserRefreshToken(userId)); // TODO: what if user doesn't have a refresh token?
-//     const data = await spotifyAuthAPI.refreshAccessToken();
-//     spotifyAuthAPI.resetRefreshToken();
-//     let accessToken = data.body["access_token"];
-//     await updateUserAccessToken(userId, accessToken);
-//     await updateUserExpirationUsingNow(userId, data.body["expires_in"] * 1000);
-//     return accessToken;
-//   }
-// };
-
-// async function getAuthorizationLink() {
-//   spotifyAuthAPI.createAuthorizeURL(scopes, generateRandomString(16));
-// }
-
-// async function useAuthorizationCodeGrant(code) {
-//   await spotifyAuthAPI.authorizationCodeGrant(code).then(async (data) => {
-//     await addUserUsingAuthorizationCodeGrant(data);
-//   });
-// }
 
 const generateRandomString = (length) => {
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -150,31 +75,6 @@ const generateRandomString = (length) => {
   }
   return text;
 };
-
-//this method is to get the spotify_id by utilizing the access token. This is done in the authorization phase in
-//order to get the key(spotify_id) in order to store the access token
-
-// async function getGlobalID()
-// {
-//   var spotifyId;
-
-//   await fetch('http://localhost:3000/id')
-//   .then((response) => {
-//         if (!response.ok) {
-//         throw new Error("Failed to get user profile");
-//         }
-//         return response.json();
-//     })
-//     .then((data) => {
-//         console.log(data);
-//         spotifyId = data.global_user_id;
-//         console.log("Spotify ID:", spotifyId);
-//         // Do something with the Spotify ID
-//     })
-//     .catch((error) => console.error("Error getting user profile:", error));
-//   console.log(typeof spotifyId);
-//   return spotifyId;
-// }
 
 async function getSpotifyUserIdUsingAccessToken(accessToken) {
   console.log("getSpotifyUserIdUsingAccessToken(accessToken)"); // DEBUG
@@ -189,25 +89,24 @@ async function getSpotifyUserIdUsingAccessToken(accessToken) {
   await fetch(url, options)
   .then((response) => {
       if (!response.ok) {
-        console.log(response)
+        console.log("response", response);
         throw new Error("Failed to get user profile");
       }
       return response.json();
   })
   .then((data) => {
-      console.log(data);
-      userProfile = data;
+      console.log("data.id", data.id);
+      userId = data.id;
   })
   .catch((error) => console.error("Error getting user profile:", error));
-  console.log(userProfile);
-  userProfile = data;
+  console.log("userId", userId);
+  return userId;
 }
 
-async function getUserProfile(userId) {
-  let accessToken = await refreshAccessToken(userId);
-  console.log("getUserProfile(userId)"); // DEBUG
+async function getUserDisplayNameUsingAccessToken(accessToken) {
+  console.log("getUserDisplayNameUsingAccessToken(accessToken)"); // DEBUG
   const url = "https://api.spotify.com/v1/me";
-  let userProfile;
+  let displayName;
   const options = {
     method: "GET",
     headers: {
@@ -223,16 +122,12 @@ async function getUserProfile(userId) {
       return response.json();
   })
   .then((data) => {
-      console.log(data);
-      userProfile = data;
+      console.log(data.display_name);
+      displayName = data.display_name;
   })
   .catch((error) => console.error("Error getting user profile:", error));
-  console.log(userProfile);
-  userProfile = data;
-}
-
-async function getUserDisplayName(userId) {
-  return (await getUserProfile(userId)).display_name;
+  console.log("displayName", displayName);
+  return displayName;
 }
 
 async function createPlaylist(userId) {
@@ -465,9 +360,8 @@ async function getTrack(userId, trackUri) {
 export {
   useAuthorizationCodeGrant,
   generateRandomString,
-  getUserProfile,
   getSpotifyUserIdUsingAccessToken,
-  getUserDisplayName,
+  getUserDisplayNameUsingAccessToken,
   createPlaylist,
   getPlaylist,
   addTrackToPlaylist,
