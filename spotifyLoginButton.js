@@ -5,8 +5,8 @@ import { useAuthorizationCode, getAuthorizationUrl, generateRandomString } from 
 import { REDIRECT_URI } from '@env'
 
 const SpotifyLoginButton = () => {
-  const [authUrl     , setAuthUrl     ] = useState(null );
-  const [codeVerifier, setCodeVerifier] = useState(null );
+  const [authUrl, setAuthUrl] = useState(null);
+  const [codeVerifier, setCodeVerifier] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   const initiateAuth = async () => {
@@ -36,7 +36,7 @@ const SpotifyLoginButton = () => {
           animationType="slide"
           transparent={false}
           visible={modalVisible}
-          onRequestClose={() => {setModalVisible(!modalVisible);}}
+          onRequestClose={() => { setModalVisible(!modalVisible); }}
         >
           {authUrl && (
             <WebView

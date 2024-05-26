@@ -87,7 +87,7 @@ async function updateUserAppStreak(userId, appStreak) {
 }
 
 async function updateUserExpirationTime(userId, expirationTime) {
-  await updateUser(userId, { expiration_time: expirationTime }); // Timestamp.now() + 
+  await updateUser(userId, { expiration_time: expirationTime });
 }
 
 async function updateUserFollowing(userId, following) {
