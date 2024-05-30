@@ -120,7 +120,7 @@ async function addUserUsingAuthorizationCode(userId, username, data) {
   let refreshToken = data["refresh_token"];
   await addUser(userId, {
     access_token: accessToken,
-    app_streak: 5,
+    app_streak: 0,
     expiration_time: new Timestamp(now.seconds + expiresIn, now.nanoseconds),
     following: [],
     playlist_id: "",
