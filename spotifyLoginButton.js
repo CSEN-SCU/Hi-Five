@@ -4,6 +4,8 @@ import { WebView } from 'react-native-webview';
 import { useAuthorizationCode, getAuthorizationUrl, generateRandomString } from './backend/SpotifyAPI/auth.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { REDIRECT_URI } from '@env'
+import { addFollowing, removeFollowing } from './backend/Firebase/users.js'; // DEBUG
+import { createPlaylist } from './backend/SpotifyAPI/functions.js'; // DEBUG
 
 const SpotifyLoginButton = () => {
   const [authUrl, setAuthUrl] = useState(null);
@@ -24,8 +26,22 @@ const SpotifyLoginButton = () => {
   const handleNavigationChange = async (event) => {
     // console.log("handleNavigationChange event", event);
     if (!event.url.startsWith(REDIRECT_URI)) return true;
-    useAuthorizationCode((new URL(event.url)).searchParams.get('code'), codeVerifier).then(response => {
-      AsyncStorage.setItem('global_user_id', response);
+    useAuthorizationCode((new URL(event.url)).searchParams.get('code'), codeVerifier).then(userId => {
+      AsyncStorage.setItem('global_user_id', userId);
+
+      createPlaylist(userId); // DEBUG
+
+      addFollowing(userId, 'idOfUserToFollow').then(() => { // DEBUG
+        console.log('Added to following');
+  
+        setTimeout(() => {
+          removeFollowing(userId, 'idOfUserToFollow').then(() => {
+            console.log('Removed from following');
+          });
+        }, 5000);
+      });
+
+
     });
     setModalVisible(false);
     return false;

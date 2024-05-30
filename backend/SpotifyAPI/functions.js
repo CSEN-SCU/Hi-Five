@@ -1,10 +1,10 @@
 console.log("functions.js");
 
-import { updateUserPlaylistId, updateUserSnapshotPlaylistId } from '../Firebase/users.js'
+import { getUserPlaylistId, updateUserPlaylistId, updateUserSnapshotPlaylistId } from '../Firebase/users.js'
 import { refreshAccessToken } from './auth.js'
 
 async function createPlaylist(userId) {
-  // console.log("createPlaylist(userId)"); // DEBUG
+  console.log("createPlaylist(userId)"); // DEBUG
   // console.log(`userId: ${userId}`);
 
   let playlistId = await getUserPlaylistId(userId);

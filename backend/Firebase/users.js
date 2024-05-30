@@ -135,6 +135,20 @@ async function updateUserExpirationUsingNow(userId, expirationTime) {
   await updateUser(userId, { expiration_time: new Timestamp(now.seconds + expirationTime, now.nanoseconds) });
 }
 
+async function addFollowing(userId, followingId) {
+  console.log("addFollowing(userId, followingId)"); // DEBUG
+  const currentFollowings = await getUserFollowing(userId);
+  if (!currentFollowings.includes(followingId)) {
+    currentFollowings.push(followingId);
+    await updateUser(userId, { following: currentFollowings });
+  }
+}
+
+async function removeFollowing(userId, followingId) {
+  const currentFollowings = await getUserFollowing(userId);
+  await updateUser(userId, { following: currentFollowings.filter(id => id !== followingId) });
+}
+
 export {
   checkUser,
   addUser,
@@ -160,5 +174,7 @@ export {
   updateUserUsername,
   Timestamp,
   addUserUsingAuthorizationCode,
-  updateUserExpirationUsingNow
+  updateUserExpirationUsingNow,
+  addFollowing,
+  removeFollowing
 };

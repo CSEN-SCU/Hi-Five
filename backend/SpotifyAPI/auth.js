@@ -36,13 +36,15 @@ async function getAuthorizationUrl(challenge) {
   return `https://accounts.spotify.com/authorize?response_type=code&client_id=${CLIENT_ID}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&code_challenge_method=S256&code_challenge=${await sha256Encode(challenge)}`;
 }
 
+// async function accessTokenIsExpired(accessToken) {}
+
 async function refreshAccessToken(userId) {
   // console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
-  if (expiration_time && (expiration_time < Timestamp.now())) return await getUserAccessToken(userId);
+  if (expiration_time && (expiration_time.seconds < Timestamp.now().seconds)) return await getUserAccessToken(userId);
   else {
     let refreshToken = await getUserRefreshToken(userId);
-    // console.log("refreshToken", refreshToken);
+    console.log("expirationTime expired, refreshing token.", expiration_time, Timestamp.now());
     // console.log("CLIENT_ID", CLIENT_ID);
     const response = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
