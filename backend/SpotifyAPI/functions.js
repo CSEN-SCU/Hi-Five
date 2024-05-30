@@ -4,7 +4,7 @@ import { getUserPlaylistId, updateUserPlaylistId, updateUserSnapshotPlaylistId }
 import { refreshAccessToken } from './auth.js'
 
 async function createPlaylist(userId) {
-  console.log("createPlaylist(userId)"); // DEBUG
+  // console.log("createPlaylist(userId)"); // DEBUG
   // console.log(`userId: ${userId}`);
 
   let playlistId = await getUserPlaylistId(userId);

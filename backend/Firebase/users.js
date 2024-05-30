@@ -136,7 +136,6 @@ async function updateUserExpirationUsingNow(userId, expirationTime) {
 }
 
 async function addFollowing(userId, followingId) {
-  console.log("addFollowing(userId, followingId)"); // DEBUG
   const currentFollowings = await getUserFollowing(userId);
   if (!currentFollowings.includes(followingId)) {
     currentFollowings.push(followingId);
