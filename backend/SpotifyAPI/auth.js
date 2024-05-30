@@ -44,7 +44,7 @@ async function refreshAccessToken(userId) {
   if (expiration_time && (expiration_time.seconds < Timestamp.now().seconds)) return await getUserAccessToken(userId);
   else {
     let refreshToken = await getUserRefreshToken(userId);
-    console.log("expirationTime expired, refreshing token.", expiration_time, Timestamp.now());
+    // console.log("expirationTime expired, refreshing token.", expiration_time, Timestamp.now());
     // console.log("CLIENT_ID", CLIENT_ID);
     const response = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
