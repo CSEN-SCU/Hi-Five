@@ -122,7 +122,7 @@ async function addUserUsingAuthorizationCode(userId, username, data) {
     access_token: accessToken,
     app_streak: 5,
     expiration_time: new Timestamp(now.seconds + expiresIn, now.nanoseconds),
-    friends: [],
+    following: [],
     playlist_id: "",
     refresh_token: refreshToken,
     snapshot_playlist_id: "",

@@ -87,9 +87,11 @@ async function useAuthorizationCode(code, codeVerifier) {
   let userId = await getSpotifyUserIdUsingAccessToken(accessToken);
   // console.log("useAuthorizationCode data", data);
   if (await checkUser(userId)) {
-    await updateUserAccessToken(userId, accessToken);
-    await updateUserExpirationUsingNow(userId, data["expires_in"] * 1000);
-    await updateUserRefreshToken(userId, data["refresh_token"]);
+    await Promise.all([
+      updateUserAccessToken(userId, accessToken),
+      updateUserExpirationUsingNow(userId, data["expires_in"] * 1000),
+      updateUserRefreshToken(userId, data["refresh_token"])
+    ]);
   } else {
     let username = await getUserDisplayNameUsingAccessToken(accessToken)
     await addUserUsingAuthorizationCode(userId, username, data);
