@@ -30,22 +30,21 @@ function App() {
     );
 
     // return (
-    //     <AuthorizationButton></AuthorizationButton>
-    //     // <NavigationContainer>
-    //     //     <Stack.Navigator screenOptions={{ headerShown: false }}>
-    //     //         {isLoggedIn ? (
-    //     //             <>
-    //     //                 <Stack.Screen name="Feed" component={Feed} />
-    //     //                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-    //     //                 <Stack.Screen name="SongSelector" component={SongSelector} />
-    //     //                 <Stack.Screen name="FriendsList" component={FriendsList} />
-    //     //                 <Stack.Screen name="Playlist" component={Playlist} />
-    //     //             </>
-    //     //         ) : (
-    //     //                 <Stack.Screen name="LoginScreen" component={LoginScreen} />
-    //     //         )}
-    //     //     </Stack.Navigator>
-    //     // </NavigationContainer>        
+    //     <NavigationContainer>
+    //         <Stack.Navigator screenOptions={{ headerShown: false }}>
+    //             {isLoggedIn ? (
+    //                 <>
+    //                     <Stack.Screen name="Feed" component={Feed} />
+    //                     <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+    //                     <Stack.Screen name="SongSelector" component={SongSelector} />
+    //                     <Stack.Screen name="FriendsList" component={FriendsList} />
+    //                     <Stack.Screen name="Playlist" component={Playlist} />
+    //                 </>
+    //             ) : (
+    //                     <Stack.Screen name="LoginScreen" component={LoginScreen} />
+    //             )}
+    //         </Stack.Navigator>
+    //     </NavigationContainer>  
     // );
 }
 
