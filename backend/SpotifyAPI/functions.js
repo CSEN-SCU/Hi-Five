@@ -3,9 +3,17 @@ console.log("functions.js");
 import { updateUserPlaylistId, updateUserSnapshotPlaylistId } from '../Firebase/users.js'
 import { refreshAccessToken } from './auth.js'
 
+/**
+ * Function Name: createPlaylist
+ * Description: This function creates a playlist called Hi-Five playlist.
+ *
+ * @param {string} user_id - spotify ID
+ * @returns {JSON} unparsed data about the playlist
+ *
+ * Example:
+ * data = createPlaylist(user_id);
+ */
 async function createPlaylist(userId) {
-  // console.log("createPlaylist(userId)"); // DEBUG
-  // console.log(`userId: ${userId}`);
 
   let playlistId = await getUserPlaylistId(userId);
   if (await isValidPlaylist(userId, playlistId)) {
@@ -41,6 +49,17 @@ async function createPlaylist(userId) {
   return unparsedData;
 }
 
+/**
+ * Function Name: isValidPlaylist
+ * Description: This function checks to see if the playlist exists/valid
+ *
+ * @param {string} playlistId - playlist ID
+ * @param {string} user_id - spotify ID
+ * @returns {boolean} Returns true if the playlist exists; otherwise return false
+ *
+ * Example:
+ * isValidPlaylist(user_id, playlistId);
+ */
 async function isValidPlaylist(userId, playlistId) {
   let accessToken = await refreshAccessToken(userId);
   const headers = {
@@ -70,6 +89,17 @@ async function isValidPlaylist(userId, playlistId) {
   return false;
 }
 
+/**
+ * Function Name: getPlaylist
+ * Description: This function get the contents of the playlist.
+ *
+ * @param {string} user_id - spotify ID
+ * @param {string} playlist_id - playlist ID
+ * @returns {JSON} unparsed data about the playlist
+ *
+ * Example:
+ * data = getPlaylist(user_id);
+ */
 async function getPlaylist(userId, playlistId) {
   // console.log("getPlaylist(userId, playlistId)"); // DEBUG
   let accessToken = await refreshAccessToken(userId);
@@ -98,6 +128,18 @@ async function getPlaylist(userId, playlistId) {
   return unparsedData;
 }
 
+/**
+ * Function Name: addTrackToPlaylist
+ * Description: This function adds a song to a playlist.
+ *
+ * @param {string} user_id - spotify ID
+ * @param {string} song_uri - uri of the song
+ * @param {string} playlist_id - playlist ID
+ * @returns {string} the snapshot of the playlist 
+ *
+ * Example:
+ * snapshot = addMusicToPlaylist(user_id, song_uri, playlist_id);
+ */
 async function addTrackToPlaylist(userId, trackUri, playlistId) {
   // console.log("addTrackToPlaylist(userId, trackUri, playlistId)"); // DEBUG
   // console.log(userId, trackUri, playlistId);
@@ -127,6 +169,19 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
   return snapshotPlaylistId
 }
 
+/**
+ * Function Name: removeTrackFromPlaylist
+ * Description: This function removes a song from a playlist.
+ *
+ * @param {string} user_id - user ID
+ * @param {string} song_uri - uri of the song
+ * @param {string} playlist_id - playlist ID
+ * @param {string} snapshot - playlist ID
+ * @returns {string} the snapshot of the playlist
+ *
+ * Example:
+ * snapshot = deleteTrackFromPlaylist(user_id, playlist_id ,song_uri, snapshot);
+ */
 async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPlaylistId) {
   // console.log("removeTrackFromPlaylist(userId, playlistId, trackUri, snapshotPlaylistId)"); // DEBUG
   // console.log(userId, trackUri, snapshotPlaylistId);
@@ -158,6 +213,17 @@ async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPla
   return snapshotPlaylistId;
 }
 
+/**
+ * Function Name: findSongAndArtists
+ * Description: This function searches for a song.
+ *
+ * @param {string} user_id - user ID
+ * @param {string} searchTerm - song name or part of a song name
+ * @returns {JSON} the unparsed data of the searched tracks
+ *
+ * Example:
+ * search_list = findSongAndArtists(user_id, searchTerm);
+ */
 async function searchForTracks(userId, trackQuery) {
   // console.log("searchForTracks(userId, trackQuery)"); // DEBUG
   let accessToken = await refreshAccessToken(userId);
@@ -183,7 +249,16 @@ async function searchForTracks(userId, trackQuery) {
 
 }
 
-//scope: user-read-recently-played
+/**
+ * Function Name: recentlyPlayedTracks
+ * Description: This function gets the most recently played tracks.
+ *
+ * @param {string} user_id - user ID
+ * @returns {JSON} the unparsed data of the 20 most recently played tracks
+ *
+ * Example:
+ * recently_played_songs = recentlyPlayedTracks(user_id);
+ */
 async function getRecentlyPlayedTracks(userId) {
   // console.log("getRecentlyPlayedTracks(userId)"); // DEBUG
   let accessToken = await refreshAccessToken(userId);
@@ -208,6 +283,17 @@ async function getRecentlyPlayedTracks(userId) {
 
 }
 
+/**
+ * Function Name: getTrack
+ * Description: This function gets the track based on the track ID.
+ *
+ * @param {string} user_id - user ID
+ * @param {string} track_id - track ID
+ * @returns {JSON} gets the unparsed data of the track
+ *
+ * Example:
+ * track_data = getTrack(user_id, track_id);
+ */
 async function getTrack(userId, trackUri) {
   // console.log("getTrack(userId, trackUri)"); // DEBUG
   let accessToken = await refreshAccessToken(userId);

@@ -4,8 +4,19 @@ import { Buffer } from 'buffer';
 // import 'react-native-url-polyfill/auto';
 import { sha256 } from 'js-sha256';
 import { CLIENT_ID, REDIRECT_URI } from '@env'
+import { StringDecoder } from 'string_decoder';
 const scope = 'user-top-read user-read-private playlist-modify-public playlist-modify-private user-read-recently-played user-library-read user-library-modify';
 
+/**
+ * Function Name: generateRandomString
+ * Description: This function makes a random string.
+ *
+ * @param {int} length - length of random string
+ * @returns {string} random string
+ *
+ * Example:
+ * rand_string = generateRandomString(12);
+ */
 const generateRandomString = (length) => {
   // console.log("generateRandomString");
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -16,6 +27,16 @@ const generateRandomString = (length) => {
   return text;
 };
 
+/**
+ * Function Name: base64URLEncode
+ * Description: This function encodes a URL using base64.
+ *
+ * @param {string} str - a url
+ * @returns {string} encoded url
+ *
+ * Example:
+ * encoded_url = base64URLEncode(url);
+ */
 function base64URLEncode(str) {
   // console.log("base64URLEncode");
   return str
@@ -24,6 +45,16 @@ function base64URLEncode(str) {
     .replace(/=+$/, '');
 }
 
+/**
+ * Function Name: sha256Encode
+ * Description: This function encodes a plaintext using sha256.
+ *
+ * @param {string} plain - plaintext
+ * @returns {string} cryptext
+ *
+ * Example:
+ * encrpyted_text = sha256Encode(plain);
+ */
 function sha256Encode(plain) {
   // console.log("sha256Encode");
   const hash = sha256(plain);
@@ -31,11 +62,33 @@ function sha256Encode(plain) {
   return base64URLEncode(base64Hash);
 }
 
+/**
+ * Function Name: getAuthorizationUrl
+ * Description: This function will return the authorization endpoint for the Spotify API.
+ *
+ * @param {string} challenge - a block of characters that is used to confirm whether the authorization happened or not
+ * @returns {string} encrypted text
+ *
+ * Example:
+ * let challenge = "abcdefg";
+ * encoded_url = getAuthorizationUrl(challenge);
+ */
 async function getAuthorizationUrl(challenge) {
   // console.log("getAuthorizationUrl");
   return `https://accounts.spotify.com/authorize?response_type=code&client_id=${CLIENT_ID}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&code_challenge_method=S256&code_challenge=${await sha256Encode(challenge)}`;
 }
 
+/**
+ * Function Name: refreshAccessToken
+ * Description: This function will refresh the authentication f.
+ *
+ * @param {string} challenge - a block of characters that is used to confirm whether the authorization happened or not
+ * @returns {string} encrypted text
+ *
+ * Example:
+ * let challenge = "abcdefg";
+ * encoded_url = getAuthorizationUrl(challenge);
+ */
 async function refreshAccessToken(userId) {
   // console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
@@ -68,6 +121,17 @@ async function refreshAccessToken(userId) {
   }
 };
 
+/**
+ * Function Name: refreshAccessToken
+ * Description: This function will refresh the authentication f.
+ *
+ * @param {string} challenge - a block of characters that is used to confirm whether the authorization happened or not
+ * @returns {string} encrypted text
+ *
+ * Example:
+ * let challenge = "abcdefg";
+ * encoded_url = getAuthorizationUrl(challenge);
+ */
 async function useAuthorizationCode(code, codeVerifier) {
   const response = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
