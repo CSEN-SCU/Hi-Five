@@ -40,7 +40,7 @@ const SongCard = ({ songCover, songTitle, songArtist, trackUri }) => {
                         </TouchableOpacity>
                         <Image
                             style={styles.modal_song_cover}
-                            source={songCover}
+                            source={{ uri: songCover }}
                         />
                         <Text style={styles.modal_song_text}>{songTitle}</Text>
                         <Text style={styles.modal_artist_text}>{songArtist}</Text>

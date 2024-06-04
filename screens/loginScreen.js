@@ -41,19 +41,23 @@ const LoginScreen = ({ login }) => {
     setModalVisible(true);
   };
 
-  const handleNavigationChange = async (event) => {
-    // console.log("handleNavigationChange event", event);
-    if (!event.url.startsWith(REDIRECT_URI)) return true;
-    setModalVisible(false);
-    useAuthorizationCode(
-      new URL(event.url).searchParams.get("code"),
-      codeVerifier
-    ).then((userId) => {
-      AsyncStorage.setItem("global_user_id", userId);
-    });
-    login();
-    return false;
-  };
+    const handleNavigationChange = async (event) => {
+        if (!event.url.startsWith(REDIRECT_URI)) return true;
+        try {
+            setModalVisible(false);
+            const userId = await useAuthorizationCode(
+                new URL(event.url).searchParams.get("code"),
+                codeVerifier
+            );
+            console.log('User ID:', userId);
+            await AsyncStorage.setItem("global_user_id", userId);
+            console.log('User ID set in AsyncStorage');
+        } catch (error) {
+            console.error('Error setting user ID:', error);
+        }
+        login();
+        return false;
+    };
 
   let [fontsLoaded] = useFonts({
     Poppins_700Bold,
