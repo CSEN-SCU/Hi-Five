@@ -10,6 +10,10 @@ const SongCard = ({ trackUri, songCover, songTitle, songArtist }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const navigation = useNavigation();
 
+    const truncateString = (str, maxLength) => {
+        return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
+    };
+
     const handlePost = async () => {
         setModalVisible(false);
         const userId = await AsyncStorage.getItem('global_user_id');
@@ -63,8 +67,8 @@ const SongCard = ({ trackUri, songCover, songTitle, songArtist }) => {
                                     style={styles.modal_song_cover}
                                     source={{ uri: songCover }}
                                 />
-                                <Text style={styles.modal_song_text}>{songTitle}</Text>
-                                <Text style={styles.modal_artist_text}>{songArtist}</Text>
+                                <Text style={styles.modal_song_text}>{truncateString(songTitle, 30)}</Text>
+                                <Text style={styles.modal_artist_text}>{truncateString(songArtist, 30)}</Text>
 
                                 <TouchableOpacity
                                     style={{ ...styles.postButton, backgroundColor: "#FFFFFF" }}
