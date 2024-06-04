@@ -41,7 +41,7 @@ async function getAuthorizationUrl(challenge) {
 async function refreshAccessToken(userId) {
   // console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
-  
+  console.log("expiration_time.seconds", expiration_time.seconds, "Timestamp.now().seconds", Timestamp.now().seconds); // DEBUG
   if (expiration_time && (expiration_time.seconds < Timestamp.now().seconds)) return await getUserAccessToken(userId);
   else {
     let refreshToken = await getUserRefreshToken(userId);
@@ -59,6 +59,7 @@ async function refreshAccessToken(userId) {
       })
     });
     const data = await response.json();
+    console.log("refreshAccessToken data", data); // DEBUG
     let accessToken = data.access_token;
     refreshToken = data.refresh_token;
     // console.log("refreshAccessToken data", data);

@@ -44,13 +44,13 @@ const LoginScreen = ({ login }) => {
   const handleNavigationChange = async (event) => {
     // console.log("handleNavigationChange event", event);
     if (!event.url.startsWith(REDIRECT_URI)) return true;
+    setModalVisible(false);
     useAuthorizationCode(
       new URL(event.url).searchParams.get("code"),
       codeVerifier
     ).then((userId) => {
       AsyncStorage.setItem("global_user_id", userId);
     });
-    setModalVisible(false);
     login();
     return false;
   };

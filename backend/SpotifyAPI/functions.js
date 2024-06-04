@@ -1,7 +1,12 @@
 console.log("functions.js");
 
-import { getUserPlaylistId, updateUserPlaylistId, updateUserSnapshotPlaylistId } from '../Firebase/users.js'
-import { refreshAccessToken } from './auth.js'
+import {
+  getUserAccessToken,
+  getUserPlaylistId,
+  updateUserPlaylistId,
+  updateUserSnapshotPlaylistId,
+} from "../Firebase/users.js";
+import { refreshAccessToken } from "./auth.js";
 
 /**
  * Function Name: createPlaylist
@@ -28,13 +33,13 @@ async function createPlaylist(userId) {
   const options = {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      "name": "Hi-Five Playlist",
-      "description": "A playlist that Hi-Five has made",
-      "public": false,
+      name: "Hi-Five Playlist",
+      description: "A playlist that Hi-Five has made",
+      public: false,
     }),
   };
 
@@ -46,8 +51,8 @@ async function createPlaylist(userId) {
       snapshotPlaylistId = data.snapshot_id;
       unparsedData = data;
     });
-  updateUserPlaylistId(userId, playlistId);
-  updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
+  await updateUserPlaylistId(userId, playlistId);
+  await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return unparsedData;
 }
 
@@ -65,14 +70,17 @@ async function createPlaylist(userId) {
 async function isValidPlaylist(userId, playlistId) {
   let accessToken = await refreshAccessToken(userId);
   const headers = {
-    'Authorization': `Bearer ${accessToken}`
+    Authorization: `Bearer ${accessToken}`,
   };
 
   try {
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
-      method: 'GET',
-      headers: headers
-    });
+    const response = await fetch(
+      `https://api.spotify.com/v1/playlists/${playlistId}`,
+      {
+        method: "GET",
+        headers: headers,
+      }
+    );
 
     if (response.ok) {
       const playlistData = await response.json();
@@ -82,10 +90,10 @@ async function isValidPlaylist(userId, playlistId) {
       console.log(`Playlist with ID '${playlistId}' not found.`);
     } else {
       const errorData = await response.json();
-      console.error('An error occurred:', errorData);
+      console.error("An error occurred:", errorData);
     }
   } catch (error) {
-    console.error('An error occurred:', error);
+    console.error("An error occurred:", error);
   }
 
   return false;
@@ -116,7 +124,7 @@ async function getPlaylist(userId, playlistId) {
   const options = {
     method: "GET",
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   };
 
@@ -137,7 +145,7 @@ async function getPlaylist(userId, playlistId) {
  * @param {string} user_id - spotify ID
  * @param {string} song_uri - uri of the song
  * @param {string} playlist_id - playlist ID
- * @returns {string} the snapshot of the playlist 
+ * @returns {string} the snapshot of the playlist
  *
  * Example:
  * snapshot = addMusicToPlaylist(user_id, song_uri, playlist_id);
@@ -151,12 +159,12 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
   const options = {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      "uris": [trackUri],
-      "position": 0,
+      uris: [trackUri],
+      position: 0,
     }),
   };
 
@@ -164,11 +172,11 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
   await fetch(url, options)
     .then((res) => res.json())
     .then((data) => {
-      snapshotPlaylistId = data.snapshot_id
+      snapshotPlaylistId = data.snapshot_id;
     });
 
-  updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
-  return snapshotPlaylistId
+  await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
+  return snapshotPlaylistId;
 }
 
 /**
@@ -179,12 +187,17 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
  * @param {string} song_uri - uri of the song
  * @param {string} playlist_id - playlist ID
  * @param {string} snapshot - playlist ID
- * @returns {JSON} the unparsed data of the playlist 
+ * @returns {JSON} the unparsed data of the playlist
  *
  * Example:
  * snapshot = deleteTrackFromPlaylist(user_id, playlist_id ,song_uri, snapshot);
  */
-async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPlaylistId) {
+async function removeTrackFromPlaylist(
+  userId,
+  trackUri,
+  playlistId,
+  snapshotPlaylistId
+) {
   // console.log("removeTrackFromPlaylist(userId, playlistId, trackUri, snapshotPlaylistId)"); // DEBUG
   // console.log(userId, trackUri, snapshotPlaylistId);
   let accessToken = await refreshAccessToken(userId);
@@ -196,13 +209,13 @@ async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPla
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      "tracks": [
+      tracks: [
         {
-          "uri": trackUri,
+          uri: trackUri,
         },
       ],
-      "snapshot_id": snapshotPlaylistId
-    })
+      snapshot_id: snapshotPlaylistId,
+    }),
   };
 
   await fetch(url, options)
@@ -211,7 +224,7 @@ async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPla
       snapshotPlaylistId = data.snapshot_id;
     });
 
-  updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
+  await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return snapshotPlaylistId;
 }
 
@@ -231,12 +244,14 @@ async function searchForTracks(userId, trackQuery) {
   let accessToken = await refreshAccessToken(userId);
   const type = "track"; // Specify the type of search (e.g., 'track', 'artist', 'album')
 
-  const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(trackQuery)}&type=${type}`;
+  const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+    trackQuery
+  )}&type=${type}`;
 
   const options = {
     method: "GET",
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   };
 
@@ -248,7 +263,6 @@ async function searchForTracks(userId, trackQuery) {
     });
 
   return tracks;
-
 }
 
 /**
@@ -282,7 +296,6 @@ async function getRecentlyPlayedTracks(userId) {
     });
 
   return tracks;
-
 }
 
 /**
@@ -318,6 +331,36 @@ async function getTrack(userId, trackUri) {
   return unparsedData;
 }
 
+async function spotifyProfilePic(userId) {
+  // console.log("getSpotifyUserIdUsingAccessToken(accessToken)"); // DEBUG
+  // console.log("getSpotifyUserIdUsingAccessToken accessToken ", accessToken); // DEBUG
+
+  accessToken = await getUserAccessToken(userId);
+  const url = "https://api.spotify.com/v1/me";
+  let profilePic;
+  const options = {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+    },
+  };
+  await fetch(url, options)
+    .then((response) => {
+      if (!response.ok) {
+        console.log("getSpotifyUserIdUsingAccessToken response", response);
+        throw new Error("Failed to get user profile");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // console.log("data.id", data.id);
+      profilePic = data.images;
+    })
+    .catch((error) => console.error("Error getting user profile:", error));
+  // console.log("userId", userId);
+  return profilePic;
+}
+
 export {
   createPlaylist,
   getPlaylist,
@@ -325,6 +368,5 @@ export {
   removeTrackFromPlaylist,
   searchForTracks,
   getRecentlyPlayedTracks,
-  getTrack
+  getTrack,
 };
-
