@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-const SongCard = ({ songCover, songTitle, songArtist }) => {
+const SongCard = ({ songCover, songTitle, songArtist, trackUri }) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     return (
@@ -11,7 +11,7 @@ const SongCard = ({ songCover, songTitle, songArtist }) => {
                 <TouchableOpacity style={styles.song_container} onPress={() => setModalVisible(true)}>
                     <Image
                         style={styles.song_cover}
-                        source={songCover}
+                        source={{ uri: songCover }}
                     />
                     <View style={styles.song_info}>
                         <Text style={styles.song_title}>{songTitle}</Text>

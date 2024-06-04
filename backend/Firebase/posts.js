@@ -1,6 +1,6 @@
 import { add, get, update, check, remove } from "./base.js";
 import { Timestamp } from "firebase/firestore/lite";
-import { generateRandomString } from "../SpotifyAPI/functions.js"
+import { generateRandomString } from "../SpotifyAPI/functions.js";
 
 const postsCollection = "posts";
 
@@ -35,7 +35,7 @@ async function removePost(userId, field) {
 
 // TODO: Specialized functions
 
-async function addPostId(userId, trackId) {
+async function addPostId(userId, trackUri) {
   while ((await getPostIdCount(userId)) >= 14) {
     await removeOldestPostId(userId);
   }
@@ -44,7 +44,9 @@ async function addPostId(userId, trackId) {
   do {
     newPostId = generateRandomString(6);
   } while (postIdKeys.includes(newPostId));
-  await updatePost(userId, { [newPostId]: { date: Timestamp.now(), track_id: trackId } });
+  await updatePost(userId, {
+    [newPostId]: { date: Timestamp.now(), track_uri: trackUri },
+  });
 }
 
 async function getPostIdCount(userId) {
@@ -70,4 +72,14 @@ async function removeOldestPostId(userId) {
   // removePost(userId, oldestPostIdKey);
 }
 
-export { checkPost, addPost, getPosts, getPost, updatePost, removePost, addPostId, getPostIdCount, removeOldestPostId };
+export {
+  checkPost,
+  addPost,
+  getPosts,
+  getPost,
+  updatePost,
+  removePost,
+  addPostId,
+  getPostIdCount,
+  removeOldestPostId,
+};

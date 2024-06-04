@@ -41,6 +41,7 @@ async function getAuthorizationUrl(challenge) {
 async function refreshAccessToken(userId) {
   // console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
+  
   if (expiration_time && (expiration_time.seconds < Timestamp.now().seconds)) return await getUserAccessToken(userId);
   else {
     let refreshToken = await getUserRefreshToken(userId);

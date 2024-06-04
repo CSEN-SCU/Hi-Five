@@ -3,7 +3,7 @@ import { Modal, View, Button, Platform, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useAuthorizationCode, getAuthorizationUrl, generateRandomString } from './backend/SpotifyAPI/auth.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { REDIRECT_URI } from '@env'
+import { REDIRECT_URI } from '@env';
 
 const SpotifyLoginButton = () => {
   const [authUrl, setAuthUrl] = useState(null);
@@ -27,12 +27,12 @@ const SpotifyLoginButton = () => {
     useAuthorizationCode((new URL(event.url)).searchParams.get('code'), codeVerifier).then(userId => {
       AsyncStorage.setItem('global_user_id', userId);
     });
-    setModalVisible(false);
+    setIsLoggedIn(true);
     return false;
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <Button title="Login with Spotify" onPress={initiateAuth} />
       {authUrl && (
         <Modal
