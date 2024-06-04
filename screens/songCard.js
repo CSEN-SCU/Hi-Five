@@ -1,9 +1,28 @@
 import { useState } from 'react';
-import { Image, StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, View, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { addPostId } from "../backend/Firebase/posts.js";
+import { useNavigation } from '@react-navigation/native';
 
-const SongCard = ({ songCover, songTitle, songArtist, trackUri }) => {
+
+const SongCard = ({ trackUri, songCover, songTitle, songArtist }) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const navigation = useNavigation();
+
+    const handlePost = async () => {
+        setModalVisible(false);
+        const userId = await AsyncStorage.getItem('global_user_id');
+        console.log(userId);
+        console.log(trackUri);
+        try {
+            await addPostId(userId, trackUri);
+            console.log("Post added successfully");
+            navigation.goBack();
+        } catch (error) {
+            console.error("Error adding post:", error);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -28,35 +47,35 @@ const SongCard = ({ songCover, songTitle, songArtist, trackUri }) => {
                     setModalVisible(false);
                 }}
             >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <TouchableOpacity
-                            style={styles.exitbutton}
-                            onPress={() => {
-                                setModalVisible(false);
-                            }}
-                        >
-                            <Icon name="x" size={35} color='#FFFFFF'/>
-                        </TouchableOpacity>
-                        <Image
-                            style={styles.modal_song_cover}
-                            source={{ uri: songCover }}
-                        />
-                        <Text style={styles.modal_song_text}>{songTitle}</Text>
-                        <Text style={styles.modal_artist_text}>{songArtist}</Text>
+                <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+                    <View style={styles.centeredView}>
+                        <TouchableWithoutFeedback>
+                            <View style={styles.modalView}>
+                                <TouchableOpacity
+                                    style={styles.exitbutton}
+                                    onPress={() => {
+                                        setModalVisible(false);
+                                    }}
+                                >
+                                    <Icon name="x" size={35} color='#FFFFFF' />
+                                </TouchableOpacity>
+                                <Image
+                                    style={styles.modal_song_cover}
+                                    source={{ uri: songCover }}
+                                />
+                                <Text style={styles.modal_song_text}>{songTitle}</Text>
+                                <Text style={styles.modal_artist_text}>{songArtist}</Text>
 
-
-                        <TouchableOpacity
-                            style={{ ...styles.postButton, backgroundColor: "#FFFFFF" }}
-                            onPress={() => {
-                                setModalVisible(false);
-                                console.log("post button clicked")
-                            }}
-                        >
-                            <Text style={styles.buttonText}>Post</Text>
-                        </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{ ...styles.postButton, backgroundColor: "#FFFFFF" }}
+                                    onPress={handlePost}
+                                >
+                                    <Text style={styles.buttonText}>Post</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
             </Modal>
         </View>
     )

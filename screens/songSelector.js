@@ -11,7 +11,7 @@ import {
 import Icon from "react-native-vector-icons/Feather";
 import SongCard from "./songCard";
 import SearchBar from "./searchBar";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getRecentlyPlayedTracks,
@@ -20,37 +20,37 @@ import {
 
 function parseTracksForSongs(tracks) {
   console.log("tracks", tracks); // DEBUG
-    let track_list = tracks.map((track) => ({
-      trackUri: track.uri,
-      songTitle: track.name,
-      songArtist: track.artists.map((artist) => artist.name).join(", "),
-      songCover: track.album.images[0] ? track.album.images[0].url : null,
-    }));
-    console.log(track_list);
+  let track_list = tracks.map((track) => ({
+    trackUri: track.uri,
+    songTitle: track.name,
+    songArtist: track.artists.map((artist) => artist.name).join(", "),
+    songCover: track.album.images[0] ? track.album.images[0].url : null,
+  }));
+  console.log(track_list);
   return track_list;
 }
 
 const SongSelector = ({ navigation }) => {
-  
-    const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
 
-    const getRecentSongs = async () => {
-      console.log("getting recent songs");
-      const userId = await AsyncStorage.getItem('global_user_id');
-      const response = await getRecentlyPlayedTracks(userId);
-      const songData = response.map(song => {
-        return {
-          songCover: song.track.album.images[0].url,
-          songTitle: song.track.name,
-          songArtist: song.track.artists.map((artist) => artist.name).join(", "),
-        };
-      });
-      setRecentlyPlayedSongs(songData);
-      setSongs(songData);
-    }
+  const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
 
-    const [searchQuery, setSearchQuery] = useState("");
-    const [songs, setSongs] = useState(recentlyPlayedSongs);
+  const getRecentSongs = async () => {
+    console.log("getting recent songs");
+    const userId = await AsyncStorage.getItem('global_user_id');
+    const response = await getRecentlyPlayedTracks(userId);
+    const songData = response.map(song => {
+      return {
+        songCover: song.track.album.images[0].url,
+        songTitle: song.track.name,
+        songArtist: song.track.artists.map((artist) => artist.name).join(", "),
+      };
+    });
+    setRecentlyPlayedSongs(songData);
+    setSongs(songData);
+  }
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [songs, setSongs] = useState(recentlyPlayedSongs);
   useEffect(() => {
     getRecentSongs();
   }, []);
@@ -95,10 +95,10 @@ const SongSelector = ({ navigation }) => {
           {songs.map((song, index) => (
             <SongCard
               key={index}
+              trackUri={song.trackUri}
               songCover={song.songCover}
               songTitle={song.songTitle}
               songArtist={song.songArtist}
-              trackUri={song.trackUri}
             />
           ))}
           <View style={{ marginBottom: 7.5 }}></View>
