@@ -1,6 +1,7 @@
 import {Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ImageCount = props => {
     return (
