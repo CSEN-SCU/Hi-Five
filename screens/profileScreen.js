@@ -1,7 +1,9 @@
-import {Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import React from 'react';
-import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserDisplayNameUsingAccessToken } from '../backend/SpotifyAPI/functions'; // Make sure the import path is correct
+
 
 const ImageCount = props => {
     return (
@@ -39,6 +41,7 @@ const HistoryRowButtom = () => {
     );
 };
 const ProfileScreen = ({ navigation }) => {
+
     return (
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
