@@ -46,10 +46,10 @@ const Playlist = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onPress = () => console.log("spotify button pressed")}>
+                <TouchableOpacity onPress={() => console.log("spotify button pressed")}>
                     <Icon2 name='spotify' size={25} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>

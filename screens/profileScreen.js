@@ -42,7 +42,7 @@ const ProfileScreen = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <Pressable onPress={onPress = () => navigation.goBack()}>
+                <Pressable onPress={() => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle}/>
                 </Pressable>
                 <Text style={styles.navTitle}>Profile</Text>
