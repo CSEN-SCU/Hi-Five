@@ -1,9 +1,32 @@
-import React, { useState } from 'react';
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState } from "react";
+import {
+    Alert,
+    ImageBackground,
+    Pressable,
+    StyleSheet,
+    Text,
+    Modal,
+    View,
+    Button,
+    Platform,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
-const LoginScreen = () => {
+import { WebView } from "react-native-webview";
+import {
+    useAuthorizationCode,
+    getAuthorizationUrl,
+    generateRandomString,
+} from "../backend/SpotifyAPI/auth.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { REDIRECT_URI } from "@env";
+
+const LoginScreen = ({ login }) => {
+
+    const [authUrl, setAuthUrl] = useState(null);
+    const [codeVerifier, setCodeVerifier] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -14,25 +37,73 @@ const LoginScreen = () => {
         return null;
     }
 
-    return (<View style={styles.container}>
-        <ImageBackground
-            source={require('../assets/concert.png')}
-            style={styles.background}
-            imageStyle={{ opacity: 0.5 }}
-        >
-        </ImageBackground>
-        <View style={styles.overlay}>
-            <Text style={styles.nameTitle}>Hi-Five</Text>
-            <Text style={styles.tagline}>Share the Vibe!</Text>
-            <Pressable style={[styles.loginButton, styles.shadowProp]} onPress={() => Alert.alert("You pressed the login button")}>
-                <Text style={styles.loginText}>Login with Spotify</Text>
-                <Icon name='spotify' size={25} style={styles.iconStyle} />
-            </Pressable>
-        </View>
+    const initiateAuth = async () => {
+        // console.log("initiateAuth");
+        const newCodeVerifier = generateRandomString(64);
+        const newAuthUrl = await getAuthorizationUrl(newCodeVerifier);
+        setCodeVerifier(newCodeVerifier);
+        setAuthUrl(newAuthUrl);
+        // console.log("newAuthUrl", newAuthUrl);
+        if (Platform.OS === "web") window.location.href = newAuthUrl;
+        setModalVisible(true);
+    };
 
+    const handleNavigationChange = async (event) => {
+        if (!event.url.startsWith(REDIRECT_URI)) return true;
+        try {
+            const userId = await useAuthorizationCode(
+                new URL(event.url).searchParams.get("code"),
+                codeVerifier
+            );
+            setModalVisible(false);
+            console.log('User ID:', userId);
+            await AsyncStorage.setItem("global_user_id", userId);
+            console.log('User ID set in AsyncStorage');
+        } catch (error) {
+            console.error('Error setting user ID:', error);
+        }
+        login();
+        return false;
+    };
+
+    return (
+        <View style={styles.container}>
+            <ImageBackground
+                source={require("../assets/concert.png")}
+                style={styles.background}
+                imageStyle={{ opacity: 0.5 }}
+            ></ImageBackground>
+            <View style={styles.overlay}>
+                <Text style={styles.nameTitle}>Hi-Five</Text>
+                <Text style={styles.tagline}>Share the Vibe!</Text>
+                <Pressable
+                    style={[styles.loginButton, styles.shadowProp]}
+                    onPress={initiateAuth}
+                >
+                    <Text style={styles.loginText}>Login with Spotify</Text>
+                    <Icon name="spotify" size={25} style={styles.iconStyle} />
+                </Pressable>
+            </View>
+            {authUrl && (
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    {authUrl && (
+                        <WebView
+                            source={{ uri: authUrl }}
+                            onNavigationStateChange={handleNavigationChange}
+                        />
+                    )}
+                </Modal>
+            )}
         </View>
-    )
-}
+    );
+};
 
 export default LoginScreen;
 

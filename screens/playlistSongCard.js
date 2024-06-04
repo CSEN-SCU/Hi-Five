@@ -6,7 +6,7 @@ const PlaylistSongCard = ({ songCover, songTitle, songArtist }) => {
         <View style={styles.container}>
             <Image
                 style={styles.song_cover}
-                source={songCover}
+                source={{uri: songCover}}
             />
             <View style={styles.song_info}>
                 <Text style={styles.song_title}>{songTitle}</Text>

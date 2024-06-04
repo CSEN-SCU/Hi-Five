@@ -11,7 +11,7 @@ const SongCard = ({ songCover, songTitle, songArtist }) => {
                 <TouchableOpacity style={styles.song_container} onPress={() => setModalVisible(true)}>
                     <Image
                         style={styles.song_cover}
-                        source={songCover}
+                        source={{uri: songCover}}
                     />
                     <View style={styles.song_info}>
                         <Text style={styles.song_title}>{songTitle}</Text>
@@ -40,7 +40,7 @@ const SongCard = ({ songCover, songTitle, songArtist }) => {
                         </TouchableOpacity>
                         <Image
                             style={styles.modal_song_cover}
-                            source={songCover}
+                            source={{uri: songCover}}
                         />
                         <Text style={styles.modal_song_text}>{songTitle}</Text>
                         <Text style={styles.modal_artist_text}>{songArtist}</Text>
@@ -50,7 +50,7 @@ const SongCard = ({ songCover, songTitle, songArtist }) => {
                             style={{ ...styles.postButton, backgroundColor: "#FFFFFF" }}
                             onPress={() => {
                                 setModalVisible(false);
-                                console.log("post button clicked")
+                                console.log("post button clicked");
                             }}
                         >
                             <Text style={styles.buttonText}>Post</Text>

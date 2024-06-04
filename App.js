@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator();
 
 function App() {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogin = () => {
         setIsLoggedIn(true);
@@ -26,26 +26,27 @@ function App() {
     };
 
     return (
-      <SpotifyLoginButton />
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                {isLoggedIn ? (
+                    <>
+                        <Stack.Screen name="Feed" component={Feed} />
+                        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+                        <Stack.Screen name="SongSelector" component={SongSelector} />
+                        <Stack.Screen name="FriendsList" component={FriendsList} />
+                        <Stack.Screen name="Playlist" component={Playlist} />
+                    </>
+                ) : (
+                    <Stack.Screen
+                        name="LoginScreen"
+                        component={(props) => (
+                            <LoginScreen {...props} login={handleLogin} />
+                        )}
+                    />
+                )}
+            </Stack.Navigator>
+        </NavigationContainer>
     );
-
-    // return (
-    //     <NavigationContainer>
-    //         <Stack.Navigator screenOptions={{ headerShown: false }}>
-    //             {isLoggedIn ? (
-    //                 <>
-    //                     <Stack.Screen name="Feed" component={Feed} />
-    //                     <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-    //                     <Stack.Screen name="SongSelector" component={SongSelector} />
-    //                     <Stack.Screen name="FriendsList" component={FriendsList} />
-    //                     <Stack.Screen name="Playlist" component={Playlist} />
-    //                 </>
-    //             ) : (
-    //                     <Stack.Screen name="LoginScreen" component={LoginScreen} />
-    //             )}
-    //         </Stack.Navigator>
-    //     </NavigationContainer>  
-    // );
 }
 
 export default App;

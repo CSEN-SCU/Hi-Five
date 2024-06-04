@@ -4,27 +4,43 @@ import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, S
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import PlaylistSongCard from './playlistSongCard';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getPlaylist, getRecentlyPlayedTracks} from "../backend/SpotifyAPI/functions";
 
 const Playlist = ({ navigation }) => {
+    const [songs, setSongs] = useState([]);
 
-    const songs = [
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-        { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
-    ];
+    const getPlaylistSongs = async () => {
+        console.log("getting playlist songs");
+        const userId = await AsyncStorage.getItem('global_user_id');
+        const response = await getPlaylist(userId, ); //TODO: playlistId
+        const songData = response.tracks.items.map(song => {
+            return {
+                songCover: song.track.album.images[0].url,
+                songTitle: song.track.name,
+                songArtist: song.track.artists[0].name,
+            };
+        });
+        setSongs(songData);
+    }
+    // const songs = [
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    //     { songCover: require('../assets/heros-cover.png'), songTitle: 'Superhero', songArtist: 'Metro Boomin, Future, Chris Brown' },
+    // ];
 
     return (
         <SafeAreaView style={styles.container}>
