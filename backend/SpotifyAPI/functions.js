@@ -46,8 +46,8 @@ async function createPlaylist(userId) {
       snapshotPlaylistId = data.snapshot_id;
       unparsedData = data;
     });
-  updateUserPlaylistId(userId, playlistId);
-  updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
+  await updateUserPlaylistId(userId, playlistId);
+  await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return unparsedData;
 }
 
@@ -167,7 +167,7 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
       snapshotPlaylistId = data.snapshot_id
     });
 
-  updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
+  await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return snapshotPlaylistId
 }
 
@@ -211,7 +211,7 @@ async function removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPla
       snapshotPlaylistId = data.snapshot_id;
     });
 
-  updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
+  await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return snapshotPlaylistId;
 }
 

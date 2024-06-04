@@ -11,7 +11,7 @@ import {
 import Icon from "react-native-vector-icons/Feather";
 import SongCard from "./songCard";
 import SearchBar from "./searchBar";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getRecentlyPlayedTracks,
@@ -19,8 +19,8 @@ import {
 } from "../backend/SpotifyAPI/functions";
 
 function parseTracksForSongs(tracks) {
-    
-    track_list = tracks.map((track) => ({
+  console.log("tracks", tracks); // DEBUG
+    let track_list = tracks.map((track) => ({
       trackUri: track.uri,
       songTitle: track.name,
       songArtist: track.artists.map((artist) => artist.name).join(", "),
@@ -32,20 +32,28 @@ function parseTracksForSongs(tracks) {
 
 const SongSelector = ({ navigation }) => {
   
-  //const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
+    const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
 
-    let recentlyPlayedSongs = [];
-    
-    AsyncStorage.getItem("global_user_id").then((userId) => getRecentlyPlayedTracks(userId).then(
-        (tracks) => {
-        recentlyPlayedSongs = parseTracksForSongs(tracks);
-        //   handleSearchQueryChange("");
-        } // TODO rerender if needed
-    ));
+    const getRecentSongs = async () => {
+      console.log("getting recent songs");
+      const userId = await AsyncStorage.getItem('global_user_id');
+      const response = await getRecentlyPlayedTracks(userId);
+      const songData = response.map(song => {
+        return {
+          songCover: song.track.album.images[0].url,
+          songTitle: song.track.name,
+          songArtist: song.track.artists.map((artist) => artist.name).join(", "),
+        };
+      });
+      setRecentlyPlayedSongs(songData);
+      setSongs(songData);
+    }
 
     const [searchQuery, setSearchQuery] = useState("");
     const [songs, setSongs] = useState(recentlyPlayedSongs);
-
+  useEffect(() => {
+    getRecentSongs();
+  }, []);
   const handleSearchQueryChange = async (query) => {
     if (query == "") {
       console.log("recentlyPlayedSongCards", recentlyPlayedSongs); // DEBUG
@@ -72,7 +80,7 @@ const SongSelector = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       {/*Top Nav Bar*/}
       <View style={styles.topBar}>
-        <Pressable onPress={(onPress = () => navigation.goBack())}>
+        <Pressable onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" size={20} style={styles.iconTopStyle} />
         </Pressable>
       </View>
