@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import {Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserDisplayNameUsingAccessToken } from '../backend/SpotifyAPI/functions'; // Make sure the import path is correct
-
+import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ImageCount = props => {
     return (
@@ -28,6 +26,26 @@ const HistoryRowTop = () => {
     );
 };
 const HistoryRowButtom = () => {
+    const [displayName, setDisplayName] = useState(''); // State to store the display name
+
+    useEffect(() => {
+        const fetchDisplayName = async () => {
+            try {
+                const userId = "123"; // Replace "123" with the actual user ID
+                const accessToken = await getUserAccessToken(userId); // Fetch access token
+                if (accessToken) {
+                    const name = await getUserDisplayNameUsingAccessToken(accessToken); // Fetch display name
+                    setDisplayName(name);
+                } else {
+                    console.error('Access token is not available');
+                }
+            } catch (error) {
+                console.error('Error fetching display name:', error);
+            }
+        };
+
+        fetchDisplayName();
+    }, []);
     return (
         <View style={styles.rowContainer}>
             <ImageCount number = "8"/>
@@ -41,7 +59,7 @@ const HistoryRowButtom = () => {
     );
 };
 const ProfileScreen = ({ navigation }) => {
-
+    
     return (
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
