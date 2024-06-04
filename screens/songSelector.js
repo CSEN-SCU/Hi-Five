@@ -40,6 +40,7 @@ const SongSelector = ({ navigation }) => {
     const response = await getRecentlyPlayedTracks(userId);
     const songData = response.map(song => {
       return {
+        trackUri: song.track.uri,
         songCover: song.track.album.images[0].url,
         songTitle: song.track.name,
         songArtist: song.track.artists.map((artist) => artist.name).join(", "),
