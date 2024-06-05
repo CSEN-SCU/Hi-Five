@@ -59,7 +59,7 @@ const Feed = ({ navigation }) => {
         <View>
             <View style={styles.topBar}>
                 <View style={styles.leftIcon}>
-                    <TouchableOpacity onPress={() => console.log('clicked friend button')} >
+                    <TouchableOpacity onPress={() => navigation.push('FriendsList')} >
                         <FeatherIcon name='users' size={20} style={styles.iconTopStyle} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.push('Playlist')}>
