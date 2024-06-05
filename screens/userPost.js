@@ -3,9 +3,7 @@ import { StyleSheet, Text, View, Image, State } from "react-native";
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const UserPost = () => {
-
-    const [posted, setPosted] = useState(false);
+const UserPost = ({ posted, songCover, songTitle, songArtist }) => {
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -21,19 +19,19 @@ const UserPost = () => {
             {posted ? (
                 <Image
                     style={styles.song_cover}
-                    source={require('../assets/heros-cover.png')}
+                    source={{ uri : songCover }}
                 />
             ) : (
                 <View style={styles.music_icon_container}>
-                    <Icon name="musical-notes-outline" size={32.5} color="#B2EED3"/>
+                    <Icon name="musical-notes-outline" size={32.5} color="#B2EED3" />
                 </View>
             )}
             <View style={{ flexDirection: 'column' }}>
                 <Text style={styles.song_title}>
-                    {posted ? "Superhero" : "Add a song"}
+                    {posted ? songTitle : "Add a song"}
                 </Text>
                 <Text style={styles.song_artist}>
-                    {posted ? "Metro Boomin, Future, Chris Brown" : "Share the vibe!"}
+                    {posted ? songArtist : "Share the vibe!"}
                 </Text>
             </View>
         </View>
@@ -41,7 +39,6 @@ const UserPost = () => {
 }
 
 export default UserPost;
-
 
 const styles = StyleSheet.create({
     card: {

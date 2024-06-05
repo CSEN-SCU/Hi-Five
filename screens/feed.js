@@ -1,12 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import UserPost from './userPost';
 import PostItem from './postItem';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getNewestPostId } from "../backend/Firebase/posts.js";
+import { getTrack } from "../backend/SpotifyAPI/functions";
 
 const Feed = ({ navigation }) => {
+    const [posted, setPosted] = useState(false);
+    const [songDetails, setSongDetails] = useState({ songCover: '', songTitle: '', songArtist: '' });
+
+    useEffect(() => {
+        const fetchUserPost = async () => {
+            try {
+                const userId = await AsyncStorage.getItem('global_user_id');
+                const newestPost = await getNewestPostId(userId);
+
+                if (newestPost == undefined) {
+                    setPosted(false);
+                }
+                else {
+                    // Get today's date with no time component
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    // Convert Firestore timestamp to JavaScript Date object
+                    const postDate = new Date(newestPost.date.seconds * 1000 + newestPost.date.nanoseconds / 1000000);
+                    postDate.setHours(0, 0, 0, 0);
+
+                    // Compare the formatted dates
+                    if (postDate.getTime() === today.getTime()) {
+                        setPosted(true);
+
+                        // Validate the track URI
+                        if (!newestPost.track_uri.startsWith('spotify:track:')) {
+                            throw new Error('Invalid track URI');
+                        }
+
+                        const trackId = newestPost.track_uri.split(':')[2];
+                        const todaySong = await getTrack(userId, trackId);
+
+
+                        setSongDetails({
+                            songCover: todaySong.album.images[0].url || null,
+                            songTitle: todaySong.name,
+                            songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
+                        });
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error fetching posts or track details:', error);
+            }
+        };
+
+        console.log(navigation);
+        const checkUserPost = navigation.addListener('focus', fetchUserPost);
+        return () => checkUserPost();
+
+    }, []);
+
+
 
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
@@ -71,9 +128,9 @@ const Feed = ({ navigation }) => {
                     <FeatherIcon name='settings' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>  
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <TouchableOpacity onPress={onPress = () => navigation.push('SongSelector')}>
-                    <UserPost />
+                    <UserPost posted={posted} {...songDetails} />
                 </TouchableOpacity>
                 {posts.map((post, index) => (
                     <PostItem
