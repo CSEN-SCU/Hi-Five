@@ -40,8 +40,8 @@ const SongCard = ({ trackUri, songCover, songTitle, songArtist }) => {
                         source={{ uri: songCover }}
                     />
                     <View style={styles.song_info}>
-                        <Text style={styles.song_title}>{songTitle}</Text>
-                        <Text style={styles.song_artist}>{songArtist}</Text>
+                        <Text style={styles.song_title}>{truncateString(songTitle, 35)}</Text>
+                        <Text style={styles.song_artist}>{truncateString(songTitle, 45)}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
