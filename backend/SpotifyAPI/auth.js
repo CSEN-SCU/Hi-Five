@@ -1,4 +1,6 @@
-import { checkUser, getUserAccessToken, getUserExpirationTime, updateUserExpirationUsingNow, getUserRefreshToken, updateUserAccessToken, Timestamp, updateUserRefreshToken, addUserUsingAuthorizationCode } from '../Firebase/users.js'
+import { checkUser, getUserAccessToken, getUserExpirationTime, updateUserExpirationUsingNow, getUserRefreshToken, updateUserAccessToken, Timestamp, updateUserRefreshToken, addUserUsingAuthorizationCode } from '../Firebase/users.js';
+import { addPost } from '../Firebase/posts.js';
+import { addView } from '../Firebase/views.js';
 import qs from 'qs';
 import { Buffer } from 'buffer';
 // import 'react-native-url-polyfill/auto';
@@ -41,9 +43,10 @@ async function getAuthorizationUrl(challenge) {
 async function refreshAccessToken(userId) {
   // console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
-  console.log("expiration_time.seconds", expiration_time.seconds, "Timestamp.now().seconds", Timestamp.now().seconds); // DEBUG
-  if (expiration_time && (expiration_time.seconds < Timestamp.now().seconds)) return await getUserAccessToken(userId);
+  // console.log("refreshAccessToken expiration_time.seconds", expiration_time.seconds, "Timestamp.now().seconds", Timestamp.now().seconds); // DEBUG
+  if (expiration_time && (expiration_time.seconds > Timestamp.now().seconds)) return await getUserAccessToken(userId);
   else {
+    console.log("accessToken has expired, refreshing..."); // DEBUG
     let refreshToken = await getUserRefreshToken(userId);
     // console.log("expirationTime expired, refreshing token.", expiration_time, Timestamp.now());
     // console.log("CLIENT_ID", CLIENT_ID);
@@ -88,24 +91,31 @@ async function useAuthorizationCode(code, codeVerifier) {
   });
   const data = await response.json();
   let accessToken = data["access_token"];
+  console.log("useAuthorizationCode accessToken", accessToken);
   let userId = await getSpotifyUserIdUsingAccessToken(accessToken);
-  // console.log("useAuthorizationCode data", data);
+  console.log("useAuthorizationCode data", data);
   if (await checkUser(userId)) {
+    console.log("User exists, updating tokens.");
     await Promise.all([
       updateUserAccessToken(userId, accessToken),
       updateUserExpirationUsingNow(userId, data["expires_in"] * 1000),
       updateUserRefreshToken(userId, data["refresh_token"])
     ]);
   } else {
+    console.log("User does not exist, adding user.");
     let username = await getUserDisplayNameUsingAccessToken(accessToken)
-    await addUserUsingAuthorizationCode(userId, username, data);
+    await Promise.add([
+      addUserUsingAuthorizationCode(userId, username, data),
+      addPost(userId),
+      addView(userId)
+    ]);
   }
   return userId;
 }
 
 async function getSpotifyUserIdUsingAccessToken(accessToken) {
   // console.log("getSpotifyUserIdUsingAccessToken(accessToken)"); // DEBUG
-  // console.log("getSpotifyUserIdUsingAccessToken accessToken ", accessToken); // DEBUG
+  console.log("getSpotifyUserIdUsingAccessToken accessToken ", accessToken); // DEBUG
   const url = "https://api.spotify.com/v1/me";
   let userId;
   const options = {

@@ -1,6 +1,15 @@
 import { add, get, update, check, remove } from "./base.js";
 import { Timestamp } from "firebase/firestore/lite";
-import { generateRandomString } from "../SpotifyAPI/auth.js";
+// import { generateRandomString } from "../SpotifyAPI/auth.js";
+const generateRandomString = (length) => {
+  // console.log("generateRandomString");
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let text = "";
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
 
 const postsCollection = "posts";
 
@@ -53,6 +62,15 @@ async function getPostIdCount(userId) {
   return Object.keys(await getPost(userId)).length;
 }
 
+async function getNewestPostId(userId) {
+  const postIds = await getPost(userId);
+  const postIdKeys = Object.keys(postIds);
+  if (postIdKeys.length == 0) {
+    return;
+  }
+  return await getPost(userId, postIdKeys[postIdKeys.length - 1]);
+}
+
 async function removeOldestPostId(userId) {
   if (!(await checkPost(userId))) {
     return;
@@ -81,5 +99,6 @@ export {
   removePost,
   addPostId,
   getPostIdCount,
+  getNewestPostId,
   removeOldestPostId,
 };

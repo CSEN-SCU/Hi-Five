@@ -239,7 +239,7 @@ async function removeTrackFromPlaylist(
  * Example:
  * search_list = findSongAndArtists(user_id, searchTerm);
  */
-async function searchForTracks(userId, trackQuery) {
+async function searchForTracks(userId, trackQuery, signal) {
   // console.log("searchForTracks(userId, trackQuery)"); // DEBUG
   let accessToken = await refreshAccessToken(userId);
   const type = "track"; // Specify the type of search (e.g., 'track', 'artist', 'album')
@@ -253,13 +253,19 @@ async function searchForTracks(userId, trackQuery) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    signal: signal,
   };
 
   let tracks;
   await fetch(url, options)
     .then((res) => res.json())
     .then((data) => {
-      tracks = data.tracks.items;
+      if (data.tracks) {
+        tracks = data.tracks.items;
+      } else {
+        console.log("No tracks found");
+        tracks = [];
+      }
     });
 
   return tracks;

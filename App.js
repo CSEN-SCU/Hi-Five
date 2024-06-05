@@ -37,12 +37,9 @@ function App() {
             <Stack.Screen name="AddFriends" component={AddFriends} />
           </>
         ) : (
-          <Stack.Screen
-            name="LoginScreen"
-            component={(props) => (
-              <LoginScreen {...props} login={handleLogin} />
-            )}
-          />
+          <Stack.Screen name="LoginScreen">
+            {(props) => <LoginScreen {...props} login={handleLogin} />}
+          </Stack.Screen>
         )}
       </Stack.Navigator>
     </NavigationContainer>
