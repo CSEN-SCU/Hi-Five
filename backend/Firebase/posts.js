@@ -1,6 +1,6 @@
 import { add, get, update, check, remove } from "./base.js";
 import { Timestamp } from "firebase/firestore/lite";
-import { generateRandomString } from "../SpotifyAPI/functions.js";
+import { generateRandomString } from "../SpotifyAPI/auth.js";
 
 const postsCollection = "posts";
 

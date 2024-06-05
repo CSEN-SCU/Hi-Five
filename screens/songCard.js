@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, StyleSheet, Text, View, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { addPostId } from "../backend/Firebase/posts.js";
+import { checkPost, addPost, addPostId } from "../backend/Firebase/posts.js";
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -14,11 +14,14 @@ const SongCard = ({ trackUri, songCover, songTitle, songArtist }) => {
         return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
     };
 
-    const handlePost = async () => {
+    const handlePost = async () => { 
         setModalVisible(false);
+
         const userId = await AsyncStorage.getItem('global_user_id');
-        console.log(userId);
-        console.log(trackUri);
+        if (!await checkPost(userId)) {
+            addPost(userId, {});
+        }
+
         try {
             await addPostId(userId, trackUri);
             console.log("Post added successfully");
