@@ -8,6 +8,8 @@ import {getPlaylist} from "../backend/SpotifyAPI/functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
 import {getUserPlaylistId} from "../backend/Firebase/users";
+import * as Linking from 'expo-linking';
+
 
 
 const Playlist = ({ navigation }) => {
@@ -15,6 +17,7 @@ const Playlist = ({ navigation }) => {
     //const userId = await AsyncStorage.getItem("global_user_id", userId);
 
     const [songs, setSongs] = useState([]);
+    const [playlistURL, setPlaylistURL] = useState(null);
 
     const getPlaylistSongs = async () => {
         console.log("getting playlist songs");
@@ -22,7 +25,7 @@ const Playlist = ({ navigation }) => {
         const playlistId = await getUserPlaylistId(userId);
         console.log(playlistId);
         const response = await getPlaylist(userId, playlistId);
-        console.log(response.tracks.items);
+        setPlaylistURL(response.external_urls.spotify);
         const songData = response.tracks.items.map(song => {
             return {
                 trackUri: song.track.uri,
@@ -63,7 +66,13 @@ const Playlist = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log("spotify button pressed")}>
+                <TouchableOpacity onPress={() => {
+                    if (playlistURL) {
+                        Linking.openURL(playlistURL);
+                    } else {
+                        console.log("No playlist URL available");
+                    }
+                }}>
                     <Icon2 name='spotify' size={25} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>
