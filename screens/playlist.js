@@ -7,6 +7,7 @@ import PlaylistSongCard from './playlistSongCard';
 import {getPlaylist} from "../backend/SpotifyAPI/functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
+import {getUserPlaylistId} from "../backend/Firebase/users";
 
 
 const Playlist = ({ navigation }) => {
@@ -18,7 +19,9 @@ const Playlist = ({ navigation }) => {
     const getPlaylistSongs = async () => {
         console.log("getting playlist songs");
         const userId = await AsyncStorage.getItem('global_user_id');
-        const response = await getPlaylist(userId, '');
+        const playlistId = await getUserPlaylistId(userId);
+        console.log(playlistId);
+        const response = await getPlaylist(userId, playlistId);
         console.log(response.tracks.items);
         const songData = response.tracks.items.map(song => {
             return {
