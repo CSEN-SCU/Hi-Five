@@ -240,9 +240,8 @@ async function removeTrackFromPlaylist(
  * search_list = findSongAndArtists(user_id, searchTerm);
  */
 async function searchForTracks(userId, trackQuery, signal) {
-  // console.log("searchForTracks(userId, trackQuery)"); // DEBUG
   let accessToken = await refreshAccessToken(userId);
-  const type = "track"; // Specify the type of search (e.g., 'track', 'artist', 'album')
+  const type = "track";
 
   const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
     trackQuery
@@ -253,8 +252,12 @@ async function searchForTracks(userId, trackQuery, signal) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-    signal: signal,
   };
+
+  // Add signal to options if it's provided
+  if (signal) {
+    options.signal = signal;
+  }
 
   let tracks;
   await fetch(url, options)
