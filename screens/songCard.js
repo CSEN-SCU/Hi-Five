@@ -41,7 +41,7 @@ const SongCard = ({ trackUri, songCover, songTitle, songArtist }) => {
                     />
                     <View style={styles.song_info}>
                         <Text style={styles.song_title}>{truncateString(songTitle, 35)}</Text>
-                        <Text style={styles.song_artist}>{truncateString(songTitle, 45)}</Text>
+                        <Text style={styles.song_artist}>{truncateString(songArtist, 45)}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
