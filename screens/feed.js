@@ -8,7 +8,7 @@ import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getNewestPostId, getPosts } from "../backend/Firebase/posts.js";
 import { getTrack, spotifyProfilePic } from "../backend/SpotifyAPI/functions.js";
-import { getUser, getUserUsername } from '../backend/Firebase/users.js';
+import { getUserUsername } from '../backend/Firebase/users.js';
 
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
