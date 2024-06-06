@@ -11,7 +11,7 @@ import { getTrack } from "../backend/SpotifyAPI/functions";
 
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
-    const [songDetails, setSongDetails] = useState({ songCover: '', songTitle: '', songArtist: '' });
+    const [songDetails, setSongDetails] = useState({ songCover: '.', songTitle: '', songArtist: '' });
 
     useEffect(() => {
         const fetchUserPost = async () => {
@@ -43,12 +43,15 @@ const Feed = ({ navigation }) => {
                         const trackId = newestPost.track_uri.split(':')[2];
                         const todaySong = await getTrack(userId, trackId);
 
+                        // console.log("feed.js songCover (before set)", todaySong.album.images[0].url); // DEBUG
 
                         setSongDetails({
                             songCover: todaySong.album.images[0].url || null,
                             songTitle: todaySong.name,
                             songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
                         });
+
+                        // console.log("feed.js songCover (after set)", songDetails.songCover); // DEBUG
                     }
                 }
                 

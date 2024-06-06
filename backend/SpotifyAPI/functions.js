@@ -345,10 +345,9 @@ async function getTrack(userId, trackUri) {
 }
 
 async function spotifyProfilePic(userId) {
-  // console.log("getSpotifyUserIdUsingAccessToken(accessToken)"); // DEBUG
-  // console.log("getSpotifyUserIdUsingAccessToken accessToken ", accessToken); // DEBUG
-
-  const accessToken = await getUserAccessToken(userId);
+  // console.log("spotifyProfilePic accessToken ", userId); // DEBUG
+  let accessToken = await refreshAccessToken(userId, true); // TODO: force refresh if needed
+  // console.log("spotifyProfilePic accessToken ", accessToken); // DEBUG
   const url = "https://api.spotify.com/v1/me";
   let profilePic;
   const options = {
@@ -360,7 +359,7 @@ async function spotifyProfilePic(userId) {
   await fetch(url, options)
     .then((response) => {
       if (!response.ok) {
-        console.log("getSpotifyUserIdUsingAccessToken response", response);
+        console.log("spotifyProfilePic response for", userId, ":", response);
         throw new Error("Failed to get user profile");
       }
       return response.json();
@@ -369,7 +368,7 @@ async function spotifyProfilePic(userId) {
       // console.log("data.id", data.id);
       profilePic = data.images;
     })
-    .catch((error) => console.error("Error getting user profile:", error));
+    .catch((error) => console.error("Error getting user profile picture:", error));
   // console.log("userId", userId);
   return profilePic;
 }
