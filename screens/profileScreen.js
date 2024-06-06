@@ -46,7 +46,7 @@ const ProfileScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchDisplayName = async () => {
             try {
-                const userId = await AsyncStorage.getItem("global_user_id");
+                const userId = await AsyncStorage.getItem('global_user_id');
                 if (userId) {
                     const accessToken = await getUserAccessToken(userId); // Fetch access token
                     if (accessToken) {
