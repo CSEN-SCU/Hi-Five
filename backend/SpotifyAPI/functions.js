@@ -369,4 +369,5 @@ export {
   searchForTracks,
   getRecentlyPlayedTracks,
   getTrack,
+  spotifyProfilePic
 };
