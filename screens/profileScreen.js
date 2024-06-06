@@ -1,6 +1,10 @@
-import {Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserAccessToken } from '../backend/Firebase/users.js' // Import getUserAccessToken function
+import { getUserDisplayNameUsingAccessToken } from '../backend/SpotifyAPI/auth'; // Import getUserDisplayNameUsingAccessToken function
+
 
 const ImageCount = props => {
     return (
@@ -24,39 +28,65 @@ const HistoryRowTop = () => {
         </View>
     );
 };
-const HistoryRowButtom = () => {
+const HistoryRowBottom = () => {
     return (
         <View style={styles.rowContainer}>
-            <ImageCount number = "8"/>
-            <ImageCount number = "9"/>
-            <ImageCount number = "10"/>
-            <ImageCount number = "11"/>
-            <ImageCount number = "12"/>
-            <ImageCount number = "13"/>
-            <ImageCount number = "14"/>
+            <ImageCount number="8" />
+            <ImageCount number="9" />
+            <ImageCount number="10" />
+            <ImageCount number="11" />
+            <ImageCount number="12" />
+            <ImageCount number="13" />
+            <ImageCount number="14" />
         </View>
     );
 };
 const ProfileScreen = ({ navigation }) => {
+    const [displayName, setDisplayName] = useState(''); // State to store the display name
+
+    useEffect(() => {
+        const fetchDisplayName = async () => {
+            try {
+                const userId = await AsyncStorage.getItem('global_user_id');
+                if (userId) {
+                    const accessToken = await getUserAccessToken(userId); // Fetch access token
+                    if (accessToken) {
+                        const name = await getUserDisplayNameUsingAccessToken(accessToken); // Fetch display name
+                        setDisplayName(name);
+                    } else {
+                        console.error('Access token is not available');
+                    }
+                } else {
+                    console.error('User ID is not available');
+                }
+            } catch (error) {
+                console.error('Error fetching display name:', error);
+            }
+        };
+
+        fetchDisplayName();
+        
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <Pressable onPress={onPress = () => navigation.goBack()}>
-                    <Icon name='arrow-left' size={20} style={styles.iconTopStyle}/>
+                <Pressable onPress={() => navigation.goBack()}>
+                    <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </Pressable>
                 <Text style={styles.navTitle}>Profile</Text>
-                <Pressable onPress={()=>Alert.alert("You pressed the settings/edit button")}>
-                    <Icon name='settings' size={20} style={styles.iconTopStyle}/>
+                <Pressable onPress={() => Alert.alert("You pressed the settings/edit button")}>
+                    <Icon name='settings' size={20} style={styles.iconTopStyle} />
                 </Pressable>
             </View>
             {/*Profile Info*/}
             <View style={styles.profileInfo}>
                 <Image style={styles.profilePhoto} source={require('../assets/concert.png')}></Image>
-                <Text style={styles.nameText}>Dave Chapelle</Text>
+                <Text style={styles.nameText}>{displayName || 'Loading...'}</Text> 
                 <Text style={styles.usernameText}>dave_chapelle</Text>
-                <Pressable style={styles.editButton} onPress={()=>Alert.alert("You pressed the settings/edit button")}>
-                    <Icon name='edit' size={10} style={styles.iconBodyStyle}/>
+                <Pressable style={styles.editButton} onPress={() => Alert.alert("You pressed the settings/edit button")}>
+                    <Icon name='edit' size={10} style={styles.iconBodyStyle} />
                     <Text style={styles.editText}>Edit</Text>
                 </Pressable>
                 {/*App Streak*/}
@@ -69,12 +99,12 @@ const ProfileScreen = ({ navigation }) => {
             </View>
             <View style={styles.historyContainer}>
                 <Text style={styles.historyTitle}>14 Days Ago</Text>
-                <HistoryRowTop/>
-                <HistoryRowButtom/>
+                <HistoryRowTop />
+                <HistoryRowBottom />
             </View>
         </SafeAreaView>
-    )
-}
+    );
+};
 
 export default ProfileScreen;
 
