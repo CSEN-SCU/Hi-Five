@@ -348,7 +348,7 @@ async function spotifyProfilePic(userId) {
   // console.log("getSpotifyUserIdUsingAccessToken(accessToken)"); // DEBUG
   // console.log("getSpotifyUserIdUsingAccessToken accessToken ", accessToken); // DEBUG
 
-  accessToken = await getUserAccessToken(userId);
+  const accessToken = await getUserAccessToken(userId);
   const url = "https://api.spotify.com/v1/me";
   let profilePic;
   const options = {
