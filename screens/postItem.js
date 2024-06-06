@@ -9,8 +9,6 @@ export default class PostItem extends React.Component {
         isPlaying: false,
         cancelButtonColor: '#FFFFFF'
     }
-
-
     
     togglePlayPause = () => {
         this.setState(prevState => ({ isPlaying: !prevState.isPlaying }));
@@ -39,7 +37,6 @@ export default class PostItem extends React.Component {
         }
     };
 
-
     handClick = () => {
         const newColor = this.state.hiFiveButtonColor === '#FFFFFF' ? '#B2EED3' : '#FFFFFF';
         this.setState({ hiFiveButtonColor: newColor });
@@ -59,22 +56,26 @@ export default class PostItem extends React.Component {
     render() {
         const { profilePic, username, songCover, songTitle, songArtist } = this.props;
 
+        const limitCharacters = (str, limit) => {
+            return str.length > limit ? str.substring(0, limit) + '...' : str;
+        };
+
         return (
             <View>
                 <View style={styles.user_info}>
                     <Image
                         style={styles.profile_pic}
-                        source={profilePic}
+                        source={{uri : profilePic}}
                     />
                     <Text style={styles.username}>{username}</Text>
                 </View>
                 <View style={styles.card}>
                     <Image
                         style={styles.song_cover}
-                        source={songCover}
+                        source={{uri : songCover}}
                     />
-                    <Text style={styles.song_title}>{songTitle}</Text>
-                    <Text style={styles.song_artist}>{songArtist}</Text>
+                    <Text style={styles.song_title}>{limitCharacters(songTitle, 30)}</Text>
+                    <Text style={styles.song_artist}>{limitCharacters(songArtist, 50)}</Text>
 
                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 30 }}>
                         <TouchableOpacity
