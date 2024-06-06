@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserAccessToken } from '../backend/Firebase/users' // Import getUserAccessToken function
 import { getUserDisplayNameUsingAccessToken } from '../backend/SpotifyAPI/auth'; // Import getUserDisplayNameUsingAccessToken function
 
+
 const ImageCount = props => {
     return (
         <View style={styles.countImageCont}>
