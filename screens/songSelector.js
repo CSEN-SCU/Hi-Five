@@ -11,69 +11,95 @@ import {
 import Icon from "react-native-vector-icons/Feather";
 import SongCard from "./songCard";
 import SearchBar from "./searchBar";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getRecentlyPlayedTracks,
   searchForTracks,
 } from "../backend/SpotifyAPI/functions";
+import { useRef } from 'react';
 
 function parseTracksForSongs(tracks) {
-  console.log("tracks", tracks); // DEBUG
-    let track_list = tracks.map((track) => ({
-      trackUri: track.uri,
-      songTitle: track.name,
-      songArtist: track.artists.map((artist) => artist.name).join(", "),
-      songCover: track.album.images[0] ? track.album.images[0].url : null,
-    }));
-    console.log(track_list);
+  // console.log("tracks", tracks); // DEBUG
+  let track_list = tracks.map((track) => ({
+    trackUri: track.uri,
+    songTitle: track.name,
+    songArtist: track.artists.map((artist) => artist.name).join(", "),
+    songCover: track.album.images[0] ? track.album.images[0].url : null,
+  }));
+  console.log(track_list);
   return track_list;
 }
 
 const SongSelector = ({ navigation }) => {
-  
-    const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
 
-    const getRecentSongs = async () => {
-      console.log("getting recent songs");
-      const userId = await AsyncStorage.getItem('global_user_id');
-      const response = await getRecentlyPlayedTracks(userId);
-      const songData = response.map(song => {
-        return {
-          songCover: song.track.album.images[0].url,
-          songTitle: song.track.name,
-          songArtist: song.track.artists.map((artist) => artist.name).join(", "),
-        };
-      });
-      setRecentlyPlayedSongs(songData);
-      setSongs(songData);
-    }
+  const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
 
-    const [searchQuery, setSearchQuery] = useState("");
-    const [songs, setSongs] = useState(recentlyPlayedSongs);
+  const getRecentSongs = async () => {
+    // console.log("getting recent songs");
+    const userId = await AsyncStorage.getItem('global_user_id');
+    const response = await getRecentlyPlayedTracks(userId);
+    const songData = response.map(song => {
+      return {
+        trackUri: song.track.uri,
+        songCover: song.track.album.images[0].url,
+        songTitle: song.track.name,
+        songArtist: song.track.artists.map((artist) => artist.name).join(", "),
+      };
+    });
+    setRecentlyPlayedSongs(songData);
+    setSongs(songData);
+  }
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [songs, setSongs] = useState(recentlyPlayedSongs);
   useEffect(() => {
     getRecentSongs();
   }, []);
+  
+  let controller = new AbortController();
+  let lastQueryTime = useRef(0);
+
   const handleSearchQueryChange = async (query) => {
+    const currentQueryTime = Date.now();
+    // console.log("before currentQueryTime", currentQueryTime, "lastQueryTime", lastQueryTime.current);
+    lastQueryTime.current = currentQueryTime;
+
+    // Cancel the previous fetch request
+    controller.abort();
+
+    // Create a new AbortController for the new fetch request
+    controller = new AbortController();
+
     if (query == "") {
-      console.log("recentlyPlayedSongCards", recentlyPlayedSongs); // DEBUG
       setSongs(recentlyPlayedSongs);
+      // console.log("processed empty search query");
       return;
     }
+
     setSearchQuery(query);
-    let tracks = await searchForTracks(
-      await AsyncStorage.getItem("global_user_id"),
-      query
-    );
-    console.log("tracks", tracks); // DEBUG
-    console.log(
-      "songCards == parseTracksForSongCards(tracks)",
-      parseTracksForSongs(tracks)
-    ); // DEBUG
-    setSongs(
-      parseTracksForSongs(tracks)
-    );
-    console.log("Search Query:", query);
+
+    try {
+      let tracks = await searchForTracks(
+        await AsyncStorage.getItem("global_user_id"),
+        query,
+        controller.signal
+      );
+
+      // Only update the state if this is the latest search query
+      // console.log("currentQueryTime", currentQueryTime, "lastQueryTime", lastQueryTime.current);
+      if (currentQueryTime === lastQueryTime.current) {
+        // console.log("processed search query:", query);
+        const songs = parseTracksForSongs(tracks);
+        setSongs(songs);
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        // console.log('Fetch request cancelled');
+      } else {
+        throw error;
+      }
+    }
   };
 
   return (
@@ -95,10 +121,10 @@ const SongSelector = ({ navigation }) => {
           {songs.map((song, index) => (
             <SongCard
               key={index}
+              trackUri={song.trackUri}
               songCover={song.songCover}
               songTitle={song.songTitle}
               songArtist={song.songArtist}
-              trackUri={song.trackUri}
             />
           ))}
           <View style={{ marginBottom: 7.5 }}></View>

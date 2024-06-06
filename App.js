@@ -4,6 +4,7 @@ import ProfileScreen from "./screens/profileScreen";
 import SongSelector from "./screens/songSelector";
 import FriendsList from "./screens/FriendsList";
 import Playlist from "./screens/playlist";
+import AddFriends from "./screens/addFriends.js"
 
 import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -33,14 +34,12 @@ function App() {
             <Stack.Screen name="SongSelector" component={SongSelector} />
             <Stack.Screen name="FriendsList" component={FriendsList} />
             <Stack.Screen name="Playlist" component={Playlist} />
+            <Stack.Screen name="AddFriends" component={AddFriends} />
           </>
         ) : (
-          <Stack.Screen
-            name="LoginScreen"
-            component={(props) => (
-              <LoginScreen {...props} login={handleLogin} />
-            )}
-          />
+          <Stack.Screen name="LoginScreen">
+            {(props) => <LoginScreen {...props} login={handleLogin} />}
+          </Stack.Screen>
         )}
       </Stack.Navigator>
     </NavigationContainer>

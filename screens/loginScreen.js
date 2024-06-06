@@ -28,6 +28,7 @@ import { REDIRECT_URI } from "@env";
 const LoginScreen = ({ login }) => {
   const [authUrl, setAuthUrl] = useState(null);
   const [codeVerifier, setCodeVerifier] = useState(null);
+  const [processingCode, setProcessingCode] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const initiateAuth = async () => {
@@ -43,20 +44,26 @@ const LoginScreen = ({ login }) => {
 
     const handleNavigationChange = async (event) => {
         if (!event.url.startsWith(REDIRECT_URI)) return true;
-        try {
+        let code = new URL(event.url).searchParams.get("code");
+        if (!processingCode && code) {
+          setProcessingCode(true);
+          try {
             setModalVisible(false);
             const userId = await useAuthorizationCode(
-                new URL(event.url).searchParams.get("code"),
+                code,
                 codeVerifier
             );
             console.log('User ID:', userId);
             await AsyncStorage.setItem("global_user_id", userId);
             console.log('User ID set in AsyncStorage');
-        } catch (error) {
+          } catch (error) {
             console.error('Error setting user ID:', error);
+          }
+          login();
+          return false;
+        } else {
+          return true;
         }
-        login();
-        return false;
     };
 
   let [fontsLoaded] = useFonts({

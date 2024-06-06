@@ -74,7 +74,7 @@ async function check(collection, document) {
   return docSnap.exists();
 }
 
-async function add(collection, document, fields) {
+async function add(collection, document, fields = {}) {
   console.log("adding", collection, document, fields)
   // if (collection === undefined) throw new Error("Collection is undefined.");
   // if (document === undefined) throw new Error("Document is undefined.");

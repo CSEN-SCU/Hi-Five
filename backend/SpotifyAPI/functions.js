@@ -239,10 +239,9 @@ async function removeTrackFromPlaylist(
  * Example:
  * search_list = findSongAndArtists(user_id, searchTerm);
  */
-async function searchForTracks(userId, trackQuery) {
-  // console.log("searchForTracks(userId, trackQuery)"); // DEBUG
+async function searchForTracks(userId, trackQuery, signal) {
   let accessToken = await refreshAccessToken(userId);
-  const type = "track"; // Specify the type of search (e.g., 'track', 'artist', 'album')
+  const type = "track";
 
   const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
     trackQuery
@@ -255,11 +254,21 @@ async function searchForTracks(userId, trackQuery) {
     },
   };
 
+  // Add signal to options if it's provided
+  if (signal) {
+    options.signal = signal;
+  }
+
   let tracks;
   await fetch(url, options)
     .then((res) => res.json())
     .then((data) => {
-      tracks = data.tracks.items;
+      if (data.tracks) {
+        tracks = data.tracks.items;
+      } else {
+        console.log("No tracks found");
+        tracks = [];
+      }
     });
 
   return tracks;
@@ -310,25 +319,29 @@ async function getRecentlyPlayedTracks(userId) {
  * track_data = getTrack(user_id, track_id);
  */
 async function getTrack(userId, trackUri) {
-  // console.log("getTrack(userId, trackUri)"); // DEBUG
-  let accessToken = await refreshAccessToken(userId);
-  const url = `https://api.spotify.com/v1/tracks/${trackUri}`;
+  try {
+    let accessToken = await refreshAccessToken(userId);
+    const url = `https://api.spotify.com/v1/tracks/${trackUri}`;
 
-  const options = {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
 
-  let unparsedData;
-  await fetch(url, options)
-    .then((res) => res.json())
-    .then((data) => {
-      unparsedData = data;
-    });
+    const response = await fetch(url, options);
 
-  return unparsedData;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const unparsedData = await response.json();
+    return unparsedData;
+  } catch (error) {
+    console.error('Error fetching track data:', error);
+    return null;
+  }
 }
 
 async function spotifyProfilePic(userId) {

@@ -1,3 +1,9 @@
+// OLD <<<<<<
+
+
+
+
+
 import { useState } from 'react';
 import { Modal, View, Button, Platform, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';

@@ -1,11 +1,15 @@
 // playlist page
 
-import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
+import {TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import PlaylistSongCard from './playlistSongCard';
-import getPlaylist from '../backend/SpotifyAPI/functions.js'
+import {getPlaylist} from "../backend/SpotifyAPI/functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useEffect, useState} from "react";
+import {getUserPlaylistId} from "../backend/Firebase/users";
+import * as Linking from 'expo-linking';
+
 
 
 const Playlist = ({ navigation }) => {
@@ -13,28 +17,27 @@ const Playlist = ({ navigation }) => {
     //const userId = await AsyncStorage.getItem("global_user_id", userId);
 
     const [songs, setSongs] = useState([]);
+    const [playlistURL, setPlaylistURL] = useState(null);
 
+    const getPlaylistSongs = async () => {
+        console.log("getting playlist songs");
+        const userId = await AsyncStorage.getItem('global_user_id');
+        const playlistId = await getUserPlaylistId(userId);
+        console.log(playlistId);
+        const response = await getPlaylist(userId, playlistId);
+        setPlaylistURL(response.external_urls.spotify);
+        const songData = response.tracks.items.map(song => {
+            return {
+                trackUri: song.track.uri,
+                songTitle: song.track.name,
+                songArtist: song.track.artists.map((artist) => artist.name).join(", "),
+                songCover: song.track.album.images[0] ? song.track.album.images[0].url : null,
+            };
+        });
+        setSongs(songData);
+    }
     useEffect(() => {
-      const fetchPlaylist = async () => {
-        try {
-          const userId = await AsyncStorage.getItem("global_user_id");
-          const playlistData = await getPlaylist(userId);
-
-          const parsedSongs = playlistData.tracks.items.map((item) => ({
-            songCover: item.track.album.images[0].url,
-            songTitle: item.track.name,
-            songArtist: item.track.artists
-              .map((artist) => artist.name)
-              .join(", "),
-          }));
-
-          setSongs(parsedSongs);
-        } catch (error) {
-          console.error("Failed to fetch playlist:", error);
-        }
-      };
-
-      fetchPlaylist();
+        getPlaylistSongs();
     }, []);
 
     // const songs = [
@@ -60,10 +63,16 @@ const Playlist = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {/*Top Nav Bar*/}
             <View style={styles.topBar}>
-                <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onPress = () => console.log("spotify button pressed")}>
+                <TouchableOpacity onPress={() => {
+                    if (playlistURL) {
+                        Linking.openURL(playlistURL);
+                    } else {
+                        console.log("No playlist URL available");
+                    }
+                }}>
                     <Icon2 name='spotify' size={25} style={styles.iconTopStyle} />
                 </TouchableOpacity>
             </View>
@@ -75,14 +84,18 @@ const Playlist = ({ navigation }) => {
             <View style={styles.songContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ marginTop: 7.5 }}></View>
-                    {songs.map((song, index) => (
-                        <PlaylistSongCard
-                            key={index}
-                            songCover={song.songCover}
-                            songTitle={song.songTitle}
-                            songArtist={song.songArtist}
-                        />
-                    ))}
+                    {songs.length === 0 ?
+                        <Text style={{ color: '#FFFFFF', alignSelf: 'center', fontSize: 15 , paddingTop: 10}}>No songs in playlist</Text>
+                        :
+                        songs.map((song, index) => (
+                            <PlaylistSongCard
+                                key={index}
+                                songCover={song.songCover}
+                                songTitle={song.songTitle}
+                                songArtist={song.songArtist}
+                            />
+                        ))
+                    }
                     <View style={{ marginBottom: 7.5 }}></View>
                 </ScrollView>
             </View>

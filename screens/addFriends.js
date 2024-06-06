@@ -1,20 +1,29 @@
-// friend list page
+// addFriend list page
+import * as React from 'react';
 import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 
-const AddFriendsButton = ({ navigation }) => {
-    return (
-        <View style={styles.addFriendCard}>
-            <View style={styles.add_icon_container}>
-                <Icon name="plus" size={32.5} color="#B2EED3" />
-            </View>
-            <Text style={styles.addText}>Find Others</Text>
-        </View>
-    )
-}
 
-const FriendsList = ({ navigation }) => {
+const SearchBar = () => {
+    const [searchQuery, setSearchQuery] = React.useState('');
+
+    return (
+        <View style={styles.searchBarContainer}>
+            <Searchbar
+                placeholder="Search for others"
+                onChangeText={setSearchQuery}
+                value={searchQuery}
+                inputStyle={styles.searchInput}
+                style={styles.searchbar}
+            />
+        </View>
+
+    );
+};
+
+const AddFriends = ({ navigation }) => {
 
     const friends = [
         { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
@@ -44,18 +53,16 @@ const FriendsList = ({ navigation }) => {
                 <TouchableOpacity onPress={onPress = () => navigation.goBack()}>
                     <Icon name='arrow-left' size={20} style={styles.iconTopStyle} />
                 </TouchableOpacity>
-                <Text style={styles.navTitle}>Following</Text>
-                <TouchableOpacity onPress={() => console.log("edit friends button clicked")}>
-                    <Text style={styles.editText}>Edit</Text>
-                </TouchableOpacity>
+                <Text style={styles.navTitle}>Find Others</Text>
+                <Text style={styles.editText}>   </Text>
             </View>
 
-            <TouchableOpacity onPress={() => navigation.push('AddFriends')}>
-                <AddFriendsButton />
-            </TouchableOpacity>
             {/* list of friends */}
+            <SearchBar/>
+
             <View style={styles.friendContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={{ marginTop: 7.5 }}></View>
                     {friends.map((friend, index) => (
                         <FriendCard
                             key={index}
@@ -70,7 +77,7 @@ const FriendsList = ({ navigation }) => {
     )
 }
 
-export default FriendsList;
+export default AddFriends;
 
 const styles = StyleSheet.create({
     container: {
@@ -89,15 +96,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginHorizontal: 30,
-        marginTop: 5,
-        marginBottom: 20
+        marginBottom: 15
     },
     navTitle: {
         color: '#fff',
         fontSize: 20,
     },
     friendContainer: {
-        marginTop: 10,
+        marginTop: 5,
         marginHorizontal: 10,
         overflow: 'hidden'
     },
@@ -105,21 +111,17 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 15
     },
-    addFriendCard: {
-        marginHorizontal: 25,
-        flexDirection: 'row',
-        alignItems: 'center',
+    searchBarContainer: {
+        marginHorizontal: 20,
     },
-    addText: {
-        color: '#fff',
-        fontSize: 15
+
+    searchInput: {
+        fontSize: 16,
+        alignSelf: 'center'
     },
-    add_icon_container: {
-        backgroundColor: '#121212',
-        height: 40,
-        width: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 10
+
+    searchbar: {
+        height: 38,
+        alignItems: 'center'
     }
 });
