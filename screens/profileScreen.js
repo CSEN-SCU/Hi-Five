@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserAccessToken } from '../backend/Firebase/users' // Import getUserAccessToken function
+import { getUserAccessToken } from '../backend/Firebase/users.js' // Import getUserAccessToken function
 import { getUserDisplayNameUsingAccessToken } from '../backend/SpotifyAPI/auth'; // Import getUserDisplayNameUsingAccessToken function
 
 
