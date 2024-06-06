@@ -40,11 +40,11 @@ async function getAuthorizationUrl(challenge) {
 
 // async function accessTokenIsExpired(accessToken) {}
 
-async function refreshAccessToken(userId) {
+async function refreshAccessToken(userId, forceRefresh = false) {
   // console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
   // console.log("refreshAccessToken expiration_time.seconds", expiration_time.seconds, "Timestamp.now().seconds", Timestamp.now().seconds); // DEBUG
-  if (expiration_time && (expiration_time.seconds > Timestamp.now().seconds)) return await getUserAccessToken(userId);
+  if (!forceRefresh && expiration_time && (expiration_time.seconds > Timestamp.now().seconds)) return await getUserAccessToken(userId);
   else {
     console.log("accessToken has expired, refreshing..."); // DEBUG
     let refreshToken = await getUserRefreshToken(userId);
@@ -91,9 +91,9 @@ async function useAuthorizationCode(code, codeVerifier) {
   });
   const data = await response.json();
   let accessToken = data["access_token"];
-  console.log("useAuthorizationCode accessToken", accessToken);
+  // console.log("useAuthorizationCode accessToken", accessToken);
   let userId = await getSpotifyUserIdUsingAccessToken(accessToken);
-  console.log("useAuthorizationCode data", data);
+  // console.log("useAuthorizationCode data", data);
   if (await checkUser(userId)) {
     console.log("User exists, updating tokens.");
     await Promise.all([

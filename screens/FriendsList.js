@@ -1,5 +1,9 @@
 // friend list page
 import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
+import { getUserFollowing, getUserUsername } from '../backend/Firebase/users.js';
+import { spotifyProfilePic } from '../backend/SpotifyAPI/functions.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 
@@ -14,28 +18,61 @@ const AddFriendsButton = ({ navigation }) => {
     )
 }
 
+async function getFriends(userId) {
+  const followingIds = await getUserFollowing(userId);
+
+  const friends = await Promise.all(
+    followingIds.map(async (id) => {
+      const username = await getUserUsername(id);
+      const profilePic = await spotifyProfilePic(id);
+
+      return { profilePic, username };
+    })
+  );
+
+  return friends;
+}
+
 const FriendsList = ({ navigation }) => {
 
-    const friends = [
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-        { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
-    ];
+    [friends, setFriends] = useState([]);
+
+    useEffect(() => {
+        AsyncStorage.getItem('global_user_id')
+            .then(userId => {
+                getFriends(userId)
+                    .then(result => {
+                        setFriends(result);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+
+    // const friends = [
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
+    // ];
 
     return (
         <SafeAreaView style={styles.container}>

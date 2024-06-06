@@ -14,6 +14,8 @@ const UserPost = ({ posted, songCover, songTitle, songArtist }) => {
         return null;
     }
 
+    // console.log("userPost.js songCover", songCover); // DEBUG
+
     return (
         <View style={[styles.card, posted ? styles.postedCard : null]}>
             {posted ? (
