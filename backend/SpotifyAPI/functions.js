@@ -154,6 +154,17 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
   // console.log("addTrackToPlaylist(userId, trackUri, playlistId)"); // DEBUG
   // console.log(userId, trackUri, playlistId);
   let accessToken = await refreshAccessToken(userId);
+
+  const playlistData = await getPlaylist(userId, playlistId);
+  const trackExists = playlistData.tracks.items.some(
+    (item) => item.track.uri === trackUri
+  );
+
+  if (trackExists) {
+    console.log("Track already exists in the playlist.");
+    return playlistData.snapshot_id;
+  }
+
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
 
   const options = {
@@ -187,7 +198,7 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
  * @param {string} song_uri - uri of the song
  * @param {string} playlist_id - playlist ID
  * @param {string} snapshot - playlist ID
- * @returns {JSON} the unparsed data of the playlist
+ * @returns {JSON} the snapshot playlist id
  *
  * Example:
  * snapshot = deleteTrackFromPlaylist(user_id, playlist_id ,song_uri, snapshot);
@@ -201,6 +212,18 @@ async function removeTrackFromPlaylist(
   // console.log("removeTrackFromPlaylist(userId, playlistId, trackUri, snapshotPlaylistId)"); // DEBUG
   // console.log(userId, trackUri, snapshotPlaylistId);
   let accessToken = await refreshAccessToken(userId);
+
+  // Check if the track exists in the playlist
+  const playlistData = await getPlaylist(userId, playlistId);
+  const trackExists = playlistData.tracks.items.some(
+    (item) => item.track.uri === trackUri
+  );
+
+  if (!trackExists) {
+    console.log("Track does not exist in the playlist.");
+    return playlistData.snapshot_id;
+  }
+
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
 
   const options = {
