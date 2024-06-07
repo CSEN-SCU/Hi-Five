@@ -40,15 +40,11 @@ const Feed = ({ navigation }) => {
                         const trackId = newestPost.track_uri.split(':')[2];
                         const todaySong = await getTrack(userId, trackId);
 
-                        // console.log("feed.js songCover (before set)", todaySong.album.images[0].url); // DEBUG
-
                         setSongDetails({
                             songCover: todaySong.album.images[0].url || null,
                             songTitle: todaySong.name,
                             songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
                         });
-
-                        // console.log("feed.js songCover (after set)", songDetails.songCover); // DEBUG
                     }
                 }
             } catch (error) {
@@ -58,36 +54,65 @@ const Feed = ({ navigation }) => {
 
         const fetchFeedPosts = async () => {
             try {
-                const all_posts = await getPosts();
-                const posts = [];
+                const allPosts = await getPosts();
+                const userPromises = [];
+                const postPromises = [];
 
-                for (const userId in all_posts) {
-                    const user = all_posts[userId];
-                    const username = await getUserUsername(userId);
-                    const profilePic = await spotifyProfilePic(userId);
+                // Create a batch of promises to fetch user data and post data in parallel
+                for (const userId in allPosts) {
+                    // Fetch usernames and profile pictures for each user
+                    userPromises.push(getUserUsername(userId));
+                    userPromises.push(spotifyProfilePic(userId));
 
-                    for (const postId in user) {
-                        const curr_post = user[postId];
-
-                        if (!curr_post.track_uri.startsWith('spotify:track:')) {
-                            throw new Error('Invalid track URI');
-                        }
-                        const curr_trackId = curr_post.track_uri.split(':')[2];
-                        const curr_track = await getTrack(userId, curr_trackId);
-
-                        const curr_post_details = {
-                            date: curr_post.date.toDate(),
-                            profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
-                            username: username,
-                            songCover: curr_track.album.images?.[0]?.url || 'default_cover_url',
-                            songTitle: curr_track.name,
-                            songArtist: curr_track.artists.map((artist) => artist.name).join(", "),
-                        };
-
-                        posts.push(curr_post_details);
+                    // Fetch track data for each post in parallel
+                    for (const postId in allPosts[userId]) {
+                        const post = allPosts[userId][postId];
+                        postPromises.push(getTrack(userId, post.track_uri.split(':')[2]));
                     }
                 }
 
+                // Wait for all user data to be fetched
+                const userResults = await Promise.all(userPromises);
+                // Wait for all track data to be fetched
+                const postResults = await Promise.all(postPromises);
+
+                const userData = {};
+                let userIndex = 0;
+
+                // Organize user data into a dictionary for quick lookup
+                for (const userId in allPosts) {
+                    userData[userId] = {
+                        username: userResults[userIndex],
+                        profilePic: userResults[userIndex + 1]?.[0]?.url || 'default_profile_pic_url'
+                    };
+                    userIndex += 2;
+                }
+
+                const posts = [];
+                let postIndex = 0;
+
+                // Construct post details using the fetched data
+                for (const userId in allPosts) {
+                    const user = allPosts[userId];
+                    for (const postId in user) {
+                        const currPost = user[postId];
+                        const currTrack = postResults[postIndex];
+
+                        const currPostDetails = {
+                            date: currPost.date.toDate(),
+                            profilePic: userData[userId].profilePic,
+                            username: userData[userId].username,
+                            songCover: currTrack.album.images?.[0]?.url || 'default_cover_url',
+                            songTitle: currTrack.name,
+                            songArtist: currTrack.artists.map((artist) => artist.name).join(", ")
+                        };
+
+                        posts.push(currPostDetails);
+                        postIndex++;
+                    }
+                }
+
+                // Sort posts by date (most recent first)
                 posts.sort((a, b) => b.date - a.date);
                 setFeedPosts(posts);
             } catch (error) {
@@ -112,44 +137,6 @@ const Feed = ({ navigation }) => {
     if (!fontsLoaded) {
         return null;
     }
-
-    const posts = [
-        {
-            profilePic: require('../assets/concert.png'),
-            username: 'johnjohn',
-            songCover: require('../assets/heros-cover.png'),
-            songTitle: 'Superhero',
-            songArtist: 'Metro Boomin, Future, Chris Brown'
-        },
-        {
-            profilePic: require('../assets/concert.png'),
-            username: 'johnjohn',
-            songCover: require('../assets/heros-cover.png'),
-            songTitle: 'Superhero',
-            songArtist: 'Metro Boomin, Future, Chris Brown'
-        },
-        {
-            profilePic: require('../assets/concert.png'),
-            username: 'johnjohn',
-            songCover: require('../assets/heros-cover.png'),
-            songTitle: 'Superhero',
-            songArtist: 'Metro Boomin, Future, Chris Brown'
-        },
-        {
-            profilePic: require('../assets/concert.png'),
-            username: 'johnjohn',
-            songCover: require('../assets/heros-cover.png'),
-            songTitle: 'Superhero',
-            songArtist: 'Metro Boomin, Future, Chris Brown'
-        },
-        {
-            profilePic: require('../assets/concert.png'),
-            username: 'johnjohn',
-            songCover: require('../assets/heros-cover.png'),
-            songTitle: 'Superhero',
-            songArtist: 'Metro Boomin, Future, Chris Brown'
-        },
-    ];
 
     return (<View style={styles.container}>
         <View>
