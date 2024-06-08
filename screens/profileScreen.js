@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserAccessToken } from '../backend/Firebase/users.js' // Import getUserAccessToken function
 import { getUserDisplayNameUsingAccessToken } from '../backend/SpotifyAPI/auth'; // Import getUserDisplayNameUsingAccessToken function
-
+import { spotifyProfilePic } from '../backend/SpotifyAPI/functions.js';
 
 const ImageCount = props => {
     return (
@@ -43,9 +43,10 @@ const HistoryRowBottom = () => {
 };
 const ProfileScreen = ({ navigation }) => {
     const [displayName, setDisplayName] = useState(''); // State to store the display name
+    const [profilePic, setProfilePic] = useState(null); // State to store the profile picture URL
 
     useEffect(() => {
-        const fetchDisplayName = async () => {
+        const fetchProfileInfo = async () => {
             try {
                 const userId = await AsyncStorage.getItem('global_user_id');
                 if (userId) {
@@ -53,6 +54,11 @@ const ProfileScreen = ({ navigation }) => {
                     if (accessToken) {
                         const name = await getUserDisplayNameUsingAccessToken(accessToken); // Fetch display name
                         setDisplayName(name);
+
+                        const pic = await spotifyProfilePic(userId); // Fetch profile picture
+                        if (pic && pic.length > 0) {
+                            setProfilePic(pic[0].url);
+                        }
                     } else {
                         console.error('Access token is not available');
                     }
@@ -60,12 +66,11 @@ const ProfileScreen = ({ navigation }) => {
                     console.error('User ID is not available');
                 }
             } catch (error) {
-                console.error('Error fetching display name:', error);
+                console.error('Error fetching profile info:', error);
             }
         };
 
-        fetchDisplayName();
-        
+        fetchProfileInfo();
     }, []);
 
     return (
@@ -82,8 +87,11 @@ const ProfileScreen = ({ navigation }) => {
             </View>
             {/*Profile Info*/}
             <View style={styles.profileInfo}>
-                <Image style={styles.profilePhoto} source={require('../assets/concert.png')}></Image>
-                <Text style={styles.nameText}>{displayName || 'Loading...'}</Text> 
+                <Image
+                    style={styles.profilePhoto}
+                    source={profilePic ? { uri: profilePic } : require('../assets/concert.png')}
+                />
+                <Text style={styles.nameText}>{displayName || 'Loading...'}</Text>
                 <Text style={styles.usernameText}>dave_chapelle</Text>
                 <Pressable style={styles.editButton} onPress={() => Alert.alert("You pressed the settings/edit button")}>
                     <Icon name='edit' size={10} style={styles.iconBodyStyle} />
