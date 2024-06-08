@@ -116,7 +116,7 @@ async function addUserUsingAuthorizationCode(userId, username, data) {
   console.log("addUserUsingAuthorizationCode data", data)
   let now =  Timestamp.now();
   let accessToken = data["access_token"];
-  let expiresIn = data["expires_in"] * 1000;
+  let expiresIn = data["expires_in"];
   let refreshToken = data["refresh_token"];
   await addUser(userId, {
     access_token: accessToken,

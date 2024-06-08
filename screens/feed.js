@@ -60,21 +60,30 @@ const Feed = ({ navigation }) => {
 
                 // Create a batch of promises to fetch user data and post data in parallel
                 for (const userId in allPosts) {
-                    // Fetch usernames and profile pictures for each user
-                    userPromises.push(getUserUsername(userId));
-                    userPromises.push(spotifyProfilePic(userId));
+                  // Fetch usernames and profile pictures for each user
+                  userPromises.push(getUserUsername(userId));
+                  userPromises.push(spotifyProfilePic(userId));
 
-                    // Fetch track data for each post in parallel
-                    for (const postId in allPosts[userId]) {
-                        const post = allPosts[userId][postId];
-                        postPromises.push(getTrack(userId, post.track_uri.split(':')[2]));
-                    }
+                  // Fetch track data for each post in parallel
+                  for (const postId in allPosts[userId]) {
+                    const post = allPosts[userId][postId];
+                    postPromises.push(
+                      getTrack(
+                        await AsyncStorage.getItem("global_user_id"),
+                        post.track_uri.split(":")[2]
+                      )
+                    );
+                  }
                 }
 
                 // Wait for all user data to be fetched
                 const userResults = await Promise.all(userPromises);
                 // Wait for all track data to be fetched
                 const postResults = await Promise.all(postPromises);
+
+                // Now userResults and postResults should contain the resolved data
+                // console.log("User data:", userResults);
+                // console.log("Post data:", postResults);
 
                 const userData = {};
                 let userIndex = 0;
@@ -98,16 +107,27 @@ const Feed = ({ navigation }) => {
                         const currPost = user[postId];
                         const currTrack = postResults[postIndex];
 
-                        const currPostDetails = {
-                            date: currPost.date.toDate(),
-                            profilePic: userData[userId].profilePic,
-                            username: userData[userId].username,
-                            songCover: currTrack.album.images?.[0]?.url || 'default_cover_url',
-                            songTitle: currTrack.name,
-                            songArtist: currTrack.artists.map((artist) => artist.name).join(", ")
-                        };
+                        console.log("Curr Track: ", currTrack)
+                        if (currTrack != null)
+                        {
+                            const currPostDetails = {
+                              date: currPost.date.toDate(),
+                              profilePic: userData[userId].profilePic,
+                              username: userData[userId].username,
+                              songCover:
+                                currTrack.album.images?.[0]?.url ||
+                                "default_cover_url",
+                              songTitle: currTrack.name,
+                              songArtist: currTrack.artists
+                                .map((artist) => artist.name)
+                                    .join(", "),
+                                songPreview: currTrack.preview_url,
+                              trackUri: currTrack.uri
+                            };
 
-                        posts.push(currPostDetails);
+                            posts.push(currPostDetails);
+                        }
+                        
                         postIndex++;
                     }
                 }
@@ -166,6 +186,8 @@ const Feed = ({ navigation }) => {
                         songCover={post.songCover}
                         songTitle={post.songTitle}
                         songArtist={post.songArtist}
+                        songPreview={post.songPreview}
+                        trackUri={ post.trackUri}
                     />
                 ))}
             </ScrollView>

@@ -346,6 +346,8 @@ async function getTrack(userId, trackUri) {
     let accessToken = await refreshAccessToken(userId);
     const url = `https://api.spotify.com/v1/tracks/${trackUri}`;
 
+    console.log("Track Access Token: ", accessToken);
+
     const options = {
       method: "GET",
       headers: {
@@ -362,7 +364,7 @@ async function getTrack(userId, trackUri) {
     const unparsedData = await response.json();
     return unparsedData;
   } catch (error) {
-    console.error('Error fetching track data:', error);
+    console.error('Error fetching track data:', error, ' ', trackUri);
     return null;
   }
 }
