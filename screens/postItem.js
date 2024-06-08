@@ -10,8 +10,14 @@ import {
 import { Audio } from "expo-av";
 import Icon from "react-native-vector-icons/Ionicons";
 import { getUserPlaylistId, getUserSnapshotPlaylistId } from "../backend/Firebase/users";
+import { addTrackToPlaylist, removeTrackFromPlaylist } from "../backend/SpotifyAPI/functions";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const defaultProfilePic = require('../assets/default-pfp.png');
+
 
 export default class PostItem extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -22,8 +28,8 @@ export default class PostItem extends React.Component {
     };
   }
 
-    _onPlaybackStatusUpdate = async (playbackStatus) => {
-      const { sound } = this.state;
+  _onPlaybackStatusUpdate = async (playbackStatus) => {
+    const { sound } = this.state;
     if (!playbackStatus.isLoaded) {
       if (playbackStatus.error) {
         console.log(
@@ -31,8 +37,8 @@ export default class PostItem extends React.Component {
         );
       }
     } else {
-        if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
-            this.setState({isPlaying: false});
+      if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
+        this.setState({ isPlaying: false });
         await sound.setStatusAsync({ shouldPlay: false, positionMillis: 0 });
       }
     }
@@ -45,7 +51,7 @@ export default class PostItem extends React.Component {
         { uri: songPreview },
         { shouldPlay: false }
       );
-        await sound.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
+      await sound.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
       this.setState({ sound });
     } catch (error) {
       console.log("Failed to load sound", error);
@@ -70,8 +76,17 @@ export default class PostItem extends React.Component {
     }
   };
 
-  toggleCancel = () => {
+  toggleCancel = async () => {
     const { hiFiveButtonColor } = this.state;
+    const userId = await AsyncStorage.getItem('global_user_id');
+    const userPlaylistId = await getUserPlaylistId(userId);
+    const userSnapshotPlaylistId = await getUserSnapshotPlaylistId(userId);
+    const { trackUri } = this.props;
+
+    // console.log(userId);
+    // console.log(userPlaylistId);
+    // console.log(userSnapshotPlaylistId);
+    // console.log(trackUri);
 
     if (hiFiveButtonColor === "#B2EED3") {
       this.setState({
@@ -85,21 +100,32 @@ export default class PostItem extends React.Component {
     }
 
     console.log(
-      `Close button color changed to ${
-        this.state.cancelButtonColor === "#FFFFFF" ? "white" : "red"
+      `Close button color changed to ${this.state.cancelButtonColor === "#FFFFFF" ? "white" : "red"
       }`
     );
+
+    // user disliked/discarded the song
+    if (this.state.cancelButtonColor == "red") {
+      await removeTrackFromPlaylist(userId, trackUri.split(":")[2], userPlaylistId, userSnapshotPlaylistId);
+    }
   };
 
   handClick = async () => {
     const newColor =
       this.state.hiFiveButtonColor === "#FFFFFF" ? "#B2EED3" : "#FFFFFF";
-      this.setState({ hiFiveButtonColor: newColor });
-      
-      if (this.state.hiFiveButtonColor == "#B2EED3")
-      {
-          
-      }
+    this.setState({ hiFiveButtonColor: newColor });
+    const userId = await AsyncStorage.getItem('global_user_id');
+    const userPlaylistId = await getUserPlaylistId(userId);
+    const { trackUri } = this.props;
+
+    // console.log(userId);
+    // console.log(userPlaylistId);
+    // console.log(trackUri);
+
+    // user hi-fived the song
+    if (this.state.hiFiveButtonColor == "#B2EED3") {
+      await addTrackToPlaylist(userId, trackUri.split(":")[2], userPlaylistId);
+    }
 
     if (this.state.cancelButtonColor === "#FF5733") {
       this.setState({ cancelButtonColor: "#FFFFFF" });
@@ -128,7 +154,10 @@ export default class PostItem extends React.Component {
     return (
       <View>
         <View style={styles.user_info}>
-          <Image style={styles.profile_pic} source={{ uri: profilePic }} />
+          <Image
+            style={styles.profile_pic}
+            source={profilePic ? { uri: profilePic } : defaultProfilePic}
+          />
           <Text style={styles.username}>{username}</Text>
         </View>
         <View style={styles.card}>

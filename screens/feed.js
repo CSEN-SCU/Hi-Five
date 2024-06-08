@@ -10,6 +10,8 @@ import { getNewestPostId, getPosts } from "../backend/Firebase/posts.js";
 import { getTrack, spotifyProfilePic } from "../backend/SpotifyAPI/functions.js";
 import { getUserUsername } from '../backend/Firebase/users.js';
 
+const defaultProfilePic = require('../assets/default-pfp.png');
+
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
     const [songDetails, setSongDetails] = useState({ songCover: '.', songTitle: '.', songArtist: '.' });
@@ -92,7 +94,7 @@ const Feed = ({ navigation }) => {
                 for (const userId in allPosts) {
                     userData[userId] = {
                         username: userResults[userIndex],
-                        profilePic: userResults[userIndex + 1]?.[0]?.url || 'default_profile_pic_url'
+                        profilePic: userResults[userIndex + 1]?.[0]?.url
                     };
                     userIndex += 2;
                 }
@@ -107,12 +109,12 @@ const Feed = ({ navigation }) => {
                         const currPost = user[postId];
                         const currTrack = postResults[postIndex];
 
-                        console.log("Curr Track: ", currTrack)
+                        // console.log("Curr Track: ", currTrack)
                         if (currTrack != null)
                         {
                             const currPostDetails = {
                               date: currPost.date.toDate(),
-                              profilePic: userData[userId].profilePic,
+                                profilePic: userData[userId].profilePic,
                               username: userData[userId].username,
                               songCover:
                                 currTrack.album.images?.[0]?.url ||
@@ -122,7 +124,7 @@ const Feed = ({ navigation }) => {
                                 .map((artist) => artist.name)
                                     .join(", "),
                                 songPreview: currTrack.preview_url,
-                              trackUri: currTrack.uri
+                                trackUri: currTrack.uri,
                             };
 
                             posts.push(currPostDetails);
@@ -188,6 +190,7 @@ const Feed = ({ navigation }) => {
                         songArtist={post.songArtist}
                         songPreview={post.songPreview}
                         trackUri={ post.trackUri}
+                        
                     />
                 ))}
             </ScrollView>
