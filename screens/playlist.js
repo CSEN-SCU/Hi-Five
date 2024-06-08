@@ -17,6 +17,7 @@ const Playlist = ({ navigation }) => {
     //const userId = await AsyncStorage.getItem("global_user_id", userId);
 
     const [songs, setSongs] = useState([]);
+    const [loaded, setLoaded] = useState(false);
     const [playlistURL, setPlaylistURL] = useState(null);
 
     const getPlaylistSongs = async () => {
@@ -35,6 +36,7 @@ const Playlist = ({ navigation }) => {
             };
         });
         setSongs(songData);
+        setLoaded(true);
     }
     useEffect(() => {
         getPlaylistSongs();
@@ -84,7 +86,12 @@ const Playlist = ({ navigation }) => {
             <View style={styles.songContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ marginTop: 7.5 }}></View>
-                    {songs.length === 0 ?
+                    {(songs.length === 0 && loaded === false) ?
+                        <Text style={{ color: '#FFFFFF', alignSelf: 'center', fontSize: 15 , paddingTop: 10}}>Loading...</Text>
+                        :
+                        null
+                    }
+                    {(songs.length === 0 && loaded === true) ?
                         <Text style={{ color: '#FFFFFF', alignSelf: 'center', fontSize: 15 , paddingTop: 10}}>No songs in playlist</Text>
                         :
                         songs.map((song, index) => (
