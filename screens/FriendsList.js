@@ -1,11 +1,13 @@
 // friend list page
 import { Alert, Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { getUserFollowing, getUserUsername } from '../backend/Firebase/users.js';
 import { spotifyProfilePic } from '../backend/SpotifyAPI/functions.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
+import { removeFollowing } from '../backend/Firebase/users.js';
 
 const AddFriendsButton = ({ navigation }) => {
     return (
@@ -26,7 +28,7 @@ async function getFriends(userId) {
       const username = await getUserUsername(id);
       const profilePic = await spotifyProfilePic(id);
 
-      return { profilePic, username };
+      return { id, profilePic, username };
     })
   );
 
@@ -37,7 +39,7 @@ const FriendsList = ({ navigation }) => {
 
     [friends, setFriends] = useState([]);
 
-    useEffect(() => {
+    useFocusEffect(() => {
         AsyncStorage.getItem('global_user_id')
             .then(userId => {
                 getFriends(userId)
@@ -51,7 +53,7 @@ const FriendsList = ({ navigation }) => {
             .catch(error => {
                 console.log(error);
             });
-    }, []);
+    });
 
     // const friends = [
     //     { profilePic: require('../assets/heros-cover.png'), username: 'dave_chapelle' },
@@ -93,11 +95,17 @@ const FriendsList = ({ navigation }) => {
             {/* list of friends */}
             <View style={styles.friendContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    {friends.map((friend, index) => (
+                    {friends.sort((a, b) => a.username.localeCompare(b.username)).map((friend) => (
                         <FriendCard
-                            key={index}
+                            key={friend.id}
                             profilePic={friend.profilePic}
                             username={friend.username}
+                            onPress={async () => {
+                                await removeFollowing(await AsyncStorage.getItem('global_user_id'), friend.id);
+                                setFriends(await getFriends(await AsyncStorage.getItem('global_user_id')));
+                            }}
+                            unaddable={true}
+                            id={friend.id}
                         />
                     ))}
                     <View style={{ marginBottom: 7.5 }}></View>

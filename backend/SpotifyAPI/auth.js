@@ -40,19 +40,14 @@ async function getAuthorizationUrl(challenge) {
 
 // async function accessTokenIsExpired(accessToken) {}
 
-async function refreshAccessToken(userId) {
+async function refreshAccessToken(userId/*, forceRefresh = false*/) {
   // console.log("refreshAccessToken(userId)"); // DEBUG
   var expiration_time = await getUserExpirationTime(userId);
   console.log(expiration_time.seconds > Timestamp.now().seconds);
   // console.log("refreshAccessToken expiration_time.seconds", expiration_time.seconds, "Timestamp.now().seconds", Timestamp.now().seconds); // DEBUG
-  if (expiration_time && (expiration_time.seconds > Timestamp.now().seconds)) return await getUserAccessToken(userId);
+  if (/*!forceRefresh && */ expiration_time && (expiration_time.seconds > Timestamp.now().seconds)) return await getUserAccessToken(userId);
   else {
-    console.log(
-      "accessToken has expired, refreshing... ",
-      expiration_time,
-      " ",
-      Timestamp.now().seconds
-    ); // DEBUG
+    // console.log("accessToken has expired, refreshing..."); // DEBUG
     let refreshToken = await getUserRefreshToken(userId);
     // console.log("expirationTime expired, refreshing token.", expiration_time, Timestamp.now());
     // console.log("CLIENT_ID", CLIENT_ID);
@@ -68,10 +63,13 @@ async function refreshAccessToken(userId) {
       })
     });
     const data = await response.json();
-    console.log("refreshAccessToken data", data); // DEBUG
+    // console.log("refreshAccessToken data", data); // DEBUG
+    if (data.error) {
+      console.log("refreshAccessToken data has an error, data:", data);
+      return undefined;
+    }
     let accessToken = data.access_token;
     refreshToken = data.refresh_token;
-    // console.log("refreshAccessToken data", data);
     await Promise.all([
       updateUserAccessToken(userId, accessToken),
       updateUserRefreshToken(userId, refreshToken),
@@ -121,7 +119,7 @@ async function useAuthorizationCode(code, codeVerifier) {
 
 async function getSpotifyUserIdUsingAccessToken(accessToken) {
   // console.log("getSpotifyUserIdUsingAccessToken(accessToken)"); // DEBUG
-  console.log("getSpotifyUserIdUsingAccessToken accessToken ", accessToken); // DEBUG
+  // console.log("getSpotifyUserIdUsingAccessToken accessToken ", accessToken); // DEBUG
   const url = "https://api.spotify.com/v1/me";
   let userId;
   const options = {

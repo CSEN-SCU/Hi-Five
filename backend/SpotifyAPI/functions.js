@@ -1,4 +1,4 @@
-console.log("functions.js");
+// console.log("functions.js");
 
 import {
   getUserAccessToken,
@@ -371,7 +371,7 @@ async function getTrack(userId, trackUri) {
 
 async function spotifyProfilePic(userId) {
   // console.log("spotifyProfilePic accessToken ", userId); // DEBUG
-  let accessToken = await refreshAccessToken(userId, true); // TODO: force refresh if needed
+  let accessToken = await refreshAccessToken(userId); // TODO: force refresh if needed
   // console.log("spotifyProfilePic accessToken ", accessToken); // DEBUG
   const url = "https://api.spotify.com/v1/me";
   let profilePic;
@@ -395,6 +395,7 @@ async function spotifyProfilePic(userId) {
     })
     .catch((error) => console.error("Error getting user profile picture:", error));
   // console.log("userId", userId);
+  // console.log("profilePic", profilePic);
   return profilePic;
 }
 

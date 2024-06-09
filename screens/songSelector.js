@@ -112,7 +112,7 @@ const SongSelector = ({ navigation }) => {
       </View>
 
       <Text style={styles.screenTitle}>Share your song</Text>
-      <SearchBar onSearchQueryChange={handleSearchQueryChange} />
+      <SearchBar onSearchQueryChange={handleSearchQueryChange} placeholder={"Search for a song"}/>
 
       {/* list of recently played songs */}
       <View style={styles.songContainer}>

@@ -53,9 +53,8 @@ const LoginScreen = ({ login }) => {
                 code,
                 codeVerifier
             );
-            console.log('User ID:', userId);
             await AsyncStorage.setItem("global_user_id", userId);
-            console.log('User ID set in AsyncStorage');
+            console.log('User ID set in AsyncStorage to', userId);
           } catch (error) {
             console.error('Error setting user ID:', error);
           }
