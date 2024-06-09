@@ -10,14 +10,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getNewestPostId, getPosts } from "../backend/Firebase/posts.js";
 import { getTrack, spotifyProfilePic } from "../backend/SpotifyAPI/functions.js";
 import { getUserUsername, getUserFollowing } from '../backend/Firebase/users.js';
+import spinner from '../assets/spinner.gif';
+import { Image } from "react-native";
 
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
     const [songDetails, setSongDetails] = useState({ songCover: '.', songTitle: '.', songArtist: '.' });
     const [feedPosts, setFeedPosts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useFocusEffect(
         React.useCallback(() => {
+            setIsLoading(true);
             console.log("focusing on feed!");
         const fetchUserPost = async () => {
             try {
@@ -73,7 +77,7 @@ const Feed = ({ navigation }) => {
                     postPromises.push(
                       getTrack(
                         await AsyncStorage.getItem("global_user_id"),
-                        post.track_uri.split(":")[2]
+                        post.track_uri/*.split(":")[2]*/
                       )
                     );
                   }
@@ -104,6 +108,7 @@ const Feed = ({ navigation }) => {
 
                 // Fetch the list of friends
                 const friends = await getUserFollowing(await AsyncStorage.getItem('global_user_id'));
+                friends.push(await AsyncStorage.getItem('global_user_id'));
 
                 // Process each friend in parallel
                 const friendPromises = friends.map(async (userId) => {
@@ -126,12 +131,14 @@ const Feed = ({ navigation }) => {
                         const curr_track = await getTrack(userId, curr_trackId);
 
                         return {
+                            id: `${userId}-${postId}`,
                             date: curr_post.date.toDate(),
                             profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
                             username: username,
                             songCover: curr_track.album.images?.[0]?.url || 'default_cover_url',
                             songTitle: curr_track.name,
                             songArtist: curr_track.artists.map((artist) => artist.name).join(", "),
+                            postDate: curr_post.date,
                         };
                     });
 
@@ -143,6 +150,7 @@ const Feed = ({ navigation }) => {
 
                 posts.sort((a, b) => b.date - a.date);
                 setFeedPosts(posts);
+                setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching posts or track details:', error);
             }
@@ -222,17 +230,22 @@ const Feed = ({ navigation }) => {
                 <TouchableOpacity onPress={onPress = () => navigation.push('SongSelector')}>
                     <UserPost posted={posted} {...songDetails} />
                 </TouchableOpacity>
+                {isLoading && 
+                    <View style={styles.loading}>
+                        <Image style={styles.image} source={spinner} />
+                    </View>
+                }
                 {feedPosts.map((post, index) => (
                     <PostItem
-                        key={index}
+                        key={post.id}
                         profilePic={post.profilePic}
                         username={post.username}
                         songCover={post.songCover}
                         songTitle={post.songTitle}
                         songArtist={post.songArtist}
                         songPreview={post.songPreview}
-                        trackUri={ post.trackUri}
-                        
+                        trackUri={post.trackUri}
+                        postDate={post.postDate}
                     />
                 ))}
             </ScrollView>
@@ -271,5 +284,17 @@ const styles = StyleSheet.create({
     },
     leftIcon: {
         flexDirection: 'row',
-    }
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+    },
+    image: {
+        width: '40%',
+        height: undefined,
+        aspectRatio: 1,
+        resizeMode: 'contain',
+    },
 });

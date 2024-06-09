@@ -85,7 +85,7 @@ const FriendsList = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={styles.navTitle}>Following</Text>
                 <TouchableOpacity onPress={() => console.log("edit friends button clicked")}>
-                    <Text style={styles.editText}>Edit</Text>
+                    <Text style={{...styles.editText, opacity: 0}}>Edit</Text> 
                 </TouchableOpacity>
             </View>
 
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     },
     editText: {
         color: '#fff',
-        fontSize: 15
+        fontSize: 15,
     },
     addFriendCard: {
         marginHorizontal: 25,

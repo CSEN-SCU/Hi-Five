@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserAccessToken } from '../backend/Firebase/users.js' // Import getUserAccessToken function
+import { getUserAccessToken, getUserAppStreak } from '../backend/Firebase/users.js' // Import getUserAccessToken function
 import { getUserDisplayNameUsingAccessToken } from '../backend/SpotifyAPI/auth'; // Import getUserDisplayNameUsingAccessToken function
+import { spotifyProfilePic } from '../backend/SpotifyAPI/functions.js';
 
 
 const ImageCount = props => {
@@ -43,6 +44,8 @@ const HistoryRowBottom = () => {
 };
 const ProfileScreen = ({ navigation }) => {
     const [displayName, setDisplayName] = useState(''); // State to store the display name
+    const [profilePic, setProfilePic] = useState('.'); // State to store the profile picture
+    const [appStreak, setAppStreak] = useState(''); // State to store the app streak
 
     useEffect(() => {
         const fetchDisplayName = async () => {
@@ -65,7 +68,16 @@ const ProfileScreen = ({ navigation }) => {
         };
 
         fetchDisplayName();
-        
+
+        (async () => {
+            const userId = await AsyncStorage.getItem('global_user_id');
+            const pic = await spotifyProfilePic(userId);
+            setProfilePic(pic);
+
+            const streak = await getUserAppStreak(userId);
+            setAppStreak(streak.toString());
+        })();
+
     }, []);
 
     return (
@@ -77,31 +89,31 @@ const ProfileScreen = ({ navigation }) => {
                 </Pressable>
                 <Text style={styles.navTitle}>Profile</Text>
                 <Pressable onPress={() => Alert.alert("You pressed the settings/edit button")}>
-                    <Icon name='settings' size={20} style={styles.iconTopStyle} />
+                   <Icon name='settings' size={20} style={{...styles.iconTopStyle, opacity: 0}} />
                 </Pressable>
             </View>
             {/*Profile Info*/}
             <View style={styles.profileInfo}>
-                <Image style={styles.profilePhoto} source={require('../assets/concert.png')}></Image>
-                <Text style={styles.nameText}>{displayName || 'Loading...'}</Text> 
-                <Text style={styles.usernameText}>dave_chapelle</Text>
-                <Pressable style={styles.editButton} onPress={() => Alert.alert("You pressed the settings/edit button")}>
+                <Image style={styles.profilePhoto} source={profilePic}></Image>
+                <Text style={styles.nameText}>{displayName || <Text style={{color: 'transparent'}}>Loading...</Text>}</Text>
+                {/* <Text style={styles.usernameText}>dave_chapelle</Text> */}
+                {/* <Pressable style={styles.editButton} onPress={() => Alert.alert("You pressed the settings/edit button")}>
                     <Icon name='edit' size={10} style={styles.iconBodyStyle} />
                     <Text style={styles.editText}>Edit</Text>
-                </Pressable>
+                </Pressable> */}
                 {/*App Streak*/}
                 <View style={styles.streakContainer}>
                     <Text style={styles.streakText}>App Streak</Text>
                     <View style={styles.fireContainer}>
-                        <Text style={styles.streakNumber}> &#128293;14</Text>
+                        <Text style={styles.streakNumber}> &#128293;{appStreak}</Text>
                     </View>
                 </View>
             </View>
-            <View style={styles.historyContainer}>
+            {/* <View style={styles.historyContainer}>
                 <Text style={styles.historyTitle}>14 Days Ago</Text>
                 <HistoryRowTop />
                 <HistoryRowBottom />
-            </View>
+            </View> */}
         </SafeAreaView>
     );
 };

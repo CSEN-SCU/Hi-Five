@@ -51,6 +51,7 @@ async function createPlaylist(userId) {
       snapshotPlaylistId = data.snapshot_id;
       unparsedData = data;
     });
+  console.log("createPlaylist snapshotPlaylistId", snapshotPlaylistId); // DEBUG
   await updateUserPlaylistId(userId, playlistId);
   await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return unparsedData;
@@ -151,9 +152,12 @@ async function getPlaylist(userId, playlistId) {
  * snapshot = addMusicToPlaylist(user_id, song_uri, playlist_id);
  */
 async function addTrackToPlaylist(userId, trackUri, playlistId) {
-  // console.log("addTrackToPlaylist(userId, trackUri, playlistId)"); // DEBUG
+  console.log("addTrackToPlaylist(userId, trackUri, playlistId)"); // DEBUG
   // console.log(userId, trackUri, playlistId);
   let accessToken = await refreshAccessToken(userId);
+  if (!trackUri.startsWith('spotify:track:')) {
+    trackUri = 'spotify:track:' + trackUri;
+  }
 
   const playlistData = await getPlaylist(userId, playlistId);
   const trackExists = playlistData.tracks.items.some(
@@ -179,13 +183,16 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
     }),
   };
 
+  console.log("url, options", url, options); // DEBUG
   let snapshotPlaylistId;
   await fetch(url, options)
     .then((res) => res.json())
     .then((data) => {
       snapshotPlaylistId = data.snapshot_id;
+      console.log("addTrackToPlaylist data", data); // DEBUG
     });
 
+    console.log("addTrackToPlaylist snapshotPlaylistId", snapshotPlaylistId); // DEBUG
   await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return snapshotPlaylistId;
 }
@@ -209,7 +216,7 @@ async function removeTrackFromPlaylist(
   playlistId,
   snapshotPlaylistId
 ) {
-  // console.log("removeTrackFromPlaylist(userId, playlistId, trackUri, snapshotPlaylistId)"); // DEBUG
+  console.log("removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPlaylistId)"); // DEBUG
   // console.log(userId, trackUri, snapshotPlaylistId);
   let accessToken = await refreshAccessToken(userId);
 
@@ -246,7 +253,7 @@ async function removeTrackFromPlaylist(
     .then((data) => {
       snapshotPlaylistId = data.snapshot_id;
     });
-
+  console.log("removeTrackFromPlaylist snapshotPlaylistId", snapshotPlaylistId); // DEBUG
   await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return snapshotPlaylistId;
 }
@@ -342,6 +349,7 @@ async function getRecentlyPlayedTracks(userId) {
  * track_data = getTrack(user_id, track_id);
  */
 async function getTrack(userId, trackUri) {
+  return defaultTrack; // DEBUG
   try {
     let accessToken = await refreshAccessToken(userId);
     const url = `https://api.spotify.com/v1/tracks/${trackUri}`;
@@ -365,14 +373,15 @@ async function getTrack(userId, trackUri) {
     return unparsedData;
   } catch (error) {
     console.error('Error fetching track data:', error, ' ', trackUri);
-    return null;
+    return defaultTrack; // DEBUG
+    // return null;
   }
 }
 
 async function spotifyProfilePic(userId) {
-  // console.log("spotifyProfilePic accessToken ", userId); // DEBUG
   let accessToken = await refreshAccessToken(userId); // TODO: force refresh if needed
-  console.log("spotifyProfilePic accessToken ", accessToken); // DEBUG
+  // console.log("spotifyProfilePic accessToken ", userId); // DEBUG
+  // console.log("spotifyProfilePic accessToken ", accessToken); // DEBUG
   const url = "https://api.spotify.com/v1/me";
   let profilePic;
   const options = {
@@ -407,4 +416,454 @@ export {
   getRecentlyPlayedTracks,
   getTrack,
   spotifyProfilePic
+};
+
+const defaultTrack = {
+  "album": {
+      "album_type": "single",
+      "artists": [
+          {
+              "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/7r8EHfxHZHU16sUV3BEH1t"
+              },
+              "href": "https://api.spotify.com/v1/artists/7r8EHfxHZHU16sUV3BEH1t",
+              "id": "7r8EHfxHZHU16sUV3BEH1t",
+              "name": "Macabre Plaza",
+              "type": "artist",
+              "uri": "spotify:artist:7r8EHfxHZHU16sUV3BEH1t"
+          }
+      ],
+      "available_markets": [
+          "AR",
+          "AU",
+          "AT",
+          "BE",
+          "BO",
+          "BR",
+          "BG",
+          "CA",
+          "CL",
+          "CO",
+          "CR",
+          "CY",
+          "CZ",
+          "DK",
+          "DO",
+          "DE",
+          "EC",
+          "EE",
+          "SV",
+          "FI",
+          "FR",
+          "GR",
+          "GT",
+          "HN",
+          "HK",
+          "HU",
+          "IS",
+          "IE",
+          "IT",
+          "LV",
+          "LT",
+          "LU",
+          "MY",
+          "MT",
+          "MX",
+          "NL",
+          "NZ",
+          "NI",
+          "NO",
+          "PA",
+          "PY",
+          "PE",
+          "PH",
+          "PL",
+          "PT",
+          "SG",
+          "SK",
+          "ES",
+          "SE",
+          "CH",
+          "TW",
+          "TR",
+          "UY",
+          "US",
+          "GB",
+          "AD",
+          "LI",
+          "MC",
+          "ID",
+          "JP",
+          "TH",
+          "VN",
+          "RO",
+          "IL",
+          "ZA",
+          "SA",
+          "AE",
+          "BH",
+          "QA",
+          "OM",
+          "KW",
+          "EG",
+          "MA",
+          "DZ",
+          "TN",
+          "LB",
+          "JO",
+          "PS",
+          "IN",
+          "BY",
+          "KZ",
+          "MD",
+          "UA",
+          "AL",
+          "BA",
+          "HR",
+          "ME",
+          "MK",
+          "RS",
+          "SI",
+          "KR",
+          "BD",
+          "PK",
+          "LK",
+          "GH",
+          "KE",
+          "NG",
+          "TZ",
+          "UG",
+          "AG",
+          "AM",
+          "BS",
+          "BB",
+          "BZ",
+          "BT",
+          "BW",
+          "BF",
+          "CV",
+          "CW",
+          "DM",
+          "FJ",
+          "GM",
+          "GE",
+          "GD",
+          "GW",
+          "GY",
+          "HT",
+          "JM",
+          "KI",
+          "LS",
+          "LR",
+          "MW",
+          "MV",
+          "ML",
+          "MH",
+          "FM",
+          "NA",
+          "NR",
+          "NE",
+          "PW",
+          "PG",
+          "PR",
+          "WS",
+          "SM",
+          "ST",
+          "SN",
+          "SC",
+          "SL",
+          "SB",
+          "KN",
+          "LC",
+          "VC",
+          "SR",
+          "TL",
+          "TO",
+          "TT",
+          "TV",
+          "VU",
+          "AZ",
+          "BN",
+          "BI",
+          "KH",
+          "CM",
+          "TD",
+          "KM",
+          "GQ",
+          "SZ",
+          "GA",
+          "GN",
+          "KG",
+          "LA",
+          "MO",
+          "MR",
+          "MN",
+          "NP",
+          "RW",
+          "TG",
+          "UZ",
+          "ZW",
+          "BJ",
+          "MG",
+          "MU",
+          "MZ",
+          "AO",
+          "CI",
+          "DJ",
+          "ZM",
+          "CD",
+          "CG",
+          "IQ",
+          "LY",
+          "TJ",
+          "VE",
+          "ET",
+          "XK"
+      ],
+      "external_urls": {
+          "spotify": "https://open.spotify.com/album/6eKaAhAfbKpu15FT8C89g6"
+      },
+      "href": "https://api.spotify.com/v1/albums/6eKaAhAfbKpu15FT8C89g6",
+      "id": "6eKaAhAfbKpu15FT8C89g6",
+      "images": [
+          {
+              "height": 640,
+              "url": "https://i.scdn.co/image/ab67616d0000b27365463378aa39c6172a04dc96",
+              "width": 640
+          },
+          {
+              "height": 300,
+              "url": "https://i.scdn.co/image/ab67616d00001e0265463378aa39c6172a04dc96",
+              "width": 300
+          },
+          {
+              "height": 64,
+              "url": "https://i.scdn.co/image/ab67616d0000485165463378aa39c6172a04dc96",
+              "width": 64
+          }
+      ],
+      "name": "Out With the Old in With the Taboo",
+      "release_date": "2022-04-21",
+      "release_date_precision": "day",
+      "total_tracks": 5,
+      "type": "album",
+      "uri": "spotify:album:6eKaAhAfbKpu15FT8C89g6"
+  },
+  "artists": [
+      {
+          "external_urls": {
+              "spotify": "https://open.spotify.com/artist/7r8EHfxHZHU16sUV3BEH1t"
+          },
+          "href": "https://api.spotify.com/v1/artists/7r8EHfxHZHU16sUV3BEH1t",
+          "id": "7r8EHfxHZHU16sUV3BEH1t",
+          "name": "Macabre Plaza",
+          "type": "artist",
+          "uri": "spotify:artist:7r8EHfxHZHU16sUV3BEH1t"
+      }
+  ],
+  "available_markets": [
+      "AR",
+      "AU",
+      "AT",
+      "BE",
+      "BO",
+      "BR",
+      "BG",
+      "CA",
+      "CL",
+      "CO",
+      "CR",
+      "CY",
+      "CZ",
+      "DK",
+      "DO",
+      "DE",
+      "EC",
+      "EE",
+      "SV",
+      "FI",
+      "FR",
+      "GR",
+      "GT",
+      "HN",
+      "HK",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LV",
+      "LT",
+      "LU",
+      "MY",
+      "MT",
+      "MX",
+      "NL",
+      "NZ",
+      "NI",
+      "NO",
+      "PA",
+      "PY",
+      "PE",
+      "PH",
+      "PL",
+      "PT",
+      "SG",
+      "SK",
+      "ES",
+      "SE",
+      "CH",
+      "TW",
+      "TR",
+      "UY",
+      "US",
+      "GB",
+      "AD",
+      "LI",
+      "MC",
+      "ID",
+      "JP",
+      "TH",
+      "VN",
+      "RO",
+      "IL",
+      "ZA",
+      "SA",
+      "AE",
+      "BH",
+      "QA",
+      "OM",
+      "KW",
+      "EG",
+      "MA",
+      "DZ",
+      "TN",
+      "LB",
+      "JO",
+      "PS",
+      "IN",
+      "BY",
+      "KZ",
+      "MD",
+      "UA",
+      "AL",
+      "BA",
+      "HR",
+      "ME",
+      "MK",
+      "RS",
+      "SI",
+      "KR",
+      "BD",
+      "PK",
+      "LK",
+      "GH",
+      "KE",
+      "NG",
+      "TZ",
+      "UG",
+      "AG",
+      "AM",
+      "BS",
+      "BB",
+      "BZ",
+      "BT",
+      "BW",
+      "BF",
+      "CV",
+      "CW",
+      "DM",
+      "FJ",
+      "GM",
+      "GE",
+      "GD",
+      "GW",
+      "GY",
+      "HT",
+      "JM",
+      "KI",
+      "LS",
+      "LR",
+      "MW",
+      "MV",
+      "ML",
+      "MH",
+      "FM",
+      "NA",
+      "NR",
+      "NE",
+      "PW",
+      "PG",
+      "PR",
+      "WS",
+      "SM",
+      "ST",
+      "SN",
+      "SC",
+      "SL",
+      "SB",
+      "KN",
+      "LC",
+      "VC",
+      "SR",
+      "TL",
+      "TO",
+      "TT",
+      "TV",
+      "VU",
+      "AZ",
+      "BN",
+      "BI",
+      "KH",
+      "CM",
+      "TD",
+      "KM",
+      "GQ",
+      "SZ",
+      "GA",
+      "GN",
+      "KG",
+      "LA",
+      "MO",
+      "MR",
+      "MN",
+      "NP",
+      "RW",
+      "TG",
+      "UZ",
+      "ZW",
+      "BJ",
+      "MG",
+      "MU",
+      "MZ",
+      "AO",
+      "CI",
+      "DJ",
+      "ZM",
+      "CD",
+      "CG",
+      "IQ",
+      "LY",
+      "TJ",
+      "VE",
+      "ET",
+      "XK"
+  ],
+  "disc_number": 1,
+  "duration_ms": 96363,
+  "explicit": false,
+  "external_ids": {
+      "isrc": "TCAGE2226176"
+  },
+  "external_urls": {
+      "spotify": "https://open.spotify.com/track/49Q4EjrGxgllOt6jXJPfeI"
+  },
+  "href": "https://api.spotify.com/v1/tracks/49Q4EjrGxgllOt6jXJPfeI",
+  "id": "49Q4EjrGxgllOt6jXJPfeI",
+  "is_local": false,
+  "name": "Abandoned Plaza",
+  "popularity": 56,
+  "preview_url": "https://p.scdn.co/mp3-preview/2c08c5c6325fb502aa4b94c3880f06095114b22d?cid=1afd86bd959b46549fad0dc7389b1f1a",
+  "track_number": 1,
+  "type": "track",
+  "uri": "spotify:track:49Q4EjrGxgllOt6jXJPfeI"
 };

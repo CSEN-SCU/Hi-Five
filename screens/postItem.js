@@ -39,20 +39,22 @@ export default class PostItem extends React.Component {
     } else {
       if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
         this.setState({ isPlaying: false });
+        console.log("sound 1", sound); // DEBUG
         await sound.setStatusAsync({ shouldPlay: false, positionMillis: 0 });
       }
     }
   };
 
   async componentDidMount() {
-    const { songPreview } = this.props;
+    // const { songPreview } = this.props;
+    const songPreview = "https://p.scdn.co/mp3-preview/2c08c5c6325fb502aa4b94c3880f06095114b22d?cid=1afd86bd959b46549fad0dc7389b1f1a";
     try {
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: songPreview },
+      const { sound: soundObject } = await Audio.Sound.createAsync(
+        { uri: songPreview } ,
         { shouldPlay: false }
       );
-      await sound.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
-      this.setState({ sound });
+      await soundObject.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
+      this.setState({ sound: soundObject });
     } catch (error) {
       console.log("Failed to load sound", error);
       Alert.alert("Error", "Failed to load sound: " + error.message);
@@ -61,8 +63,10 @@ export default class PostItem extends React.Component {
 
   togglePlayPause = async () => {
     const { isPlaying, sound } = this.state;
+    console.log("togglePlayPause sound", sound); // DEBUG
     if (sound) {
       try {
+        console.log("sound 2", sound); // DEBUG
         if (isPlaying) {
           await sound.setStatusAsync({ shouldPlay: false });
         } else {
@@ -81,7 +85,8 @@ export default class PostItem extends React.Component {
     const userId = await AsyncStorage.getItem('global_user_id');
     const userPlaylistId = await getUserPlaylistId(userId);
     const userSnapshotPlaylistId = await getUserSnapshotPlaylistId(userId);
-    const { trackUri } = this.props;
+    // const { trackUri } = this.props;
+    const trackUri = "spotify:track:49Q4EjrGxgllOt6jXJPfeI";
 
     // console.log(userId);
     // console.log(userPlaylistId);
@@ -105,8 +110,8 @@ export default class PostItem extends React.Component {
     );
 
     // user disliked/discarded the song
-    if (this.state.cancelButtonColor == "red") {
-      await removeTrackFromPlaylist(userId, trackUri.split(":")[2], userPlaylistId, userSnapshotPlaylistId);
+    if (this.state.cancelButtonColor !== "FFFFFF") {
+      await removeTrackFromPlaylist(userId, trackUri/*.split(":")[2]*/, userPlaylistId, userSnapshotPlaylistId);
     }
   };
 
@@ -116,7 +121,9 @@ export default class PostItem extends React.Component {
     this.setState({ hiFiveButtonColor: newColor });
     const userId = await AsyncStorage.getItem('global_user_id');
     const userPlaylistId = await getUserPlaylistId(userId);
-    const { trackUri } = this.props;
+    // const { trackUri } = this.props;
+    const trackUri = "spotify:track:49Q4EjrGxgllOt6jXJPfeI";
+
 
     // console.log(userId);
     // console.log(userPlaylistId);
@@ -124,7 +131,7 @@ export default class PostItem extends React.Component {
 
     // user hi-fived the song
     if (this.state.hiFiveButtonColor == "#B2EED3") {
-      await addTrackToPlaylist(userId, trackUri.split(":")[2], userPlaylistId);
+      await addTrackToPlaylist(userId, trackUri/*.split(":")[2]*/, userPlaylistId);
     }
 
     if (this.state.cancelButtonColor === "#FF5733") {
@@ -144,7 +151,7 @@ export default class PostItem extends React.Component {
   }
 
   render() {
-    const { profilePic, username, songCover, songTitle, songArtist } =
+    const { profilePic, username, songCover, songTitle, songArtist, postDate } =
       this.props;
 
     const limitCharacters = (str, limit) => {
@@ -159,6 +166,7 @@ export default class PostItem extends React.Component {
             source={profilePic ? { uri: profilePic } : defaultProfilePic}
           />
           <Text style={styles.username}>{username}</Text>
+          <Text style={styles.postDate}>{(new Date(postDate.seconds * 1000)).toLocaleTimeString()}</Text>
         </View>
         <View style={styles.card}>
           <Image style={styles.song_cover} source={{ uri: songCover }} />
@@ -261,5 +269,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 32,
+  },
+  postDate: {
+    marginLeft: 'auto',
+    marginRight: 10,
+    fontSize: 12,
+    color: '#888',
   },
 });

@@ -87,7 +87,7 @@ const Playlist = ({ navigation }) => {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ marginTop: 7.5 }}></View>
                     {(songs.length === 0 && loaded === false) ?
-                        <Text style={{ color: '#FFFFFF', alignSelf: 'center', fontSize: 15 , paddingTop: 10}}>Loading...</Text>
+                        <Text style={{ color: '#FFFFFF', alignSelf: 'center', fontSize: 15 , paddingTop: 10, opacity: 0}}>Loading...</Text>
                         :
                         null
                     }
