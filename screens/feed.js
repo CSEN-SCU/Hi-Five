@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import UserPost from './userPost';
@@ -8,16 +9,16 @@ import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getNewestPostId, getPosts } from "../backend/Firebase/posts.js";
 import { getTrack, spotifyProfilePic } from "../backend/SpotifyAPI/functions.js";
-import { getUserUsername } from '../backend/Firebase/users.js';
-
-const defaultProfilePic = require('../assets/default-pfp.png');
+import { getUserUsername, getUserFollowing } from '../backend/Firebase/users.js';
 
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
     const [songDetails, setSongDetails] = useState({ songCover: '.', songTitle: '.', songArtist: '.' });
     const [feedPosts, setFeedPosts] = useState([]);
 
-    useEffect(() => {
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log("focusing on feed!");
         const fetchUserPost = async () => {
             try {
                 const userId = await AsyncStorage.getItem('global_user_id');
@@ -100,41 +101,46 @@ const Feed = ({ navigation }) => {
                 }
 
                 const posts = [];
-                let postIndex = 0;
 
-                // Construct post details using the fetched data
-                for (const userId in allPosts) {
-                    const user = allPosts[userId];
-                    for (const postId in user) {
-                        const currPost = user[postId];
-                        const currTrack = postResults[postIndex];
+                // Fetch the list of friends
+                const friends = await getUserFollowing(await AsyncStorage.getItem('global_user_id'));
 
-                        // console.log("Curr Track: ", currTrack)
-                        if (currTrack != null)
-                        {
-                            const currPostDetails = {
-                              date: currPost.date.toDate(),
-                                profilePic: userData[userId].profilePic,
-                              username: userData[userId].username,
-                              songCover:
-                                currTrack.album.images?.[0]?.url ||
-                                "default_cover_url",
-                              songTitle: currTrack.name,
-                              songArtist: currTrack.artists
-                                .map((artist) => artist.name)
-                                    .join(", "),
-                                songPreview: currTrack.preview_url,
-                                trackUri: currTrack.uri,
-                            };
-
-                            posts.push(currPostDetails);
-                        }
-                        
-                        postIndex++;
+                // Process each friend in parallel
+                const friendPromises = friends.map(async (userId) => {
+                    if (!allPosts.hasOwnProperty(userId)) {
+                        return;
                     }
-                }
 
-                // Sort posts by date (most recent first)
+                    const user = allPosts[userId];
+                    const username = await getUserUsername(userId);
+                    const profilePic = await spotifyProfilePic(userId);
+
+                    // Process each post in parallel
+                    const postPromises = Object.keys(user).map(async (postId) => {
+                        const curr_post = user[postId];
+
+                        if (!curr_post.track_uri.startsWith('spotify:track:')) {
+                            throw new Error('Invalid track URI');
+                        }
+                        const curr_trackId = curr_post.track_uri.split(':')[2];
+                        const curr_track = await getTrack(userId, curr_trackId);
+
+                        return {
+                            date: curr_post.date.toDate(),
+                            profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
+                            username: username,
+                            songCover: curr_track.album.images?.[0]?.url || 'default_cover_url',
+                            songTitle: curr_track.name,
+                            songArtist: curr_track.artists.map((artist) => artist.name).join(", "),
+                        };
+                    });
+
+                    const userPosts = await Promise.all(postPromises);
+                    posts.push(...userPosts);
+                });
+
+                await Promise.all(friendPromises);
+
                 posts.sort((a, b) => b.date - a.date);
                 setFeedPosts(posts);
             } catch (error) {
@@ -142,15 +148,13 @@ const Feed = ({ navigation }) => {
             }
         };
 
-        const checkFeedUpdates = navigation.addListener('focus', () => {
-            fetchUserPost();
-            fetchFeedPosts();
-        });
+        fetchUserPost();
+        fetchFeedPosts();
 
-        return () => checkFeedUpdates();
-
-    }, [navigation]);
-
+        // return () => checkFeedUpdates();
+        }, [])
+    );
+        
     let [fontsLoaded] = useFonts({
         Poppins_700Bold,
         Poppins_400Regular
@@ -159,6 +163,44 @@ const Feed = ({ navigation }) => {
     if (!fontsLoaded) {
         return null;
     }
+
+    // const posts = [
+    //     {
+    //         profilePic: require('../assets/concert.png'),
+    //         username: 'johnjohn',
+    //         songCover: require('../assets/heros-cover.png'),
+    //         songTitle: 'Superhero',
+    //         songArtist: 'Metro Boomin, Future, Chris Brown'
+    //     },
+    //     {
+    //         profilePic: require('../assets/concert.png'),
+    //         username: 'johnjohn',
+    //         songCover: require('../assets/heros-cover.png'),
+    //         songTitle: 'Superhero',
+    //         songArtist: 'Metro Boomin, Future, Chris Brown'
+    //     },
+    //     {
+    //         profilePic: require('../assets/concert.png'),
+    //         username: 'johnjohn',
+    //         songCover: require('../assets/heros-cover.png'),
+    //         songTitle: 'Superhero',
+    //         songArtist: 'Metro Boomin, Future, Chris Brown'
+    //     },
+    //     {
+    //         profilePic: require('../assets/concert.png'),
+    //         username: 'johnjohn',
+    //         songCover: require('../assets/heros-cover.png'),
+    //         songTitle: 'Superhero',
+    //         songArtist: 'Metro Boomin, Future, Chris Brown'
+    //     },
+    //     {
+    //         profilePic: require('../assets/concert.png'),
+    //         username: 'johnjohn',
+    //         songCover: require('../assets/heros-cover.png'),
+    //         songTitle: 'Superhero',
+    //         songArtist: 'Metro Boomin, Future, Chris Brown'
+    //     },
+    // ];
 
     return (<View style={styles.container}>
         <View>

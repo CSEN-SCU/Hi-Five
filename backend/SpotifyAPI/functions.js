@@ -346,7 +346,7 @@ async function getTrack(userId, trackUri) {
     let accessToken = await refreshAccessToken(userId);
     const url = `https://api.spotify.com/v1/tracks/${trackUri}`;
 
-    console.log("Track Access Token: ", accessToken);
+    // console.log("Track Access Token: ", accessToken);
 
     const options = {
       method: "GET",
@@ -371,7 +371,7 @@ async function getTrack(userId, trackUri) {
 
 async function spotifyProfilePic(userId) {
   // console.log("spotifyProfilePic accessToken ", userId); // DEBUG
-  let accessToken = await refreshAccessToken(userId, true); // TODO: force refresh if needed
+  let accessToken = await refreshAccessToken(userId); // TODO: force refresh if needed
   // console.log("spotifyProfilePic accessToken ", accessToken); // DEBUG
   const url = "https://api.spotify.com/v1/me";
   let profilePic;
