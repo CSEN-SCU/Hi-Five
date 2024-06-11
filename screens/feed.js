@@ -83,7 +83,7 @@ const Feed = ({ navigation }) => {
 
                     for (const userId of friends) {
                         if (!(userId in userCache)) {
-                            console.log("userId", userId, "not in userCache)"); // DEBUG
+                            // console.log("userId", userId, "not in userCache)"); // DEBUG
                             userPromises.push(userId);
                             userPromises.push(getUserUsername(userId));
                             userPromises.push(spotifyProfilePic(userId));
@@ -124,9 +124,9 @@ const Feed = ({ navigation }) => {
                     setUserCache(userCache);
                     setTrackCache(trackCache);
 
-                    console.log("allPosts", allPosts);
-                    console.log("userCache", userCache);
-                    console.log("trackCache", trackCache);
+                    // console.log("allPosts", allPosts); // DEBUG
+                    // console.log("userCache", userCache); // DEBUG
+                    // console.log("trackCache", trackCache); // DEBUG
 
                     const posts = [];
                     for (const userId of friends) {
@@ -135,9 +135,9 @@ const Feed = ({ navigation }) => {
                             const user = userCache[userId];
                             const track = trackCache[post.track_uri.split(':')[2]] || defaultTrack;
                             
-                            console.log("post", post); // DEBUG
-                            console.log("user", user); // DEBUG
-                            console.log("track", track); // DEBUG
+                            // console.log("post", post); // DEBUG
+                            // console.log("user", user); // DEBUG
+                            // console.log("track", track); // DEBUG
                             return {
                                 id: `${userId}-${postId}`,
                                 date: post.date.toDate(),
