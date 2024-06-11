@@ -51,15 +51,28 @@ const Feed = ({ navigation }) => {
                             if (newestPost.track_uri in trackCache) {
                                 setSongDetails(trackCache[newestPost.track_uri]);
                             } else {
-                                const trackId = newestPost.track_uri.split(':')[2];
-                                const todaySong = await getTrack(userId, trackId);
-                                // console.log("todaySong", todaySong); // DEBUG
-                                trackCache[newestPost.track_uri] = {
-                                    songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
-                                    songTitle: todaySong.name,
-                                    songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
-                                };
-                                setSongDetails(setSongDetails(trackCache[newestPost.track_uri]));
+                                const trackUri = newestPost.track_uri;
+                                if (trackUri) {
+                                    const trackId = newestPost.track_uri.split(':')[2];
+                                    const todaySong = await getTrack(userId, trackId);
+                                    // console.log("todaySong", todaySong); // DEBUG
+                                    trackCache[newestPost.track_uri] = {
+                                        songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
+                                        songTitle: todaySong.name,
+                                        songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
+                                    };
+                                    setSongDetails(setSongDetails(trackCache[newestPost.track_uri]));
+                                } else {
+                                    // const trackId = unformattedDefaultTrack.id;
+                                    // const todaySong = defaultTrack;
+                                    // // console.log("todaySong", todaySong); // DEBUG
+                                    // trackCache[newestPost.track_uri] = {
+                                    //     songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
+                                    //     songTitle: todaySong.name,
+                                    //     songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
+                                    // };
+                                    // setSongDetails(setSongDetails(trackCache[newestPost.track_uri]));
+                                }
                             }
                         }
                     }
@@ -109,7 +122,7 @@ const Feed = ({ navigation }) => {
                     }
 
                     // console.log("trackIds", trackIds); // DEBUG
-                    const trackResults = await getTracks(globalUserId, trackIds);
+                    const trackResults = await getTracks(globalUserId, trackIds) ? trackIds : [];
                     for (const track of trackResults) {
                         // console.log("track", track); // DEBUG
                         trackCache[track.id] = {
