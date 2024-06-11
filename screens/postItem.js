@@ -39,16 +39,18 @@ export default class PostItem extends React.Component {
     } else {
       if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
         this.setState({ isPlaying: false });
-        console.log("sound 1", sound); // DEBUG
+        // console.log("sound 1", sound); // DEBUG
         await sound.setStatusAsync({ shouldPlay: false, positionMillis: 0 });
       }
     }
   };
 
   async componentDidMount() {
-    // const { songPreview } = this.props;
-    const songPreview = "https://p.scdn.co/mp3-preview/2c08c5c6325fb502aa4b94c3880f06095114b22d?cid=1afd86bd959b46549fad0dc7389b1f1a";
+    const { songPreview } = this.props;
+    // const songPreview = "https://p.scdn.co/mp3-preview/2c08c5c6325fb502aa4b94c3880f06095114b22d?cid=1afd86bd959b46549fad0dc7389b1f1a";
     try {
+      // await Audio.setIsEnabledAsync(false);
+      // await Audio.setIsEnabledAsync(true);
       const { sound: soundObject } = await Audio.Sound.createAsync(
         { uri: songPreview } ,
         { shouldPlay: false }
@@ -63,10 +65,10 @@ export default class PostItem extends React.Component {
 
   togglePlayPause = async () => {
     const { isPlaying, sound } = this.state;
-    console.log("togglePlayPause sound", sound); // DEBUG
+    // console.log("togglePlayPause sound", sound); // DEBUG
     if (sound) {
       try {
-        console.log("sound 2", sound); // DEBUG
+        // console.log("sound 2", sound); // DEBUG
         if (isPlaying) {
           await sound.setStatusAsync({ shouldPlay: false });
         } else {
@@ -85,8 +87,8 @@ export default class PostItem extends React.Component {
     const userId = await AsyncStorage.getItem('global_user_id');
     const userPlaylistId = await getUserPlaylistId(userId);
     const userSnapshotPlaylistId = await getUserSnapshotPlaylistId(userId);
-    // const { trackUri } = this.props;
-    const trackUri = "spotify:track:49Q4EjrGxgllOt6jXJPfeI";
+    const { trackUri } = this.props;
+    // const trackUri = "spotify:track:49Q4EjrGxgllOt6jXJPfeI";
 
     // console.log(userId);
     // console.log(userPlaylistId);
@@ -121,8 +123,8 @@ export default class PostItem extends React.Component {
     this.setState({ hiFiveButtonColor: newColor });
     const userId = await AsyncStorage.getItem('global_user_id');
     const userPlaylistId = await getUserPlaylistId(userId);
-    // const { trackUri } = this.props;
-    const trackUri = "spotify:track:49Q4EjrGxgllOt6jXJPfeI";
+    const { trackUri } = this.props;
+    // const trackUri = "spotify:track:49Q4EjrGxgllOt6jXJPfeI";
 
 
     // console.log(userId);
@@ -146,12 +148,13 @@ export default class PostItem extends React.Component {
 
   componentWillUnmount() {
     if (this.state.sound) {
-      this.state.sound.unloadAsync();
+      this.state.sound.unloadAsync().catch(error => console.log(error));
     }
+    // Audio.setIsEnabledAsync(false).then(() => Audio.setIsEnabledAsync(true));
   }
 
   render() {
-    const { profilePic, username, songCover, songTitle, songArtist, postDate } =
+    const { profilePic, username, songCover, songTitle, songArtist, postDate, trackUri } =
       this.props;
 
     const limitCharacters = (str, limit) => {

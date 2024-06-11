@@ -53,7 +53,7 @@ const AddFriends = ({ navigation }) => {
     let lastQueryTime = useRef(0);
 
     const handleSearchQueryChange = async (query) => {
-        console.log("handleSearchQueryChange query", query); // DEBUG
+        // console.log("handleSearchQueryChange query", query); // DEBUG
         const currentQueryTime = Date.now();
         // console.log("before currentQueryTime", currentQueryTime, "lastQueryTime", lastQueryTime.current);
         lastQueryTime.current = currentQueryTime;

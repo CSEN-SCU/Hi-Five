@@ -42,7 +42,7 @@ const SongSelector = ({ navigation }) => {
     const songData = response.map(song => {
       return {
         trackUri: song.track.uri,
-        songCover: song.track.album.images[0].url,
+        songCover: song.track.album.images[0] ? song.track.album.images[0].url : null,
         songTitle: song.track.name,
         songArtist: song.track.artists.map((artist) => artist.name).join(", "),
       };

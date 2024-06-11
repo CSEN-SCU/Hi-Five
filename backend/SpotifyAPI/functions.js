@@ -152,12 +152,13 @@ async function getPlaylist(userId, playlistId) {
  * snapshot = addMusicToPlaylist(user_id, song_uri, playlist_id);
  */
 async function addTrackToPlaylist(userId, trackUri, playlistId) {
-  console.log("addTrackToPlaylist(userId, trackUri, playlistId)"); // DEBUG
+  // console.log("addTrackToPlaylist trackUri", trackUri); // DEBUG
+  // console.log("addTrackToPlaylist(userId, trackUri, playlistId)"); // DEBUG
   // console.log(userId, trackUri, playlistId);
   let accessToken = await refreshAccessToken(userId);
-  if (!trackUri.startsWith('spotify:track:')) {
-    trackUri = 'spotify:track:' + trackUri;
-  }
+  // if (!trackUri.startsWith('spotify:track:')) {
+  //   trackUri = 'spotify:track:' + trackUri;
+  // }
 
   const playlistData = await getPlaylist(userId, playlistId);
   const trackExists = playlistData.tracks.items.some(
@@ -183,16 +184,16 @@ async function addTrackToPlaylist(userId, trackUri, playlistId) {
     }),
   };
 
-  console.log("url, options", url, options); // DEBUG
+  // console.log("url, options", url, options); // DEBUG
   let snapshotPlaylistId;
   await fetch(url, options)
     .then((res) => res.json())
     .then((data) => {
       snapshotPlaylistId = data.snapshot_id;
-      console.log("addTrackToPlaylist data", data); // DEBUG
+      // console.log("addTrackToPlaylist data", data); // DEBUG
     });
 
-    console.log("addTrackToPlaylist snapshotPlaylistId", snapshotPlaylistId); // DEBUG
+    // console.log("addTrackToPlaylist snapshotPlaylistId", snapshotPlaylistId); // DEBUG
   await updateUserSnapshotPlaylistId(userId, snapshotPlaylistId);
   return snapshotPlaylistId;
 }
@@ -216,7 +217,8 @@ async function removeTrackFromPlaylist(
   playlistId,
   snapshotPlaylistId
 ) {
-  console.log("removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPlaylistId)"); // DEBUG
+  console.log("removeTrackFromPlaylist trackUri", trackUri); // DEBUG
+  // console.log("removeTrackFromPlaylist(userId, trackUri, playlistId, snapshotPlaylistId)"); // DEBUG
   // console.log(userId, trackUri, snapshotPlaylistId);
   let accessToken = await refreshAccessToken(userId);
 
@@ -342,17 +344,20 @@ async function getRecentlyPlayedTracks(userId) {
  * Description: This function gets the track based on the track ID.
  *
  * @param {string} userId - user ID
- * @param {string} trackUri - track ID
+ * @param {string} trackId - track ID
  * @returns {JSON} gets the unparsed data of the track
  *
  * Example:
  * track_data = getTrack(user_id, track_id);
  */
-async function getTrack(userId, trackUri) {
-  return defaultTrack; // DEBUG
+async function getTrack(userId, trackId) { // -> trackId
+  // console.log("getTrack trackId", trackId); // DEBUG
+  // if (trackId.includes(":")) trackId = trackId.split(':')[2];
+  
+  // return defaultTrack; // DEBUG
   try {
     let accessToken = await refreshAccessToken(userId);
-    const url = `https://api.spotify.com/v1/tracks/${trackUri}`;
+    const url = `https://api.spotify.com/v1/tracks/${trackId}`;
 
     // console.log("Track Access Token: ", accessToken);
 
@@ -366,13 +371,14 @@ async function getTrack(userId, trackUri) {
     const response = await fetch(url, options);
 
     if (!response.ok) {
+      console.log("response", response);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const unparsedData = await response.json();
     return unparsedData;
   } catch (error) {
-    console.error('Error fetching track data:', error, ' ', trackUri);
+    console.error('Error fetching track data:', error, ' ', trackId);
     return defaultTrack; // DEBUG
     // return null;
   }

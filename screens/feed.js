@@ -46,9 +46,10 @@ const Feed = ({ navigation }) => {
 
                         const trackId = newestPost.track_uri.split(':')[2];
                         const todaySong = await getTrack(userId, trackId);
+                        console.log("todaySong", todaySong); // DEBUG
 
                         setSongDetails({
-                            songCover: todaySong.album.images[0].url || null,
+                            songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
                             songTitle: todaySong.name,
                             songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
                         });
@@ -77,7 +78,7 @@ const Feed = ({ navigation }) => {
                     postPromises.push(
                       getTrack(
                         await AsyncStorage.getItem("global_user_id"),
-                        post.track_uri/*.split(":")[2]*/
+                        post.track_uri.split(":")[2]
                       )
                     );
                   }
@@ -129,16 +130,19 @@ const Feed = ({ navigation }) => {
                         }
                         const curr_trackId = curr_post.track_uri.split(':')[2];
                         const curr_track = await getTrack(userId, curr_trackId);
+                        // console.log("curr_track", curr_track); // DEBUG
 
                         return {
                             id: `${userId}-${postId}`,
                             date: curr_post.date.toDate(),
                             profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
                             username: username,
-                            songCover: curr_track.album.images?.[0]?.url || 'default_cover_url',
+                            songCover: curr_track.album.images[0] ? curr_track.album.images[0].url : null,
                             songTitle: curr_track.name,
                             songArtist: curr_track.artists.map((artist) => artist.name).join(", "),
                             postDate: curr_post.date,
+                            songPreview: curr_track.preview_url,
+                            trackUri: curr_track.uri,
                         };
                     });
 
@@ -150,6 +154,8 @@ const Feed = ({ navigation }) => {
 
                 posts.sort((a, b) => b.date - a.date);
                 setFeedPosts(posts);
+                // console.log("posts ", posts); // DEBUG
+                // console.log("feedPosts ", feedPosts); // DEBUG
                 setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching posts or track details:', error);
@@ -230,11 +236,11 @@ const Feed = ({ navigation }) => {
                 <TouchableOpacity onPress={onPress = () => navigation.push('SongSelector')}>
                     <UserPost posted={posted} {...songDetails} />
                 </TouchableOpacity>
-                {isLoading && 
+                {/*isLoading && 
                     <View style={styles.loading}>
                         <Image style={styles.image} source={spinner} />
                     </View>
-                }
+                */}
                 {feedPosts.map((post, index) => (
                     <PostItem
                         key={post.id}
@@ -243,7 +249,7 @@ const Feed = ({ navigation }) => {
                         songCover={post.songCover}
                         songTitle={post.songTitle}
                         songArtist={post.songArtist}
-                        songPreview={post.songPreview}
+                        songPreview={post.songPreview || "https://p.scdn.co/mp3-preview/2c08c5c6325fb502aa4b94c3880f06095114b22d?cid=1afd86bd959b46549fad0dc7389b1f1a"}
                         trackUri={post.trackUri}
                         postDate={post.postDate}
                     />
