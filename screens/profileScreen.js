@@ -182,7 +182,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     nameText: {
-        marginTop: 35,
+        marginTop: 30,
+        marginBottom: 30,
         fontSize: 35,
         justifyContent: "center",
         color: '#cfd'

@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 import { removeFollowing } from '../backend/Firebase/users.js';
+const defaultProfilePic = require('../assets/default-pfp.png');
 
 const AddFriendsButton = ({ navigation }) => {
     return (

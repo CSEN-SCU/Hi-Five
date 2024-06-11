@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 import { getUsers, getUserFollowing, getUserUsername, addFollowing } from '../backend/Firebase/users.js';
 import { spotifyProfilePic } from '../backend/SpotifyAPI/functions.js';
+const defaultProfilePic = require('../assets/default-pfp.png');
 
 const AddFriends = ({ navigation }) => {
 
