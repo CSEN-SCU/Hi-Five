@@ -352,6 +352,7 @@ async function getRecentlyPlayedTracks(userId) {
  */
 async function getTrack(userId, trackId) { // -> trackId
   // console.log("getTrack trackId", trackId); // DEBUG
+  // console.log("getTrack trackId", trackId); // DEBUG
   // if (trackId.includes(":")) trackId = trackId.split(':')[2];
   
   // return defaultTrack; // DEBUG
@@ -380,6 +381,41 @@ async function getTrack(userId, trackId) { // -> trackId
   } catch (error) {
     console.error('Error fetching track data:', error, ' ', trackId);
     return defaultTrack; // DEBUG
+    // return null;
+  }
+}
+async function getTracks(userId, trackIds) { // -> trackId
+  // console.log("getTrack trackId", trackId); // DEBUG
+  // console.log("getTrack trackId", trackId); // DEBUG
+  // if (trackId.includes(":")) trackId = trackId.split(':')[2];
+  
+  // return defaultTrack; // DEBUG
+  try {
+    let accessToken = await refreshAccessToken(userId);
+    const url = `https://api.spotify.com/v1/tracks/${trackIds.join(",")}`;
+
+    // console.log("Track Access Token: ", accessToken);
+
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      console.log("response", response);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const unparsedData = (await response.json()).tracks;
+    return unparsedData;
+  } catch (error) {
+    console.error('Error fetching track data:', error, ' ', trackId);
+    const defaultTracks = Array(trackIds.length).fill(defaultTrack); // DEBUG
+    return defaultTracks; // DEBUG
     // return null;
   }
 }
@@ -421,6 +457,7 @@ export {
   searchForTracks,
   getRecentlyPlayedTracks,
   getTrack,
+  getTracks,
   spotifyProfilePic
 };
 
