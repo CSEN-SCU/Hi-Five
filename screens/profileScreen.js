@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
     },
     nameText: {
         marginTop: 35,
+        marginBottom: 35,
         fontSize: 35,
         justifyContent: "center",
         color: '#cfd'
