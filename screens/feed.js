@@ -12,15 +12,15 @@ import { getTrack, getTracks, spotifyProfilePic } from "../backend/SpotifyAPI/fu
 import { getUserUsername, getUserFollowing } from '../backend/Firebase/users.js';
 import spinner from '../assets/spinner.gif';
 import { Image } from "react-native";
-
-const userCache = {}; // userId => {username, profilePic}
-const trackCache = {}; // trackId => {songCover, songTitle, songArtist, songPreview, trackUri}
+import { defaultTrack as unformattedDefaultTrack } from "../backend/SpotifyAPI/functions.js";
 
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
     const [songDetails, setSongDetails] = useState({ songCover: '.', songTitle: '.', songArtist: '.' });
     const [feedPosts, setFeedPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [userCache, setUserCache] = useState({}); // userId => {username, profilePic}
+    const [trackCache, setTrackCache] = useState({}); // trackId => {songCover, songTitle, songArtist, songPreview, trackUri}
 
     useFocusEffect(
         React.useCallback(() => {
@@ -69,75 +69,155 @@ const Feed = ({ navigation }) => {
 
             const fetchFeedPosts = async () => {
                 try {
+                    const globalUserId = await AsyncStorage.getItem('global_user_id');
                     const allPosts = await getPosts();
-                    const friends = await getUserFollowing(await AsyncStorage.getItem('global_user_id'));
+                    if (!allPosts) {
+                        console.error('No posts found');
+                        return;
+                    }
+                    const friends = await getUserFollowing(globalUserId);
+                    friends.push(globalUserId);
+                    // console.log("friends", friends); // DEBUG
                     const userPromises = [];
-                    const trackPromises = [];
-                    const posts = [];
+                    const trackIds = [];
 
-                    for (const userId in friends) {
-                        // userCache, trackCache
-
+                    for (const userId of friends) {
                         if (!(userId in userCache)) {
-                            
+                            console.log("userId", userId, "not in userCache)"); // DEBUG
+                            userPromises.push(userId);
+                            userPromises.push(getUserUsername(userId));
+                            userPromises.push(spotifyProfilePic(userId));
                         }
-                        
-                        userPromises.push(getUserUsername(userId));
-                        userPromises.push(spotifyProfilePic(userId));
-
                         for (const postId in allPosts[userId]) {
                             const post = allPosts[userId][postId];
-                            trackPromises.push(getTrack(userId, post.track_uri.split(':')[2]));
+                            const trackId = post.track_uri.split(':')[2];
+                            if (!(trackId in trackCache)) {
+                                trackIds.push(trackId);
+                            }
                         }
                     }
 
-                    friends.push(await AsyncStorage.getItem('global_user_id'));
-                    const friendPromises = friends.map(async (userId) => {
-                        if (!allPosts.hasOwnProperty(userId)) {
-                            return;
-                        }
-                        const user = allPosts[userId];
-                        // const username = await getUserUsername(userId);
-                        // const profilePic = await spotifyProfilePic(userId);
-                        const username = userData[userId].username;
-                        const profilePic = userData[userId].profilePic;
 
-                        // Process each post in parallel
-                        const postPromises = Object.keys(user).map(async (postId) => {
-                            const curr_post = user[postId];
+                    const userResults = await Promise.all(userPromises);
+                    for (let i = 0; i < userResults.length; i += 3) {
+                        const userId = userResults[i];
+                        userCache[userId] = {
+                            username: userResults[i + 1],
+                            profilePic: userResults[i + 2]
+                        };
+                    }
 
-                            if (!curr_post.track_uri.startsWith('spotify:track:')) {
-                                throw new Error('Invalid track URI');
-                            }
-                            const curr_trackId = curr_post.track_uri.split(':')[2];
-                            const curr_track = await getTrack(userId, curr_trackId);
-                            // console.log("curr_track", curr_track); // DEBUG
+                    // console.log("trackIds", trackIds); // DEBUG
+                    const trackResults = await getTracks(globalUserId, trackIds);
+                    for (const track of trackResults) {
+                        // console.log("track", track); // DEBUG
+                        trackCache[track.id] = {
+                            songCover: track.album.images[0] ? track.album.images[0].url : null,
+                            songTitle: track.name,
+                            songArtist: track.artists.map((artist) => artist.name).join(", "),
+                            songPreview: track.preview_url,
+                            trackUri: track.uri,
+                        };
+                    }
 
+
+                    setUserCache(userCache);
+                    setTrackCache(trackCache);
+
+                    console.log("allPosts", allPosts);
+                    console.log("userCache", userCache);
+                    console.log("trackCache", trackCache);
+
+                    const posts = [];
+                    for (const userId of friends) {
+                        posts.push(...Object.keys(allPosts[userId]).map((postId) => {
+                            const post = allPosts[userId][postId];
+                            const user = userCache[userId];
+                            const track = trackCache[post.track_uri.split(':')[2]] || defaultTrack;
+                            
+                            console.log("post", post); // DEBUG
+                            console.log("user", user); // DEBUG
+                            console.log("track", track); // DEBUG
                             return {
                                 id: `${userId}-${postId}`,
-                                date: curr_post.date.toDate(),
-                                profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
-                                username: username,
-                                songCover: curr_track.album.images[0] ? curr_track.album.images[0].url : null,
-                                songTitle: curr_track.name,
-                                songArtist: curr_track.artists.map((artist) => artist.name).join(", "),
-                                postDate: curr_post.date,
-                                songPreview: curr_track.preview_url,
-                                trackUri: curr_track.uri,
+                                date: post.date.toDate(),
+                                profilePic: user.profilePic?.[0]?.url || 'default_profile_pic_url', // TODO?
+                                username: user.username,
+                                songCover: track.songCover,
+                                songTitle: track.songTitle,
+                                songArtist: track.songArtist,
+                                postDate: post.date,
+                                songPreview: track.songPreview,
+                                trackUri: track.trackUri,
                             };
-                        });
-
-                        const userPosts = await Promise.all(postPromises);
-                        posts.push(...userPosts);
-                    });
-
-                    await Promise.all(friendPromises);
-
+                        }));
+                    }
                     posts.sort((a, b) => b.date - a.date);
                     setFeedPosts(posts);
-                    // console.log("posts ", posts); // DEBUG
-                    // console.log("feedPosts ", feedPosts); // DEBUG
                     setIsLoading(false);
+
+
+
+
+
+
+
+
+                    
+                    // const friendPromises = friends.map(async (userId) => {
+                    //     if (!allPosts.hasOwnProperty(userId)) {
+                    //         return;
+                    //     }
+                    //     const user = allPosts[userId];
+                    //     // const username = await getUserUsername(userId);
+                    //     // const profilePic = await spotifyProfilePic(userId);
+                    //     const username = userData[userId].username;
+                    //     const profilePic = userData[userId].profilePic;
+
+                    //     // Process each post in parallel
+                    //     const postPromises = Object.keys(user).map(async (postId) => {
+                    //         const curr_post = user[postId];
+
+                    //         if (!curr_post.track_uri.startsWith('spotify:track:')) {
+                    //             throw new Error('Invalid track URI');
+                    //         }
+                    //         const curr_trackId = curr_post.track_uri.split(':')[2];
+                    //         const curr_track = await getTrack(userId, curr_trackId);
+                    //         // console.log("curr_track", curr_track); // DEBUG
+
+                    //         return {
+                    //             id: `${userId}-${postId}`,
+                    //             date: curr_post.date.toDate(),
+                    //             profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
+                    //             username: username,
+                    //             songCover: curr_track.album.images[0] ? curr_track.album.images[0].url : null,
+                    //             songTitle: curr_track.name,
+                    //             songArtist: curr_track.artists.map((artist) => artist.name).join(", "),
+                    //             postDate: curr_post.date,
+                    //             songPreview: curr_track.preview_url,
+                    //             trackUri: curr_track.uri,
+                    //         };
+                    //     });
+
+                    //     const userPosts = await Promise.all(postPromises);
+                    //     posts.push(...userPosts);
+                    // });
+
+                    // await Promise.all(friendPromises);
+
+                    // posts.sort((a, b) => b.date - a.date);
+                    // setFeedPosts(posts);
+                    // // console.log("posts ", posts); // DEBUG
+                    // // console.log("feedPosts ", feedPosts); // DEBUG
+                    // setIsLoading(false);
+
+
+
+
+
+
+
+
                 } catch (error) {
                     console.error('Error fetching posts or track details:', error);
                 }
@@ -416,3 +496,11 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
 });
+
+const defaultTrack = {
+    songCover: unformattedDefaultTrack.album.images[0] ? unformattedDefaultTrack.album.images[0].url : null,
+    songTitle: unformattedDefaultTrack.name,
+    songArtist: unformattedDefaultTrack.artists.map((artist) => artist.name).join(", "),
+    songPreview: unformattedDefaultTrack.preview_url,
+    trackUri: unformattedDefaultTrack.uri,
+};

@@ -391,6 +391,11 @@ async function getTracks(userId, trackIds) { // -> trackId
   
   // return defaultTrack; // DEBUG
   try {
+    if (!trackIds || !Array.isArray(trackIds)) {
+      console.error('trackIds is undefined or not an array');
+      return;
+    }
+
     let accessToken = await refreshAccessToken(userId);
     const url = `https://api.spotify.com/v1/tracks/${trackIds.join(",")}`;
 
@@ -413,7 +418,7 @@ async function getTracks(userId, trackIds) { // -> trackId
     const unparsedData = (await response.json()).tracks;
     return unparsedData;
   } catch (error) {
-    console.error('Error fetching track data:', error, ' ', trackId);
+    console.error('Error fetching track data:', error);
     const defaultTracks = Array(trackIds.length).fill(defaultTrack); // DEBUG
     return defaultTracks; // DEBUG
     // return null;
@@ -458,7 +463,8 @@ export {
   getRecentlyPlayedTracks,
   getTrack,
   getTracks,
-  spotifyProfilePic
+  spotifyProfilePic,
+  defaultTrack,
 };
 
 const defaultTrack = {
