@@ -46,7 +46,7 @@ const Feed = ({ navigation }) => {
 
                         const trackId = newestPost.track_uri.split(':')[2];
                         const todaySong = await getTrack(userId, trackId);
-                        console.log("todaySong", todaySong); // DEBUG
+                        // console.log("todaySong", todaySong); // DEBUG
 
                         setSongDetails({
                             songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,

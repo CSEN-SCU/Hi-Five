@@ -27,7 +27,7 @@ function parseTracksForSongs(tracks) {
     songArtist: track.artists.map((artist) => artist.name).join(", "),
     songCover: track.album.images[0] ? track.album.images[0].url : null,
   }));
-  console.log(track_list);
+  // console.log(track_list);
   return track_list;
 }
 
