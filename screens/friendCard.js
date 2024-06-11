@@ -1,15 +1,23 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+const defaultProfilePic = require('../assets/default-pfp.png');
 
 const FriendCard = ({ profilePic, username, onPress, unaddable, id }) => {
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.profile_pic}
-                source={profilePic}
-            />
-            <Text style={styles.username}>{username}</Text>
+            <View style={styles.userInfo}>
+                <Image
+                    style={styles.profile_pic}
+                    source={profilePic && profilePic.length > 0 ? { uri: profilePic[0]?.url } : defaultProfilePic}
+                />
+                <Text style={styles.username}>{username}</Text>
+            </View>
             <TouchableOpacity style={unaddable ? styles.unfriendButton : styles.addButton} onPress={onPress}>
-                <Text style={unaddable ? styles.unfriendText : styles.addText}>{unaddable ? 'X' : '+'}</Text>
+                <MatIcon
+                    name={unaddable ? 'cancel' : 'plus-circle-outline'}
+                    size={25}
+                    color={unaddable ? 'red' : 'green'}
+                />
             </TouchableOpacity>
         </View>
     )
@@ -23,7 +31,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: "center",
         marginLeft: 15,
-        // justifyContent: 'space-between'
+        marginRight: 15,
+        justifyContent: 'space-between'
+    },
+    userInfo: {
+        flexDirection: 'row',
+        alignItems: "center",
     },
     profile_pic: {
         width: 40,
@@ -39,13 +52,14 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         padding: 5,
         borderRadius: 2,
-        backgroundColor: '#dd0000'
+        color: '#dd0000'
+        // backgroundColor: '#dd0000'
     },
     addButton: {
         marginLeft: 15,
         padding: 5,
         borderRadius: 2,
-        backgroundColor: '#008800'
+        // backgroundColor: '#008800'
     },
     unfriendText: {
         color: '#FFFFFF',

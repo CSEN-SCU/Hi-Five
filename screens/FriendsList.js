@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Feather';
 import FriendCard from './friendCard';
 import { removeFollowing } from '../backend/Firebase/users.js';
+const defaultProfilePic = require('../assets/default-pfp.png');
 
 const AddFriendsButton = ({ navigation }) => {
     return (
@@ -21,18 +22,18 @@ const AddFriendsButton = ({ navigation }) => {
 }
 
 async function getFriends(userId) {
-  const followingIds = await getUserFollowing(userId);
+    const followingIds = await getUserFollowing(userId);
 
-  const friends = await Promise.all(
-    followingIds.map(async (id) => {
-      const username = await getUserUsername(id);
-      const profilePic = await spotifyProfilePic(id);
+    const friends = await Promise.all(
+        followingIds.map(async (id) => {
+            const username = await getUserUsername(id);
+            let profilePic = await spotifyProfilePic(id);
 
-      return { id, profilePic, username };
-    })
-  );
+            return { id, profilePic, username };
+        })
+    );
 
-  return friends;
+    return friends;
 }
 
 const FriendsList = ({ navigation }) => {
@@ -85,7 +86,7 @@ const FriendsList = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={styles.navTitle}>Following</Text>
                 <TouchableOpacity onPress={() => console.log("edit friends button clicked")}>
-                    <Text style={{...styles.editText, opacity: 0}}>Edit</Text> 
+                    <Text style={{ ...styles.editText, opacity: 0 }}>Edit</Text>
                 </TouchableOpacity>
             </View>
 

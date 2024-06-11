@@ -12,6 +12,7 @@ import { getTrack, spotifyProfilePic } from "../backend/SpotifyAPI/functions.js"
 import { getUserUsername, getUserFollowing } from '../backend/Firebase/users.js';
 import spinner from '../assets/spinner.gif';
 import { Image } from "react-native";
+const defaultProfilePic = require('../assets/default-pfp.png');
 
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
@@ -135,7 +136,7 @@ const Feed = ({ navigation }) => {
                         return {
                             id: `${userId}-${postId}`,
                             date: curr_post.date.toDate(),
-                            profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
+                            profilePic: profilePic,
                             username: username,
                             songCover: curr_track.album.images[0] ? curr_track.album.images[0].url : null,
                             songTitle: curr_track.name,
@@ -244,7 +245,7 @@ const Feed = ({ navigation }) => {
                 {feedPosts.map((post, index) => (
                     <PostItem
                         key={post.id}
-                        profilePic={post.profilePic}
+                        profilePic={post.profilePic || defaultProfilePic}
                         username={post.username}
                         songCover={post.songCover}
                         songTitle={post.songTitle}

@@ -12,9 +12,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { getUserPlaylistId, getUserSnapshotPlaylistId } from "../backend/Firebase/users";
 import { addTrackToPlaylist, removeTrackFromPlaylist } from "../backend/SpotifyAPI/functions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const defaultProfilePic = require('../assets/default-pfp.png');
-
 
 export default class PostItem extends React.Component {
 
@@ -166,7 +164,7 @@ export default class PostItem extends React.Component {
         <View style={styles.user_info}>
           <Image
             style={styles.profile_pic}
-            source={profilePic ? { uri: profilePic } : defaultProfilePic}
+            source={profilePic && profilePic.length > 0 ? { uri: profilePic[0]?.url } : defaultProfilePic}
           />
           <Text style={styles.username}>{username}</Text>
           <Text style={styles.postDate}>{(new Date(postDate.seconds * 1000)).toLocaleTimeString()}</Text>
