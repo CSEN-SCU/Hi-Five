@@ -13,6 +13,9 @@ import { getUserUsername, getUserFollowing } from '../backend/Firebase/users.js'
 import spinner from '../assets/spinner.gif';
 import { Image } from "react-native";
 
+const userCache = {}; // userId => {username, profilePic}
+const trackCache = {}; // trackId => {songCover, songTitle, songArtist, songPreview, trackUri}
+
 const Feed = ({ navigation }) => {
     const [posted, setPosted] = useState(false);
     const [songDetails, setSongDetails] = useState({ songCover: '.', songTitle: '.', songArtist: '.' });
@@ -44,15 +47,19 @@ const Feed = ({ navigation }) => {
                                 throw new Error('Invalid track URI');
                             }
 
-                            const trackId = newestPost.track_uri.split(':')[2];
-                            const todaySong = await getTrack(userId, trackId);
-                            // console.log("todaySong", todaySong); // DEBUG
-
-                            setSongDetails({
-                                songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
-                                songTitle: todaySong.name,
-                                songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
-                            });
+                            if (newestPost.track_uri in trackCache) {
+                                setSongDetails(trackCache[newestPost.track_uri]);
+                            } else {
+                                const trackId = newestPost.track_uri.split(':')[2];
+                                const todaySong = await getTrack(userId, trackId);
+                                // console.log("todaySong", todaySong); // DEBUG
+                                trackCache[newestPost.track_uri] = {
+                                    songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
+                                    songTitle: todaySong.name,
+                                    songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
+                                };
+                                setSongDetails(setSongDetails(trackCache[newestPost.track_uri]));
+                            }
                         }
                     }
                 } catch (error) {
@@ -63,67 +70,32 @@ const Feed = ({ navigation }) => {
             const fetchFeedPosts = async () => {
                 try {
                     const allPosts = await getPosts();
+                    const friends = await getUserFollowing(await AsyncStorage.getItem('global_user_id'));
                     const userPromises = [];
-                    const postPromises = [];
+                    const trackPromises = [];
+                    const posts = [];
 
-                    // Create a batch of promises to fetch user data and post data in parallel
-                    for (const userId in allPosts) {
-                        // Fetch usernames and profile pictures for each user
+                    for (const userId in friends) {
+                        // userCache, trackCache
+
+                        if (!(userId in userCache)) {
+                            
+                        }
+                        
                         userPromises.push(getUserUsername(userId));
                         userPromises.push(spotifyProfilePic(userId));
 
-                        //   // Fetch track data for each post in parallel
-                        //   for (const postId in allPosts[userId]) {
-                        //     const post = allPosts[userId][postId];
-                        //     postPromises.push(
-                        //       getTrack(
-                        //         await AsyncStorage.getItem("global_user_id"),
-                        //         post.track_uri.split(":")[2]
-                        //       )
-                        //     );
-                        //   }
-                    }
-                    // let trackIds = [];
-                    // for (const postId in allPosts[userId]) {
-                    //     const post = allPosts[userId][postId];
-                    //     trackIds.push(post.track_uri.split(":")[2]);
-                    // }
-                    // const postPromise = getTracks(await AsyncStorage.getItem("global_user_id"), trackIds);
-                    // Wait for all track data to be fetched
-                    // const postResults = await Promise.all(postPromises);
-                    // let postResults = await postPromise;
-
-                    // Wait for all user data to be fetched
-                    const userResults = await Promise.all(userPromises);
-
-                    // Now userResults and postResults should contain the resolved data
-                    // console.log("User data:", userResults);
-                    // console.log("Post data:", postResults);
-
-                    const userData = {};
-                    let userIndex = 0;
-
-                    // Organize user data into a dictionary for quick lookup
-                    for (const userId in allPosts) {
-                        userData[userId] = {
-                            username: userResults[userIndex],
-                            profilePic: userResults[userIndex + 1]?.[0]?.url
-                        };
-                        userIndex += 2;
+                        for (const postId in allPosts[userId]) {
+                            const post = allPosts[userId][postId];
+                            trackPromises.push(getTrack(userId, post.track_uri.split(':')[2]));
+                        }
                     }
 
-                    const posts = [];
-
-                    // Fetch the list of friends
-                    const friends = await getUserFollowing(await AsyncStorage.getItem('global_user_id'));
                     friends.push(await AsyncStorage.getItem('global_user_id'));
-
-                    // Process each friend in parallel
                     const friendPromises = friends.map(async (userId) => {
                         if (!allPosts.hasOwnProperty(userId)) {
                             return;
                         }
-
                         const user = allPosts[userId];
                         // const username = await getUserUsername(userId);
                         // const profilePic = await spotifyProfilePic(userId);
@@ -170,6 +142,137 @@ const Feed = ({ navigation }) => {
                     console.error('Error fetching posts or track details:', error);
                 }
             };
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //         const userPromises = [];
+            //         const postPromises = [];
+
+            //         // Create a batch of promises to fetch user data and post data in parallel
+            //         for (const userId in allPosts) {
+            //             // Fetch usernames and profile pictures for each user
+            //             userPromises.push(getUserUsername(userId));
+            //             userPromises.push(spotifyProfilePic(userId));
+
+            //             //   // Fetch track data for each post in parallel
+            //             //   for (const postId in allPosts[userId]) {
+            //             //     const post = allPosts[userId][postId];
+            //             //     postPromises.push(
+            //             //       getTrack(
+            //             //         await AsyncStorage.getItem("global_user_id"),
+            //             //         post.track_uri.split(":")[2]
+            //             //       )
+            //             //     );
+            //             //   }
+            //         }
+            //         // let trackIds = [];
+            //         // for (const postId in allPosts[userId]) {
+            //         //     const post = allPosts[userId][postId];
+            //         //     trackIds.push(post.track_uri.split(":")[2]);
+            //         // }
+            //         // const postPromise = getTracks(await AsyncStorage.getItem("global_user_id"), trackIds);
+            //         // Wait for all track data to be fetched
+            //         // const postResults = await Promise.all(postPromises);
+            //         // let postResults = await postPromise;
+
+            //         // Wait for all user data to be fetched
+            //         const userResults = await Promise.all(userPromises);
+
+            //         // Now userResults and postResults should contain the resolved data
+            //         // console.log("User data:", userResults);
+            //         // console.log("Post data:", postResults);
+
+            //         const userData = {};
+            //         let userIndex = 0;
+
+            //         // Organize user data into a dictionary for quick lookup
+            //         for (const userId in allPosts) {
+            //             userData[userId] = {
+            //                 username: userResults[userIndex],
+            //                 profilePic: userResults[userIndex + 1]?.[0]?.url
+            //             };
+            //             userIndex += 2;
+            //         }
+
+            //         const posts = [];
+
+            //         // Fetch the list of friends
+            //         const friends = await getUserFollowing(await AsyncStorage.getItem('global_user_id'));
+            //         friends.push(await AsyncStorage.getItem('global_user_id'));
+
+            //         // Process each friend in parallel
+            //         const friendPromises = friends.map(async (userId) => {
+            //             if (!allPosts.hasOwnProperty(userId)) {
+            //                 return;
+            //             }
+
+            //             const user = allPosts[userId];
+            //             // const username = await getUserUsername(userId);
+            //             // const profilePic = await spotifyProfilePic(userId);
+            //             const username = userData[userId].username;
+            //             const profilePic = userData[userId].profilePic;
+
+            //             // Process each post in parallel
+            //             const postPromises = Object.keys(user).map(async (postId) => {
+            //                 const curr_post = user[postId];
+
+            //                 if (!curr_post.track_uri.startsWith('spotify:track:')) {
+            //                     throw new Error('Invalid track URI');
+            //                 }
+            //                 const curr_trackId = curr_post.track_uri.split(':')[2];
+            //                 const curr_track = await getTrack(userId, curr_trackId);
+            //                 // console.log("curr_track", curr_track); // DEBUG
+
+            //                 return {
+            //                     id: `${userId}-${postId}`,
+            //                     date: curr_post.date.toDate(),
+            //                     profilePic: profilePic?.[0]?.url || 'default_profile_pic_url',
+            //                     username: username,
+            //                     songCover: curr_track.album.images[0] ? curr_track.album.images[0].url : null,
+            //                     songTitle: curr_track.name,
+            //                     songArtist: curr_track.artists.map((artist) => artist.name).join(", "),
+            //                     postDate: curr_post.date,
+            //                     songPreview: curr_track.preview_url,
+            //                     trackUri: curr_track.uri,
+            //                 };
+            //             });
+
+            //             const userPosts = await Promise.all(postPromises);
+            //             posts.push(...userPosts);
+            //         });
+
+            //         await Promise.all(friendPromises);
+
+            //         posts.sort((a, b) => b.date - a.date);
+            //         setFeedPosts(posts);
+            //         // console.log("posts ", posts); // DEBUG
+            //         // console.log("feedPosts ", feedPosts); // DEBUG
+            //         setIsLoading(false);
+            //     } catch (error) {
+            //         console.error('Error fetching posts or track details:', error);
+            //     }
+            // };
+
+
+
+
+
+
+
+
+
+
+
 
             fetchUserPost();
             fetchFeedPosts();
