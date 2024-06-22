@@ -5,7 +5,9 @@ import qs from 'qs';
 import { Buffer } from 'buffer';
 // import 'react-native-url-polyfill/auto';
 import { sha256 } from 'js-sha256';
-import { CLIENT_ID, REDIRECT_URI } from '@env'
+import { /*CLIENT_ID,*/ REDIRECT_URI } from '@env'
+let CLIENT_ID = '7aa5bf1f47064915ad7a9fb025b3850d'; // DEBUG
+console.log("CLIENT_ID", CLIENT_ID); // DEBUG
 const scope = 'user-top-read user-read-private playlist-modify-public playlist-modify-private user-read-recently-played user-library-read user-library-modify';
 
 const generateRandomString = (length) => {
@@ -115,7 +117,7 @@ async function useAuthorizationCode(code, codeVerifier) {
     let username = await getUserDisplayNameUsingAccessToken(accessToken)
     await Promise.add([
       addUserUsingAuthorizationCode(userId, username, data),
-      addPost(userId),
+      // addPost(userId),
       addView(userId)
     ]);
   }

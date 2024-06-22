@@ -48,21 +48,24 @@ const Feed = ({ navigation }) => {
                                 throw new Error('Invalid track URI');
                             }
 
-                            if (newestPost.track_uri in trackCache) {
-                                setSongDetails(trackCache[newestPost.track_uri]);
-                            } else {
-                                const trackUri = newestPost.track_uri;
-                                if (trackUri) {
-                                    const trackId = newestPost.track_uri.split(':')[2];
-                                    const todaySong = await getTrack(userId, trackId);
-                                    // console.log("todaySong", todaySong); // DEBUG
-                                    trackCache[newestPost.track_uri] = {
-                                        songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
-                                        songTitle: todaySong.name,
-                                        songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
-                                    };
-                                    setSongDetails(setSongDetails(trackCache[newestPost.track_uri]));
-                                } else {
+                            if (!(newestPost.track_uri in trackCache)) {
+                                // const trackUri = newestPost.track_uri;
+                                console.log("newestPost.track_uri", newestPost.track_uri);
+                                // if (trackUri) {
+                                const trackId = newestPost.track_uri.split(':')[2];
+                                const todaySong = await getTrack(userId, trackId);
+                                console.log("todaySong", todaySong); // DEBUG
+                                trackCache[newestPost.track_uri] = {
+                                    songCover: todaySong.album.images[0] ? todaySong.album.images[0].url : null,
+                                    songTitle: todaySong.name,
+                                    songArtist: todaySong.artists.map((artist) => artist.name).join(", "),
+                                    songPreview: todaySong.preview_url,
+                                    trackUri: todaySong.uri,
+                                };
+                                setTrackCache(trackCache);
+
+                                // setSongDetails(setSongDetails(trackCache[newestPost.track_uri]));
+                                // } else {
                                     // const trackId = unformattedDefaultTrack.id;
                                     // const todaySong = defaultTrack;
                                     // // console.log("todaySong", todaySong); // DEBUG
@@ -72,8 +75,9 @@ const Feed = ({ navigation }) => {
                                     //     songArtist: todaySong.artists.map((artist) => artist.name).join(", ")
                                     // };
                                     // setSongDetails(setSongDetails(trackCache[newestPost.track_uri]));
-                                }
+                                // }
                             }
+                            setSongDetails(trackCache[newestPost.track_uri]);
                         }
                     }
                 } catch (error) {
@@ -117,12 +121,18 @@ const Feed = ({ navigation }) => {
                         const userId = userResults[i];
                         userCache[userId] = {
                             username: userResults[i + 1],
-                            profilePic: userResults[i + 2]
+                            profilePic: userResults[i + 2] // [0].url
                         };
                     }
 
-                    // console.log("trackIds", trackIds); // DEBUG
-                    const trackResults = await getTracks(globalUserId, trackIds) ? trackIds : [];
+                    console.log("trackIds", trackIds); // DEBUG
+                    let trackResults;
+                    if (trackIds.length > 0) {
+                        trackResults = await getTracks(globalUserId, trackIds);
+                    } else {
+                        trackResults = [];
+                    }
+                    // console.log("trackResults", trackResults); // DEBUG
                     for (const track of trackResults) {
                         // console.log("track", track); // DEBUG
                         trackCache[track.id] = {
@@ -155,7 +165,7 @@ const Feed = ({ navigation }) => {
                             return {
                                 id: `${userId}-${postId}`,
                                 date: post.date.toDate(),
-                                profilePic: user.profilePic?.[0]?.url || defaultProfilePic, // TODO?
+                                profilePic: user.profilePic || defaultProfilePic, // TODO?
                                 username: user.username,
                                 songCover: track.songCover,
                                 songTitle: track.songTitle,

@@ -397,7 +397,7 @@ async function getTracks(userId, trackIds) { // -> trackId
     }
 
     let accessToken = await refreshAccessToken(userId);
-    const url = `https://api.spotify.com/v1/tracks/${trackIds.join(",")}`;
+    const url = `https://api.spotify.com/v1/tracks?ids=${trackIds.join(",")}`;
 
     // console.log("Track Access Token: ", accessToken);
 
