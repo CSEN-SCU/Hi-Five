@@ -68,7 +68,26 @@ This project was completed for COEN 174 as a class project. Thus, we have a ten 
 
 ## Screenshots
 
-**COMING SOON**
+### Splash Page
+<img src="https://brianmwiebe.com/Hi-Five/splash.png" width=300>
+
+### Permission Page
+<img src="https://brianmwiebe.com/Hi-Five/permissions.png" width=300>
+
+### Add Song Page
+<img src="https://brianmwiebe.com/Hi-Five/add.png" width=300>
+
+### Feed Page
+<img src="https://brianmwiebe.com/Hi-Five/feed.png" width=300>
+
+### Playlist Page
+<img src="https://brianmwiebe.com/Hi-Five/playlists.png" width=300>
+
+### Following Page
+<img src="https://brianmwiebe.com/Hi-Five/friends.png" width=300>
+
+### Profile Page
+<img src="https://brianmwiebe.com/Hi-Five/profile.png" width=300>
 
 # About
 This project is for CSEN 174, taken in Spring of 2024.
