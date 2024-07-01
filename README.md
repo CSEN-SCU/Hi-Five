@@ -38,12 +38,12 @@ This project is for CSEN 174, taken in Spring of 2024.
 **UNLIKE** Airbuds Widget  
 **OUR PRODUCT** allows users to select what songs their friends see, allowing for more accurate sharing of songs  
 
-## User Stories
+## Users & User Stories
  - Young Adults
    - As a young adult, I want to use an intuitive user interface to interact with the other parts of the application, so that I can easily use all functionality.
  - Music Listeners
    - As a casual music listener, I want to listen to and discover new music, so that I can diversify the genres and songs that I listen to on a day to day basis.
-   - As a casual music listener, I want to find out more the listening habits of my coworkers, family members, and old friends, so that I can bond with them
+   - As a casual music listener, I want to find out more the listening habits of my coworkers, family members, and old friends, so that I can bond with them.
  - Influencers
  - DJs
    - As a DJ, I want to add my liked friends songs to a playlist so I can use them in my Spotify library, because I don't want to lose the songs that I liked.
