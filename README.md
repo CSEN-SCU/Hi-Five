@@ -1,10 +1,27 @@
 # Hi-Five
 Share the Vibe!
 
-## Description
 Hi-Five is an application that is designed to share music with your friends. In this application, users can post their favorite song of the day, listen to their friends posts, "Hi-Five" a song to add it to your Hi-Five playlist (assessible through Spotify), and follow friends.
 
-## Application Stack
+This project is for CSEN 174, taken in Spring of 2024.
+
+## Demo (click)
+[![Hi-Five Demo](https://img.youtube.com/vi/IiGNO2e-aJk/0.jpg)](https://youtu.be/IiGNO2e-aJk "Hi-Five Demo")
+
+## Table of Contents
+* [Tech Stack](#tech-stack)
+* [Product Vision Statement](#product-vision-statement)
+* [User Stories](#user-stories)
+* [Design Considerations](#design-considerations)
+* [Software Diagrams](#software-diagrams)
+  * [System Context Diagram](#system-context-diagram)
+  * [Container Diagram](#container-diagram)
+  * [Entity Relationship Diagram](#entity-relationship-diagram)
+* [Future Additions](#future-additions)
+* [Screenshots](#screenshots)
+* [Team Members](#team-members)
+
+## Tech Stack
 - JavaScript
 - React Native
 - Expo
@@ -13,7 +30,7 @@ Hi-Five is an application that is designed to share music with your friends. In 
 - Firebase
 - Spotify API
 
-## Value Proposition
+## Product Vision Statement
 **FOR** people who enjoy listening to music  
 **WHO** want an easy way to find music that their friends are listening to  
 **Hi-Five** is a music recommendation and social media application  
@@ -21,17 +38,15 @@ Hi-Five is an application that is designed to share music with your friends. In 
 **UNLIKE** Airbuds Widget  
 **OUR PRODUCT** allows users to select what songs their friends see, allowing for more accurate sharing of songs  
 
-## Primary User Segmenation
- - Music Listeners
- - DJs
+## User Stories
  - Young Adults
+   - As a young adult, I want to use an intuitive user interface to interact with the other parts of the application, so that I can easily use all functionality.
+ - Music Listeners
+   - As a casual music listener, I want to listen to and discover new music, so that I can diversify the genres and songs that I listen to on a day to day basis.
+   - As a casual music listener, I want to find out more the listening habits of my coworkers, family members, and old friends, so that I can bond with them
  - Influencers
-
-## Main User Stories
-- As a young adult, I want to use an intuitive user interface to interact with the other parts of the application, so that I can easily use all functionality.
-- As a casual music listener, I want to listen to and discover new music, so that I can diversify the genres and songs that I listen to on a day to day basis.
-- As a casual music listener, I want to find out more the listening habits of my coworkers, family members, and old friends, so that I can bond with them
-- As a DJ, I want to add my liked friends songs to a playlist so I can use them in my Spotify library, because I don't want to lose the songs that I liked.
+ - DJs
+   - As a DJ, I want to add my liked friends songs to a playlist so I can use them in my Spotify library, because I don't want to lose the songs that I liked.
 
 ## Design Considerations
 Designing a user-centric application requires deep insight into how users can esaily interact with all of the elements that we would like to add to our applicaiton. We wanted to highlight some of the  considerations that were taken into account:
@@ -42,23 +57,21 @@ Designing a user-centric application requires deep insight into how users can es
 - **Backend**: Would a serverless architecture serve our needs? What are some alternatatives?
 - **Contraints**: How can we design our app to efficiently use the Spotify API? How can we ensure that our users will not hit rate limits of the API?
 
-## Sysytem Context Diagram
+## Software Diagrams
+
+### System Context Diagram
 
 ![Sysytem Context Diagram](https://brianmwiebe.com/Hi-Five/Hi-Five_System_Context_Diagram.png)
 
-## Container Diagram
+### Container Diagram
 
 ![Container Diagram](https://brianmwiebe.com/Hi-Five/Hi-Five_Container_Diagram.png)
 
-## Entity Relationship Diagram
+### Entity Relationship Diagram
 
 ![Entity Resource Diagram](https://brianmwiebe.com/Hi-Five/Hi-Five_ER_Diagram.png)
 
-## Demo (click)
-[![Hi-Five Demo](https://img.youtube.com/vi/IiGNO2e-aJk/0.jpg)](https://youtu.be/IiGNO2e-aJk "Hi-Five Demo")
-
-## Future Work
-
+## Future Additions
 This project was completed for COEN 174 as a class project. Thus, we have a ten week time contraint. In the future we would like to implement the following features.
 - **Comments**: Interacting with your friends is a vital part to any successful social media application. We would like to expand our database to account for comments on posts, and also develop the necessary moderation features to ensure a safe platform for all of our users.
 - **Recently Posted**: Seeing your previous posts and the comments within is important to recount the songs that you have been listening to. While the functionality mostly exists in our application, we ran into rate limits, which prevented us from laoding the song icons from Spotify.
@@ -69,28 +82,25 @@ This project was completed for COEN 174 as a class project. Thus, we have a ten 
 ## Screenshots
 
 ### Splash Page
-<img src="https://brianmwiebe.com/Hi-Five/splash.png" width=300>
+<img src="./screenshots/splash.png" width=300>
 
 ### Permission Page
-<img src="https://brianmwiebe.com/Hi-Five/permissions.png" width=300>
+<img src="./screenshots/permissions.png" width=300>
 
 ### Add Song Page
-<img src="https://brianmwiebe.com/Hi-Five/add.png" width=300>
+<img src="./screenshots/add.png" width=300>
 
 ### Feed Page
-<img src="https://brianmwiebe.com/Hi-Five/feed.png" width=300>
+<img src="./screenshots/feed.png" width=300>
 
 ### Playlist Page
-<img src="https://brianmwiebe.com/Hi-Five/playlists.png" width=300>
+<img src="./screenshots/playlists.png" width=300>
 
 ### Following Page
-<img src="https://brianmwiebe.com/Hi-Five/friends.png" width=300>
+<img src="./screenshots/friends.png" width=300>
 
 ### Profile Page
-<img src="https://brianmwiebe.com/Hi-Five/profile.png" width=300>
-
-# About
-This project is for CSEN 174, taken in Spring of 2024.
+<img src="./screenshots/profile.png" width=300>
 
 ## Team Members
 - Brian Wiebe (@wiebecoding)
