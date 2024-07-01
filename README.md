@@ -11,7 +11,7 @@ This project is for CSEN 174, taken in Spring of 2024.
 ## Table of Contents
 * [Tech Stack](#tech-stack)
 * [Product Vision Statement](#product-vision-statement)
-* [User Stories](#user-stories)
+* [Users & User Stories](#users--user-stories)
 * [Design Considerations](#design-considerations)
 * [Software Diagrams](#software-diagrams)
   * [System Context Diagram](#system-context-diagram)
