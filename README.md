@@ -104,7 +104,7 @@ This project was completed for COEN 174 as a class project. Thus, we have a ten 
 
 ## Team Members
 - Brian Wiebe (@wiebecoding)
-- Hilary Le (@hilllls)
+- Hilary Le (@hilaryle)
 - Matty Herzig (@mattyHerzig)
 - Srivatsa Puranam (@VatsaPuranam)
 - Anshuman Sahu (@Anshu-Sahu1)
